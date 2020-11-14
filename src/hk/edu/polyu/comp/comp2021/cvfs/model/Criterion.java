@@ -1,6 +1,6 @@
 package hk.edu.polyu.comp.comp2021.cvfs.model;
 
-public class Criterion implements Cloneable{
+public class Criterion implements Cloneable {
     /**
      * The name of the criterion, containing exactly 2 English letters.
      */
@@ -52,83 +52,86 @@ public class Criterion implements Cloneable{
 
     /**
      * Create a criterion.
+     *
      * @param name The name of the criterion.
      * @param attr The name of the attribute.
-     * @param op The name of the operation.
-     * @param val The value of the operation.
+     * @param op   The name of the operation.
+     * @param val  The value of the operation.
      */
-    public Criterion(String name,String attr, String op, String val){
-        this.name=name;
-        this.attr=attr;
-        this.op=op;
-        this.val=val;
+    public Criterion(String name, String attr, String op, String val) {
+        this.name = name;
+        this.attr = attr;
+        this.op = op;
+        this.val = val;
     }
 
     /**
      * A clone constructor
      */
-    private Criterion(Criterion x){
-        name=x.getName();
-        attr=x.getAttr();
-        op=x.getOp();
-        val=x.getVal();
+    private Criterion(Criterion x) {
+        name = x.getName();
+        attr = x.getAttr();
+        op = x.getOp();
+        val = x.getVal();
     }
 
-    public Object clone(){
+    public Object clone() {
         return new Criterion(this);
     }
 
     /**
      * @return The name of the criterion
      */
-    public String getName(){
+    public String getName() {
         return name;
     }
 
     /**
      * @return The attribute of the criterion.
      */
-    public String getAttr(){
+    public String getAttr() {
         return attr;
     }
 
     /**
      * @return The operation of the criterion.
      */
-    public String getOp(){
+    public String getOp() {
         return op;
     }
 
     /**
      * @return The value of the operation.
      */
-    public  String getVal(){
+    public String getVal() {
         return val;
     }
 
     /**
      * @return True if the check result is negated.
      */
-    public boolean isNeg(){
+    public boolean isNeg() {
         return negation;
     }
 
     /**
      * Check whether all parameters are valid. Rubrics over the declarations of fields.
+     *
      * @return True if all parameters are valid.
      */
-    static public boolean isValidCri(String name, String attr, String op, String val){
+    static public boolean isValidCri(String name, String attr, String op, String val) {
         return false;
     }
 
     /**
      * Check if the unit x fits the criterion.
      * Print a warning and return false if x is null.
+     *
      * @param x The unit to be checked.
      * @return True if the condition holds.
      */
-    public boolean check(Unit x){
-        if(x==null){
+    public boolean check(Unit x) {
+        if (x == null) {
             System.out.println("Error: Invalid Argument.");
             return false;
         }

@@ -8,7 +8,7 @@ public class Directory extends Unit {
     /**
      * The contents in the directory.
      */
-    Map<String, Unit> catalog = new HashMap<>();
+    private Map<String, Unit> catalog = new HashMap<>();
 
     /**
      * Construct a new directory.
@@ -20,6 +20,12 @@ public class Directory extends Unit {
         super(name, parent);
     }
 
+    /**
+     * @return The catalog of the current directory.
+     */
+    public Map<String, Unit> getCatalog() {
+        return catalog;
+    }
 
     /**
      * Make a new document in the directory.
@@ -97,17 +103,19 @@ public class Directory extends Unit {
 
     /**
      * A list with a filter.
+     *
      * @param criName The filter.
      */
-    public void search(Criterion criName){
+    public void search(Criterion criName) {
         return;
     }
 
     /**
      * A rList with a filter.
+     *
      * @param criName The filter.
      */
-    public void rSearch(Criterion criName){
+    public void rSearch(Criterion criName) {
         return;
     }
 }

@@ -13,15 +13,16 @@ public class CVFSView {
     /**
      * Print the welcome message.
      */
-    public void welcome(){
+    public void welcome() {
         return;
     }
 
     /**
      * Update the path of current working directory after changing.
+     *
      * @param cur The current working directory.
      */
-    public void updateDir(Directory cur){
+    public void updateDir(Directory cur) {
         return;
     }
 }

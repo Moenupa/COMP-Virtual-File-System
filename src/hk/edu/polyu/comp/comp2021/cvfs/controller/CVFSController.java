@@ -27,9 +27,10 @@ public class CVFSController {
     /**
      * Change the current working directory to the desired one.
      * Print a warning and return if the desired directory does not exist.
+     *
      * @param name The new directory.
      */
-    public void changeDir(String name){
+    public void changeDir(String name) {
         return;
     }
 }

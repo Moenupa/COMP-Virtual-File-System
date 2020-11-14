@@ -20,6 +20,7 @@ public enum DocType {
 
     /**
      * Return the text form of the enum
+     *
      * @return The text of the enum.
      */
     public String toString() {
