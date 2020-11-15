@@ -26,6 +26,13 @@ public class Document extends Unit {
     }
 
     /**
+     * @return The type of the document.
+     */
+    public DocType getType() {
+        return type;
+    }
+
+    /**
      * Format the output
      *
      * @return the formatted output.
