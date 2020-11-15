@@ -33,4 +33,11 @@ public class CVFSController {
     public void changeDir(String name) {
         return;
     }
+
+    /**
+     * The user-interface, receiving and handling user requests.
+     */
+    public void terminal(){
+        return;
+    }
 }

@@ -16,6 +16,9 @@ public class CVFS {
      */
     Map<String, Criterion> criteria = new HashMap<>();
 
+    {
+        criteria.put("IsDocument",Criterion.getIsDocument());
+    }
     /**
      * Create a new disk and return its reference.
      *

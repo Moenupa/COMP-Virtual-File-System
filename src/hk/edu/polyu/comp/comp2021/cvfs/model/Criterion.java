@@ -47,13 +47,25 @@ public class Criterion implements Cloneable {
     /**
      * Used to mark the special criterion IsDocument
      */
-    private boolean isDocument = false;
+    private boolean isDocumentMark = false;
 
     /**
-     * The special criterion IsDocument
+     * The special criterion isDocument
      */
-    static Criterion IsDocument = new Criterion("IsDocument",null,null,null);
+    static Criterion isDocument = new Criterion("IsDocument",null,null,null);
 
+
+    static{
+        isDocument.isDocumentMark=true;
+    }
+
+    /**
+     * Get the special criterion isDocument
+     * @return the reference to isDocument
+     */
+    public static Criterion getIsDocument() {
+        return isDocument;
+    }
 
     /**
      * Create a criterion.
@@ -115,7 +127,7 @@ public class Criterion implements Cloneable {
 
     @Override
     public String toString() {
-        if (!isDocument)
+        if (!isDocumentMark)
             return "Criterion {" +
                     "name='" + name + '\'' +
                     ", content='" + attr + " " + op + " " + val + "\'" +
