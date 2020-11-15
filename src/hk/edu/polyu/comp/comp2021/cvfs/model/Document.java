@@ -25,6 +25,10 @@ public class Document extends Unit {
         this.content = content;
     }
 
+    public DocType getType() {
+        return type;
+    }
+
     /**
      * Format the output
      *

@@ -54,9 +54,8 @@ public class Criterion implements Cloneable {
      */
     static Criterion isDocument = new Criterion("IsDocument",null,null,null);
 
-
-    static{
-        isDocument.isDocumentMark=true;
+    static {
+        isDocument.isDocumentMark = true;
     }
 
     /**
@@ -125,6 +124,22 @@ public class Criterion implements Cloneable {
         return val;
     }
 
+    /**
+     * Set this Criterion to its Negative
+     */
+    public void setNeg() {
+        negation = !negation;
+    }
+
+    /**
+     * @return a negative criterion of this
+     */
+    public Criterion getNeg() {
+        Criterion that = new Criterion(this);
+        that.setNeg();
+        return that;
+    }
+
     @Override
     public String toString() {
         if (!isDocumentMark)
@@ -144,7 +159,7 @@ public class Criterion implements Cloneable {
 
     /**
      * Check whether all parameters are valid. Rubrics over the declarations of fields.
-     *
+     * !!! Does not support 'IsDocument' criterion !!!
      * @return True if all parameters are valid.
      */
     public static boolean isValidCri(String name, String attr, String op, String val){
@@ -161,9 +176,30 @@ public class Criterion implements Cloneable {
      */
     public boolean check(Unit x) {
         if (x == null) {
-            System.out.println("Error: Invalid Argument.");
+            System.out.println("Error: Invalid Argument. Details: Checking a null Unit with " + this);
             return false;
         }
+        if (isDocumentMark) return x instanceof Document;
+
+        switch (getAttr()) {
+            case "name":
+                return !(
+                        negation ^
+                        x.getName().contains(
+                                val.substring(1, val.length() - 1)
+                        )
+                );
+            case "type":
+                return (x instanceof Document
+                        && ((Document) x).getType().equals(
+                            val.substring(1, val.length() - 1)
+                        )
+                );
+
+            case "size":
+                // TODO: 脑子有点晕了...
+        }
+        System.out.println("Error: Invalid Argument. Details: when checking unit find an Illegal " + this);
         return false;
     }
 
@@ -178,7 +214,8 @@ public class Criterion implements Cloneable {
 
     // ===================================== private methods for implementation
 
-    /** CriName contains exactly two English letters*/
+    /** Check whether CriName is valid.
+     * namecontains exactly two English letters*/
     private static boolean isValidCriName(String name) {
         // 无 bug 只考虑cri 名字的合法性
         if (name == null || name.length() != 2) return false;
@@ -189,7 +226,7 @@ public class Criterion implements Cloneable {
         return true;
     }
 
-    /** Check whether the contents of the criterion is valid.
+    /** Check whether CriContent (attr, op, val) is valid.
      * attr is either name, type, or size.
      * If attr is name, op must be contains and val must be a string in double quote;
      * If attr is type, op must be equals and val must be a string in double quote;
@@ -198,18 +235,18 @@ public class Criterion implements Cloneable {
         // 无bug 只考虑content的合法性
         switch (attr) {
             case "name":
-                return op == "contains"
+                return op.equals("contains")
                         && val.startsWith("\"") && val.endsWith("\"");
 
             case "type":
-                return op == "equals"
+                return op.equals("equals")
                         && val.startsWith("\"") && val.endsWith("\"");
 
             case "size":
                 boolean flagOp, flagVal;
-                flagOp = op == ">" || op == "<"
-                        || op == ">=" || op == "<="
-                        || op == "==" || op == "!=";
+                flagOp = op.equals(">") || op.equals("<")
+                        || op.equals(">=") || op.equals("<=")
+                        || op.equals("==") || op.equals("!=");
 
                 try {
                     Integer.parseInt(val);
