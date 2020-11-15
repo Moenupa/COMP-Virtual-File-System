@@ -49,6 +49,11 @@ public class Criterion implements Cloneable {
      */
     private boolean isDocument = false;
 
+    /**
+     * The special criterion IsDocument
+     */
+    static Criterion IsDocument = new Criterion("IsDocument",null,null,null);
+
 
     /**
      * Create a criterion.
@@ -74,6 +79,7 @@ public class Criterion implements Cloneable {
         op = x.getOp();
         val = x.getVal();
     }
+
 
     public Object clone() {
         return new Criterion(this);
