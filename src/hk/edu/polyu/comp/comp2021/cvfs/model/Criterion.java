@@ -107,6 +107,16 @@ public class Criterion implements Cloneable {
         return val;
     }
 
+    @Override
+    public String toString() {
+        if (!isDocument)
+            return "Criterion {" +
+                    "name='" + name + '\'' +
+                    ", content='" + attr + " " + op + " " + val + "\'" +
+                    ", negation='" + negation + "\'}";
+        return "Criterion {IsDocument}";
+    }
+
     /**
      * @return True if the check result is negated.
      */
@@ -119,8 +129,9 @@ public class Criterion implements Cloneable {
      *
      * @return True if all parameters are valid.
      */
-    static public boolean isValidCri(String name, String attr, String op, String val) {
-        return false;
+    public static boolean isValidCri(String name, String attr, String op, String val){
+        // FIXME: 还没有用test，只有简单debug 可能会因为isDocument 导致整个function gg
+        return (isValidCriName(name) && isValidCriContent(attr, op, val));
     }
 
     /**
@@ -134,6 +145,62 @@ public class Criterion implements Cloneable {
         if (x == null) {
             System.out.println("Error: Invalid Argument.");
             return false;
+        }
+        return false;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(new Criterion("aa", "type", "equals", "\"txt\""));
+        boolean flag;
+        flag = Criterion.isValidCri("aa", "type", "equals", "\"txt\"");
+        flag &= Criterion.isValidCriName("bA");
+        flag &= Criterion.isValidCriName("cE");
+        System.out.println(flag);
+    }
+
+    // ===================================== private methods for implementation
+
+    /** CriName contains exactly two English letters*/
+    private static boolean isValidCriName(String name) {
+        // 无 bug 只考虑cri 名字的合法性
+        if (name == null || name.length() != 2) return false;
+
+        for (char letter: name.toCharArray())
+            if (!Character.isLetter(letter)) return false;
+
+        return true;
+    }
+
+    /** Check whether the contents of the criterion is valid.
+     * attr is either name, type, or size.
+     * If attr is name, op must be contains and val must be a string in double quote;
+     * If attr is type, op must be equals and val must be a string in double quote;
+     * If attr is size, op can be >, <, >=, <=, ==, or !=, and val must be an integer.*/
+    private static boolean isValidCriContent(String attr, String op, String val) {
+        // 无bug 只考虑content的合法性
+        switch (attr) {
+            case "name":
+                return op == "contains"
+                        && val.startsWith("\"") && val.endsWith("\"");
+
+            case "type":
+                return op == "equals"
+                        && val.startsWith("\"") && val.endsWith("\"");
+
+            case "size":
+                boolean flagOp, flagVal;
+                flagOp = op == ">" || op == "<"
+                        || op == ">=" || op == "<="
+                        || op == "==" || op == "!=";
+
+                try {
+                    Integer.parseInt(val);
+                    flagVal = true;
+                } catch (NumberFormatException e) {
+                    flagVal = false;
+                }
+
+                return flagOp && flagVal;
         }
         return false;
     }
