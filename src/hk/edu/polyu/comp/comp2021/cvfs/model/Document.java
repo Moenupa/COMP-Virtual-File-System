@@ -23,6 +23,7 @@ public class Document extends Unit {
         super(name, parent);
         this.type = type;
         this.content = content;
+        setSize(content.length());
     }
 
     public DocType getType() {

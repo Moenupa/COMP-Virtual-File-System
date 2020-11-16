@@ -1,5 +1,8 @@
 package hk.edu.polyu.comp.comp2021.cvfs.model;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import java.util.Objects;
 
 public class Criterion implements Cloneable {
@@ -50,6 +53,9 @@ public class Criterion implements Cloneable {
      * Used to mark the special criterion IsDocument
      */
     private boolean isDocumentMark = false;
+
+    /** A ScriptEngine to evaluate the result*/
+    private static ScriptEngine engine = new ScriptEngineManager().getEngineByName("js");
 
     /**
      * The special criterion isDocument
@@ -136,7 +142,7 @@ public class Criterion implements Cloneable {
     /**
      * @return a negative criterion of this
      */
-    public Criterion getNeg() {
+    public Criterion getNegCri() {
         Criterion that = new Criterion(this);
         that.setNeg();
         return that;
@@ -164,7 +170,6 @@ public class Criterion implements Cloneable {
      * @return True if all parameters are valid.
      */
     public static boolean isValidCri(String name, String attr, String op, String val){
-        // FIXME: 还没有用test，只有简单debug 可能会因为isDocument 导致整个function gg
         return (isValidCriName(name) && isValidCriContent(attr, op, val));
     }
 
@@ -180,23 +185,27 @@ public class Criterion implements Cloneable {
             System.out.println("Error: Invalid Argument. Details: Checking a null Unit with " + this);
             return false;
         }
-        if (isDocumentMark) return x instanceof Document;
 
+        if (isDocumentMark)
+            return x instanceof Document;
+
+        String matcher;
         switch (getAttr()) {
             case "name":
-                return negation == x.getName().contains(
-                        val.substring(1, val.length() - 1)
-                );
+                matcher = getVal().substring(1, val.length() - 1);
+                return negation == x.getName().contains(matcher);
+
             case "type":
+                matcher = getVal().substring(1, val.length() - 1);
                 if (x instanceof Document)
-                    return ((Document) x).getType().equals(
-                            val.substring(1, val.length() - 1)
-                    );
+                    return ((Document) x).getType().toString().equals(matcher);
                 return false;
 
             case "size":
-                int size = x.getSize();
-                // TODO: 脑子有点晕了...
+                matcher = getAttr() + getOp() + getVal();
+                boolean eval = fitCri(x.getSize(), matcher);
+
+                return (negation ^ eval);
         }
         System.out.println("Error: Invalid Argument. Details: when checking unit find an Illegal " + this);
         return false;
@@ -224,14 +233,44 @@ public class Criterion implements Cloneable {
         flag &= Criterion.isValidCriName("bA");
         flag &= Criterion.isValidCriName("cE");
         System.out.println(flag);
+
+        long startTime =  System.currentTimeMillis();
+        Document newdoc = new Document("mydoc", null, DocType.TXT, "content");
+        Document sizedoc = new Document("mydoc", null, DocType.HTML, "something more than just content");
+        Criterion sizefilter = new Criterion("bb", "size", ">=", "30");
+        long objectTime = System.currentTimeMillis();
+        System.out.println("NewDoc checking with sizefilter "+ sizefilter.check(newdoc));
+        long midTime = System.currentTimeMillis();
+        System.out.println("SizeDoc checking with sizefilter " + sizefilter.check(sizedoc));
+        long endTime =  System.currentTimeMillis();
+        System.out.println("Object created: "+(objectTime - startTime));
+        System.out.println("Half-Checked: "+(midTime - startTime));
+        System.out.println("Total time: "+(endTime - startTime));
     }
 
     // ===================================== private methods for implementation
 
+    /** Check whether the give unit size conforms the criterion
+     * @param size the size of the checked unit;
+     * @param matcher the boolean expression of the criterion.
+     * @return boolean, whether
+     */
+    private static boolean fitCri(int size, String matcher) {
+        engine.put("size", size);
+        boolean eval = false;
+        try {
+            eval = (boolean) engine.eval(matcher);
+        } catch (ScriptException e) {
+            System.out.println("Error: Script Exception. Details: Error in evaluating criterion " + matcher);
+        }
+        return eval;
+    }
+
     /** Check whether CriName is valid.
-     * name contains exactly two English letters*/
+     * @param name the name of the criterion
+     * @return boolean, whether it contains exactly 2 English letters.
+     */
     private static boolean isValidCriName(String name) {
-        // 无 bug 只考虑cri 名字的合法性
         if (name == null || name.length() != 2) return false;
 
         for (char letter: name.toCharArray())
@@ -241,12 +280,13 @@ public class Criterion implements Cloneable {
     }
 
     /** Check whether CriContent (attr, op, val) is valid.
-     * attr is either name, type, or size.
-     * If attr is name, op must be contains and val must be a string in double quote;
-     * If attr is type, op must be equals and val must be a string in double quote;
-     * If attr is size, op can be >, <, >=, <=, ==, or !=, and val must be an integer.*/
+     * @param attr  'name'      | 'type'    | 'size'
+     * @param op    'contains'  | 'equals'  | 6 logOps
+     * @param val   '"text"'    | '"text"'  | integer
+     * @return boolean
+     */
     private static boolean isValidCriContent(String attr, String op, String val) {
-        // 无bug 只考虑content的合法性
+
         switch (attr) {
             case "name":
                 return op.equals("contains")
