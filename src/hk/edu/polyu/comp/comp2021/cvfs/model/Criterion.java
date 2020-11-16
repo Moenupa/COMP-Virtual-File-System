@@ -30,10 +30,10 @@ public class Criterion implements Cloneable {
      */
     private String val;
 
-    /**
-     * Null by default, set when a binary criteria is generated.
-     */
-    private Criterion other;
+//    /**
+//     * Null by default, set when a binary criteria is generated.
+//     */
+//    private Criterion other;
 
     /**
      * To decide whether the result of check should be negated, false by default.
@@ -61,7 +61,7 @@ public class Criterion implements Cloneable {
     /**
      * The special criterion isDocument
      */
-    static Criterion isDocument = new Criterion("IsDocument",null,null,null);
+    static Criterion isDocument = new Criterion("IsDocument");
 
     static {
         isDocument.isDocumentMark = true;
@@ -91,6 +91,11 @@ public class Criterion implements Cloneable {
     }
 
     /**
+     * Constructor with only name initialized.
+     */
+    public Criterion(String name){this.name=name;}
+
+    /**
      * A clone constructor
      */
     private Criterion(Criterion x) {
@@ -98,7 +103,7 @@ public class Criterion implements Cloneable {
         attr = x.getAttr();
         op = x.getOp();
         val = x.getVal();
-        other = x.getOther();
+//        other = x.getOther();
         logicOp = x.logicOp;
     }
 
@@ -134,34 +139,33 @@ public class Criterion implements Cloneable {
         return val;
     }
 
-    /**
-     * @return The other Binary Criterion
-     */
-    public Criterion getOther() {
-        return other;
-    }
+//    /**
+//     * @return The other Binary Criterion
+//     */
+//    public Criterion getOther() {
+//        return other;
+//    }
 
-    /** set a valid criterion onto the this.other
-     * @param logicOp logic operator to this.other
-     * @param other Criterion to be on this.other
-     */
-    public void setOther(String logicOp, Criterion other) {
-        // FIXME 不知道这玩意能不能用
-        if (other == null) {
-            System.out.println("Error: Invalid Arguments. Details: null added to " + this);
-            return;
-        }
-        if (!logicOp.equals("&&") && !logicOp.equals("||")) {
-            System.out.println("Error: Invalid Arguments. Details: illegal LogicOp added to " + this + logicOp);
-            return;
-        }
-
-        if (this.other == null) this.other = other;
-        else System.out.println("Error: Invalid Arguments. Details: other is not null " + this);
-
-        if (logicOp.equals("&&")) this.logicOp = AND;
-        else if (logicOp.equals("||")) this.logicOp = OR;
-    }
+//    /** set a valid criterion onto the this.other
+//     * @param logicOp logic operator to this.other
+//     * @param other Criterion to be on this.other
+//     */
+//    public void setOther(String logicOp, Criterion other) {
+//        if (other == null) {
+//            System.out.println("Error: Invalid Arguments. Details: null added to " + this);
+//            return;
+//        }
+//        if (!logicOp.equals("&&") && !logicOp.equals("||")) {
+//            System.out.println("Error: Invalid Arguments. Details: illegal LogicOp added to " + this + logicOp);
+//            return;
+//        }
+//
+//        if (this.other == null) this.other = other;
+//        else System.out.println("Error: Invalid Arguments. Details: other is not null " + this);
+//
+//        if (logicOp.equals("&&")) this.logicOp = AND;
+//        else if (logicOp.equals("||")) this.logicOp = OR;
+//    }
 
     /**
      * Set this Criterion to its Negative
@@ -181,17 +185,8 @@ public class Criterion implements Cloneable {
 
     public String toString() {
         if (isDocumentMark) return "Criterion {IsDocument}";
-        StringBuilder sb = new StringBuilder(String.format("Criterion '%s', {", getName()));
 
-        Criterion cur;
-        for (cur = this; cur.getOther() != null; cur = cur.getOther()) {
-            sb.append(critoString(cur) + logicOpString[cur.logicOp]);
-        }
-
-        // the last one of the linked list
-        sb.append(critoString(cur) + "}");
-
-        return sb.toString();
+        return String.format("Criterion '%s', {", getName()) + criToString() + "}";
     }
 
     /**
@@ -282,8 +277,8 @@ public class Criterion implements Cloneable {
         Criterion cri2 = new Criterion("bb", "size", "<=", "100");
         Criterion cri3 = new Criterion("cc", "size", ">=", "30");
 
-        cri3.setOther("&&", cri2);
-        cri1.setOther("||", cri3);
+//        cri3.setOther("&&", cri2);
+//        cri1.setOther("||", cri3);
         Criterion cri4 = cri1.getNegCri();
 
         System.out.println(cri1);
@@ -293,34 +288,38 @@ public class Criterion implements Cloneable {
 
     }
 
-    // ===================================== private methods for implementation
+    /** Check whether CriName is valid.
+     * @param name the name of the criterion
+     * @return boolean, whether it contains exactly 2 English letters.
+     */
+    public static boolean isValidCriName(String name) {
+        if (name == null || name.length() != 2) return false;
+
+        for (char letter: name.toCharArray())
+            if (!Character.isLetter(letter)) return false;
+
+        return true;
+    }
+
+    // ===================================== private and protected methods for implementation
 
     /** Convert to a js String to evaluate
      * @return js String
      */
     private String toJsString() {
-        StringBuilder sb = new StringBuilder();
-
-        Criterion cur;
-        for (cur = this; cur.getOther() != null; cur = cur.getOther()) {
-            sb.append(criToJsString(cur) + logicOpString[cur.logicOp]);
-        }
-
         // the last one in the linked list
-        sb.append(criToJsString(cur));
 
-        return sb.toString();
+        return criToJsString(this);
     }
 
     /** toString for a single Criterion object
-     * @param cur current Criterion object;
      * @return toString
      */
-    private static String critoString(Criterion cur) {
+    protected String criToString() {
         String base;
-        base = String.format("%s %s %s", cur.getAttr(), cur.getOp(), cur.getVal());
+        base = String.format("%s %s %s", getAttr(), getOp(), getVal());
 
-        if (cur.isNeg())
+        if (isNeg())
             base = "!(" + base + ")";
 
         return base;
@@ -352,19 +351,6 @@ public class Criterion implements Cloneable {
             base = "!(" + base + ")";
 
         return base;
-    }
-
-    /** Check whether CriName is valid.
-     * @param name the name of the criterion
-     * @return boolean, whether it contains exactly 2 English letters.
-     */
-    private static boolean isValidCriName(String name) {
-        if (name == null || name.length() != 2) return false;
-
-        for (char letter: name.toCharArray())
-            if (!Character.isLetter(letter)) return false;
-
-        return true;
     }
 
     /** Check whether CriContent (attr, op, val) is valid.

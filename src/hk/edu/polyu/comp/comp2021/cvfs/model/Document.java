@@ -26,10 +26,6 @@ public class Document extends Unit {
         setSize(40 + content.length() * 2);
     }
 
-    public DocType getType() {
-        return type;
-    }
-
     /**
      * @return The type of the document.
      */

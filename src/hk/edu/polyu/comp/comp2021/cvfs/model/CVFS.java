@@ -61,9 +61,16 @@ public class CVFS {
      * @param name2 The name of the criterion to be negated.
      */
     public void newNegation(String name1, String name2) {
+        if (criteria.containsKey(name1)) {
+            System.out.println("Error: Invalid Arguments. Details: Already exists Criterion " + name1);
+            return;
+        }
+        if (!Criterion.isValidCriName(name1)){
+            System.out.println("Error: Invalid Criterion Name "+ name1);
+            return;
+        }
         Criterion prev = criteria.get(name2);
         criteria.put(name1, prev.getNegCri());
-        return;
     }
 
 
@@ -79,7 +86,23 @@ public class CVFS {
      * @param name4 The name of the second criterion to be combined.
      */
     public void newBinaryCri(String name1, String name3, String op, String name4) {
-        return;
+        try{
+            if(criteria.containsKey(name1))
+                throw new Exception("Error: Invalid Arguments. Details: Already exists Criterion " + name1);
+            if (!Criterion.isValidCriName(name1))
+                throw new Exception("Error: Invalid Criterion Name "+name1);
+            if (!op.equals("||")&&!op.equals("&&"))
+                throw new Exception("Error: Invalid Argument op "+op);
+            if(!criteria.containsKey(name3)||name3==null)
+                throw new Exception("Error: Cannot find argument "+ name3);
+            if(!criteria.containsKey(name4)||name4==null)
+                throw new Exception("Error: Cannot find argument "+ name4);
+        }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+            return;
+        }
+        criteria.put(name1,new BinCri(name1,criteria.get(name3),criteria.get(name4),op));
     }
 
     /**
@@ -102,6 +125,10 @@ public class CVFS {
         cvfs.newSimpleCri("aa", "type", "equals", "\"txt\"");
         cvfs.newSimpleCri("bb", "size", ">=", "\"txt\"");
         cvfs.newSimpleCri("cc", "size", ">=", "30");
+        cvfs.newBinaryCri("dd","aa","||","cc");
+        cvfs.newBinaryCri("dd","aa","||","cc");
+        cvfs.newBinaryCri("ee","aa","&&","cc");
+        cvfs.newBinaryCri("ff","dd","&&","ee");
 
         cvfs.printAllCriteria();
 
