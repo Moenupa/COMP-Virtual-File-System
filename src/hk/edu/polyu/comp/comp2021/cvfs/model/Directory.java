@@ -69,7 +69,7 @@ public class Directory extends Unit {
      * @param name The name of the file to be deleted.
      */
     public void delete(String name) {
-        return;
+        this.catalog.remove(name);
     }
 
     /**
