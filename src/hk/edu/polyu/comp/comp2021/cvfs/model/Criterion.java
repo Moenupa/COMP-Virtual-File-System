@@ -1,5 +1,7 @@
 package hk.edu.polyu.comp.comp2021.cvfs.model;
 
+import java.util.Objects;
+
 public class Criterion implements Cloneable {
     /**
      * The name of the criterion, containing exactly 2 English letters.
@@ -140,13 +142,12 @@ public class Criterion implements Cloneable {
         return that;
     }
 
-    @Override
     public String toString() {
         if (!isDocumentMark)
             return "Criterion {" +
-                    "name='" + name + '\'' +
-                    ", content='" + attr + " " + op + " " + val + "\'" +
-                    ", negation='" + negation + "\'}";
+                    "name='" + name + "'" +
+                    ", content='" + attr + " " + op + " " + val + "'" +
+                    ", negation='" + negation + "'}";
         return "Criterion {IsDocument}";
     }
 
@@ -183,24 +184,37 @@ public class Criterion implements Cloneable {
 
         switch (getAttr()) {
             case "name":
-                return !(
-                        negation ^
-                        x.getName().contains(
-                                val.substring(1, val.length() - 1)
-                        )
+                return negation == x.getName().contains(
+                        val.substring(1, val.length() - 1)
                 );
             case "type":
-                return (x instanceof Document
-                        && ((Document) x).getType().equals(
+                if (x instanceof Document)
+                    return ((Document) x).getType().equals(
                             val.substring(1, val.length() - 1)
-                        )
-                );
+                    );
+                return false;
 
             case "size":
+                int size = x.getSize();
                 // TODO: 脑子有点晕了...
         }
         System.out.println("Error: Invalid Argument. Details: when checking unit find an Illegal " + this);
         return false;
+    }
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Criterion criterion = (Criterion) o;
+        return negation == criterion.negation &&
+                Objects.equals(name, criterion.name) &&
+                Objects.equals(attr, criterion.attr) &&
+                Objects.equals(op, criterion.op) &&
+                Objects.equals(val, criterion.val);
+    }
+
+    public int hashCode() {
+        return Objects.hash(name, attr, op, val, negation);
     }
 
     public static void main(String[] args) {
@@ -215,7 +229,7 @@ public class Criterion implements Cloneable {
     // ===================================== private methods for implementation
 
     /** Check whether CriName is valid.
-     * namecontains exactly two English letters*/
+     * name contains exactly two English letters*/
     private static boolean isValidCriName(String name) {
         // 无 bug 只考虑cri 名字的合法性
         if (name == null || name.length() != 2) return false;
