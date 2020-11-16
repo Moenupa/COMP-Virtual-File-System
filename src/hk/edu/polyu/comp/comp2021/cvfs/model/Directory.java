@@ -24,7 +24,23 @@ public class Directory extends Unit {
      * @return The catalog of the current directory.
      */
     public Map<String, Unit> getCatalog() {
-        return catalog;
+        return this.catalog;
+    }
+
+    /**
+     * Make a new directory in the current directory.
+     * Print a warning and return if the argument is invalid.
+     * First update the size of the current directory, then create the file.
+     *
+     * @param name The name of the new directory.
+     */
+    public void newDir(String name) {
+        if (!isValidName(name)) {
+            System.out.println("Error: Invalid Argument.");
+            return;
+        }
+        this.catalog.put(name, new Directory(name, this));
+        return;
     }
 
     /**
@@ -41,21 +57,7 @@ public class Directory extends Unit {
             System.out.println("Error: Invalid Argument.");
             return;
         }
-        return;
-    }
-
-    /**
-     * Make a new directory in the current directory.
-     * Print a warning and return if the argument is invalid.
-     * First update the size of the current directory, then create the file.
-     *
-     * @param name The name of the new directory.
-     */
-    public void newDir(String name) {
-        if (!isValidName(name)) {
-            System.out.println("Error: Invalid Argument.");
-            return;
-        }
+        this.catalog.put(name, new Document(name, this, type, content));
         return;
     }
 
@@ -80,7 +82,14 @@ public class Directory extends Unit {
      * @param newName The new name of the file.
      */
     public void rename(String oldName, String newName) {
-        return;
+        Unit renamedItem = null;
+        if (this.catalog.get(oldName) instanceof Directory)
+            renamedItem = (Directory) this.catalog.get(oldName);
+        if (this.catalog.get(oldName) instanceof Document)
+            renamedItem = (Document) this.catalog.get(oldName);
+        this.catalog.remove(oldName);
+        this.catalog.put(newName, renamedItem);
+
     }
 
     /**
@@ -89,7 +98,16 @@ public class Directory extends Unit {
      * For each directory, list the name and size.
      */
     public void list() {
-        return;
+        if (this.catalog.size() == 0) {
+            System.out.println("\033[31m" + "There is no files in current directory!");
+            return;
+        }
+        for (String name : this.catalog.keySet()) {
+            if (this.catalog.get(name) instanceof Directory)
+                System.out.println("\033[32m" + name);
+            if (this.catalog.get(name) instanceof Document)
+                System.out.println("\033[30m" + name);
+        }
     }
 
     /**
@@ -97,8 +115,32 @@ public class Directory extends Unit {
      * Use indentation to indicate the level of each line.
      * Report the total number and size of files listed.
      */
-    public void rList() {
-        return;
+    public void rList(Directory currDict) {
+            // 判断是否是第一级目录
+        if (currDict.getParent() == null) {
+            System.out.println("\033[32m" + currDict.getName());// 一级目录只打名称
+            return;
+        }
+        rList((Directory) currDict.getParent());
+        for (int i = 0; i < currDict.getLevel(); i++) {
+            System.out.print(" ");
+        }
+        if (currDict.getLevel() == this.getLevel()) {
+            System.out.println("├" + currDict.getName() + "(Current Directory)");
+            for (String name : this.catalog.keySet()) {
+                for (int i = 0; i < currDict.getLevel() + 1; i++) {
+                    System.out.print(" ");
+                }
+                if (this.catalog.get(name) instanceof Directory)
+                    System.out.println("├" + "\033[32m" + name);
+                if (this.catalog.get(name) instanceof Document)
+                    System.out.println("├" + "\033[30m" + name);
+
+            }
+
+        }
+        else
+            System.out.println("├" + "\033[32m" + currDict.getName());
     }
 
     /**
@@ -117,6 +159,37 @@ public class Directory extends Unit {
      */
     public void rSearch(Criterion criName) {
         return;
+    }
+
+    public static void main(String[] args) {
+        Disk root = new Disk("zyb",100);
+        root.newDir("Desktop");
+        root.newDir("Download");
+
+        Directory desktop = (Directory) root.getCatalog().get("Desktop");
+        Directory download = (Directory) root.getCatalog().get("Download");
+
+        desktop.newDir("NLP");
+        desktop.newDir("CV");
+        desktop.newDir("PYTHON");
+        desktop.newDir("JAVA");
+        desktop.newDoc("1.txt", DocType.TXT, "1");
+        desktop.newDoc("2.txt", DocType.TXT, "2");
+        desktop.newDoc("3.txt", DocType.TXT, "3");
+
+        download.newDir("Download1");
+        download.newDir("Download2");
+        download.newDir("Download3");
+
+        Directory nlp = (Directory) desktop.getCatalog().get("NLP");
+        nlp.newDir("data1");
+        nlp.newDir("data2");
+        nlp.newDir("data3");
+        nlp.newDoc("EMNLP2020.txt",DocType.TXT,"blah~blah~");
+        desktop.list();
+        System.out.println();
+        nlp.rList(nlp);
+
     }
 }
 
