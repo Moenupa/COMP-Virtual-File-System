@@ -116,15 +116,30 @@ public class Directory extends Unit {
      * Report the total number and size of files listed.
      */
     public void rList(Directory currDict) {
-            // 判断是否是第一级目录
+        // if current directory is the disk
         if (currDict.getParent() == null) {
             System.out.println("\033[32m" + currDict.getName());// 一级目录只打名称
             return;
         }
+
         rList((Directory) currDict.getParent());
+
+        for (String name : ((Directory) currDict.getParent()).getCatalog().keySet()) {
+            // print
+            if (name != currDict.getName()) {
+                for (int i = 0; i < currDict.getLevel(); i++) {
+                    System.out.print(" ");
+                }
+                if (((Directory) currDict.getParent()).getCatalog().get(name) instanceof Directory)
+                    System.out.println("\033[32m" + "├" + name);
+                if (((Directory) currDict.getParent()).getCatalog().get(name) instanceof Document)
+                    System.out.println("\033[30m" + "├" + name);
+            }
+        }
         for (int i = 0; i < currDict.getLevel(); i++) {
             System.out.print(" ");
         }
+
         if (currDict.getLevel() == this.getLevel()) {
             System.out.println("├" + currDict.getName() + "(Current Directory)");
             for (String name : this.catalog.keySet()) {
@@ -132,15 +147,16 @@ public class Directory extends Unit {
                     System.out.print(" ");
                 }
                 if (this.catalog.get(name) instanceof Directory)
-                    System.out.println("├" + "\033[32m" + name);
+                    System.out.println("\033[32m" + "├" + name);
                 if (this.catalog.get(name) instanceof Document)
-                    System.out.println("├" + "\033[30m" + name);
+                    System.out.println("\033[30m" + "├" + name);
 
             }
 
         }
         else
-            System.out.println("├" + "\033[32m" + currDict.getName());
+            System.out.println("\033[32m" + "├" + currDict.getName());
+
     }
 
     /**
@@ -162,7 +178,8 @@ public class Directory extends Unit {
     }
 
     public static void main(String[] args) {
-        Disk root = new Disk("zyb",100);
+        Disk root = new Disk(100);
+        root.newDoc("config",DocType.TXT,"");
         root.newDir("Desktop");
         root.newDir("Download");
 
