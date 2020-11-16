@@ -37,7 +37,7 @@ public class Document extends Unit {
      */
     @Override
     public String toString() {
-        String str = String.format("Document %s.%s, size: %s\n%s", getName(), getType(), getSize(), content);
+        String str = String.format("Document %s.%s, size: %s\n\t%s", getName(), getType(), getSize(), content);
         return str;
     }
 

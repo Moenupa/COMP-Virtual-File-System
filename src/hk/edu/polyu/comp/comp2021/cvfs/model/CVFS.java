@@ -61,7 +61,7 @@ public class CVFS {
      * @param name2 The name of the criterion to be negated.
      */
     public void newNegation(String name1, String name2) {
-        Criterion prev = criteria.remove(name2);
+        Criterion prev = criteria.get(name2);
         criteria.put(name1, prev.getNegCri());
         return;
     }
@@ -102,10 +102,6 @@ public class CVFS {
         cvfs.newSimpleCri("aa", "type", "equals", "\"txt\"");
         cvfs.newSimpleCri("bb", "size", ">=", "\"txt\"");
         cvfs.newSimpleCri("cc", "size", ">=", "30");
-
-
-        // newBinCri aa bb + cc
-        // newBinCri ee aa + dd
 
         cvfs.printAllCriteria();
 

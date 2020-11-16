@@ -183,20 +183,14 @@ public class Criterion implements Cloneable {
 
         Criterion cur;
         for (cur = this; cur.getOther() != null; cur = cur.getOther()) {
-            if (cur.isNeg()) sb.append(String.format("%s !%s %s", cur.getAttr(), cur.getOp(), cur.getVal()));
-            else sb.append(String.format("%s %s %s", cur.getAttr(), cur.getOp(), cur.getVal()));
-
-            sb.append(logicOpString[cur.logicOp]);
+            sb.append(critoString(cur) + logicOpString[cur.logicOp]);
         }
 
-        if (isNeg()) sb.append(String.format("%s !%s %s", cur.getAttr(), cur.getOp(), cur.getVal()));
-        else sb.append(String.format("%s %s %s", cur.getAttr(), cur.getOp(), cur.getVal()));
-
-        sb.append("}");
+        // the last one of the linked list
+        sb.append(critoString(cur) + "}");
 
         return sb.toString();
     }
-
 
     /**
      * @return True if the check result is negated.
@@ -276,31 +270,22 @@ public class Criterion implements Cloneable {
         flag &= Criterion.isValidCriName("cE");
         System.out.println(flag);
 
-        long startTime =  System.currentTimeMillis();
-        Document newdoc = new Document("mydoc", null, DocType.TXT, "content");
+
+        Document txtdoc = new Document("mydoc", null, DocType.TXT, "");
         Document sizedoc = new Document("mydoc", null, DocType.HTML, "something more than just content");
-        Criterion sizefilter = new Criterion("bb", "size", ">=", "30");
-        long objectTime = System.currentTimeMillis();
-        System.out.println("NewDoc checking with sizefilter "+ sizefilter.check(newdoc));
-        long midTime = System.currentTimeMillis();
-        System.out.println("SizeDoc checking with sizefilter " + sizefilter.check(sizedoc));
-        long endTime =  System.currentTimeMillis();
-        System.out.println("Object created: "+(objectTime - startTime));
-        System.out.println("Half-Checked: "+(midTime - startTime));
-        System.out.println("Total time: "+(endTime - startTime));
+
+        System.out.println(sizedoc);
 
         Criterion cri1 = new Criterion("aa", "type", "equals", "\"txt\"");
-        Criterion cri2 = new Criterion("bb", "size", "<=", "300");
+        Criterion cri2 = new Criterion("bb", "size", "<=", "100");
         Criterion cri3 = new Criterion("cc", "size", ">=", "30");
 
         cri3.setOther("&&", cri2);
         cri1.setOther("||", cri3);
 
         System.out.println(cri1);
-
+        System.out.println("sizedoc: " + cri1.check(sizedoc) + ", txtdoc: " + cri1.check(txtdoc));
     }
-
-
 
     // ===================================== private methods for implementation
 
@@ -311,30 +296,36 @@ public class Criterion implements Cloneable {
         StringBuilder sb = new StringBuilder();
 
         Criterion cur;
-        String base;
         for (cur = this; cur.getOther() != null; cur = cur.getOther()) {
-            switch (cur.getAttr()) {
-                case "name":
-                    base = String.format("\"%s\".contains(\"%s\")", cur.getAttr(), cur.getVal());
-                    break;
-
-                case "type":
-                    base = String.format("%s == %s", cur.getAttr(), cur.getVal());
-                    break;
-
-                case "size":
-                    base = String.format("%s %s %s", cur.getAttr(), cur.getOp(), cur.getVal());
-                    break;
-                default:
-                    throw new IllegalArgumentException();
-            }
-
-            if (cur.isNeg())
-                base = "!(" + base + ")";
-
-            sb.append(base + logicOpString[cur.logicOp]);
+            sb.append(criToJsString(cur) + logicOpString[cur.logicOp]);
         }
 
+        // the last one in the linked list
+        sb.append(criToJsString(cur));
+
+        return sb.toString();
+    }
+
+    /** toJsString for a single Criterion object
+     * @param cur current Criterion object;
+     * @return toString
+     */
+    private static String critoString(Criterion cur) {
+        String base;
+        base = String.format("%s %s %s", cur.getAttr(), cur.getOp(), cur.getVal());
+
+        if (cur.isNeg())
+            base = "!(" + base + ")";
+
+        return base;
+    }
+
+    /** toJsString for a single Criterion object
+     * @param cur current Criterion object;
+     * @return toString
+     */
+    private static String criToJsString(Criterion cur) {
+        String base;
         switch (cur.getAttr()) {
             case "name":
                 base = String.format("\"%s\".contains(\"%s\")", cur.getAttr(), cur.getVal());
@@ -351,25 +342,10 @@ public class Criterion implements Cloneable {
                 throw new IllegalArgumentException();
         }
 
-        sb.append(base);
+        if (cur.isNeg())
+            base = "!(" + base + ")";
 
-        return sb.toString();
-    }
-
-    /** Check whether the give unit size conforms the criterion
-     * @param size the size of the checked unit;
-     * @param matcher the boolean expression of the criterion.
-     * @return boolean, whether
-     */
-    private static boolean fitCri(int size, String matcher) {
-        engine.put("size", size);
-        boolean eval = false;
-        try {
-            eval = (boolean) engine.eval(matcher);
-        } catch (ScriptException e) {
-            System.out.println("Error: Script Exception. Details: Error in evaluating criterion " + matcher);
-        }
-        return eval;
+        return base;
     }
 
     /** Check whether CriName is valid.
@@ -392,6 +368,10 @@ public class Criterion implements Cloneable {
      * @return boolean
      */
     private static boolean isValidCriContent(String attr, String op, String val) {
+        if (attr == null || op == null || val == null) {
+            System.out.println("Error: Invalid Argument. Details: Null Cri-Content detected.");
+            return false;
+        }
 
         switch (attr) {
             case "name":
