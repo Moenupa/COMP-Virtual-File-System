@@ -38,10 +38,18 @@ public class CVFS {
      * @param val  The value of the operation.
      */
     public void newSimpleCri(String name, String attr, String op, String val) {
-        if (!Criterion.isValidCri(name, attr, op, val)) {
-            System.out.println("Error: Invalid Arguments.");
+        if (criteria.containsKey(name)) {
+            System.out.println("Error: Invalid Arguments. Details: Already exists Criterion " + name);
             return;
         }
+
+        if (!Criterion.isValidCri(name, attr, op, val)) {
+            System.out.println("Error: Invalid Arguments. Details: Illegal Criterion " + name);
+            return;
+        }
+
+        Criterion newCri = new Criterion(name, attr, op, val);
+        criteria.put(name, newCri);
     }
 
     /**
@@ -53,6 +61,8 @@ public class CVFS {
      * @param name2 The name of the criterion to be negated.
      */
     public void newNegation(String name1, String name2) {
+        Criterion prev = criteria.remove(name2);
+        criteria.put(name1, prev.getNegCri());
         return;
     }
 
@@ -76,8 +86,29 @@ public class CVFS {
      * Print all criteria in the memory in a formatted form.
      */
     public void printAllCriteria() {
+        System.out.println("┍ printing all the criteria");
+        criteria.forEach((key, value)->
+                {
+            System.out.println("┝━━ " + value);
+                }
+                );
+        System.out.println("┕ " + criteria.size() + " criteria(criterion) in total");
         return;
     }
 
+    public static void main(String[] args) {
+        CVFS cvfs = new CVFS();
+        cvfs.newSimpleCri("aa", "type", "equals", "\"txt\"");
+        cvfs.newSimpleCri("aa", "type", "equals", "\"txt\"");
+        cvfs.newSimpleCri("bb", "size", ">=", "\"txt\"");
+        cvfs.newSimpleCri("cc", "size", ">=", "30");
+
+
+        // newBinCri aa bb + cc
+        // newBinCri ee aa + dd
+
+        cvfs.printAllCriteria();
+
+    }
 
 }

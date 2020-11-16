@@ -48,6 +48,7 @@ public class Criterion implements Cloneable {
 
     static final int AND = 1;
     static final int OR = 2;
+    static final String[] logicOpString = {" Error "," && "," || "};
 
     /**
      * Used to mark the special criterion IsDocument
@@ -97,8 +98,8 @@ public class Criterion implements Cloneable {
         attr = x.getAttr();
         op = x.getOp();
         val = x.getVal();
+        other = x.getOther();
     }
-
 
     public Object clone() {
         return new Criterion(this);
@@ -133,6 +134,34 @@ public class Criterion implements Cloneable {
     }
 
     /**
+     * @return The other Binary Criterion
+     */
+    public Criterion getOther() {
+        return other;
+    }
+
+    /** set a valid criterion onto the this.other
+     * @param other Criterion to be on this.other
+     */
+    public void setOther(String logicOp, Criterion other) {
+        // FIXME 不知道这玩意能不能用
+        if (other == null) {
+            System.out.println("Error: Invalid Arguments. Details: null added to " + this);
+            return;
+        }
+        if (!logicOp.equals("&&") && !logicOp.equals("||")) {
+            System.out.println("Error: Invalid Arguments. Details: illegal LogicOp added to " + this + logicOp);
+            return;
+        }
+
+        if (this.other == null) this.other = other;
+        else System.out.println("Error: Invalid Arguments. Details: other is not null " + this);
+
+        if (logicOp.equals("&&")) this.logicOp = AND;
+        else if (logicOp.equals("||")) this.logicOp = OR;
+    }
+
+    /**
      * Set this Criterion to its Negative
      */
     public void setNeg() {
@@ -149,13 +178,25 @@ public class Criterion implements Cloneable {
     }
 
     public String toString() {
-        if (!isDocumentMark)
-            return "Criterion {" +
-                    "name='" + name + "'" +
-                    ", content='" + attr + " " + op + " " + val + "'" +
-                    ", negation='" + negation + "'}";
-        return "Criterion {IsDocument}";
+        if (isDocumentMark) return "Criterion {IsDocument}";
+        StringBuilder sb = new StringBuilder(String.format("Criterion '%s', {", getName()));
+
+        Criterion cur;
+        for (cur = this; cur.getOther() != null; cur = cur.getOther()) {
+            if (cur.isNeg()) sb.append(String.format("%s !%s %s", cur.getAttr(), cur.getOp(), cur.getVal()));
+            else sb.append(String.format("%s %s %s", cur.getAttr(), cur.getOp(), cur.getVal()));
+
+            sb.append(logicOpString[cur.logicOp]);
+        }
+
+        if (isNeg()) sb.append(String.format("%s !%s %s", cur.getAttr(), cur.getOp(), cur.getVal()));
+        else sb.append(String.format("%s %s %s", cur.getAttr(), cur.getOp(), cur.getVal()));
+
+        sb.append("}");
+
+        return sb.toString();
     }
+
 
     /**
      * @return True if the check result is negated.
@@ -189,26 +230,27 @@ public class Criterion implements Cloneable {
         if (isDocumentMark)
             return x instanceof Document;
 
-        String matcher;
-        switch (getAttr()) {
-            case "name":
-                matcher = getVal().substring(1, val.length() - 1);
-                return negation == x.getName().contains(matcher);
+        String expression = toJsString();
 
-            case "type":
-                matcher = getVal().substring(1, val.length() - 1);
-                if (x instanceof Document)
-                    return ((Document) x).getType().toString().equals(matcher);
+        engine.put("size", x.getSize());
+        engine.put("name", x.getName());
+
+        if (expression.contains("type")) {
+            if (x instanceof Document)
+                engine.put("type", ((Document) x).getType().toString());
+            else {
+                System.out.println("Error: Invalid Argument. Details: Type error: " + x);
                 return false;
-
-            case "size":
-                matcher = getAttr() + getOp() + getVal();
-                boolean eval = fitCri(x.getSize(), matcher);
-
-                return (negation ^ eval);
+            }
         }
-        System.out.println("Error: Invalid Argument. Details: when checking unit find an Illegal " + this);
-        return false;
+
+        try {
+            return (boolean) engine.eval(expression);
+        } catch (ScriptException e) {
+            System.out.println("Error: Invalid Argument. Details: invalid script: " + expression);
+            return false;
+        }
+
     }
 
     public boolean equals(Object o) {
@@ -246,9 +288,73 @@ public class Criterion implements Cloneable {
         System.out.println("Object created: "+(objectTime - startTime));
         System.out.println("Half-Checked: "+(midTime - startTime));
         System.out.println("Total time: "+(endTime - startTime));
+
+        Criterion cri1 = new Criterion("aa", "type", "equals", "\"txt\"");
+        Criterion cri2 = new Criterion("bb", "size", "<=", "300");
+        Criterion cri3 = new Criterion("cc", "size", ">=", "30");
+
+        cri3.setOther("&&", cri2);
+        cri1.setOther("||", cri3);
+
+        System.out.println(cri1);
+
     }
 
+
+
     // ===================================== private methods for implementation
+
+    /** Convert to a js String to evaluate
+     * @return js String
+     */
+    private String toJsString() {
+        StringBuilder sb = new StringBuilder();
+
+        Criterion cur;
+        String base;
+        for (cur = this; cur.getOther() != null; cur = cur.getOther()) {
+            switch (cur.getAttr()) {
+                case "name":
+                    base = String.format("\"%s\".contains(\"%s\")", cur.getAttr(), cur.getVal());
+                    break;
+
+                case "type":
+                    base = String.format("%s == %s", cur.getAttr(), cur.getVal());
+                    break;
+
+                case "size":
+                    base = String.format("%s %s %s", cur.getAttr(), cur.getOp(), cur.getVal());
+                    break;
+                default:
+                    throw new IllegalArgumentException();
+            }
+
+            if (cur.isNeg())
+                base = "!(" + base + ")";
+
+            sb.append(base + logicOpString[cur.logicOp]);
+        }
+
+        switch (cur.getAttr()) {
+            case "name":
+                base = String.format("\"%s\".contains(\"%s\")", cur.getAttr(), cur.getVal());
+                break;
+
+            case "type":
+                base = String.format("%s == %s", cur.getAttr(), cur.getVal());
+                break;
+
+            case "size":
+                base = String.format("%s %s %s", cur.getAttr(), cur.getOp(), cur.getVal());
+                break;
+            default:
+                throw new IllegalArgumentException();
+        }
+
+        sb.append(base);
+
+        return sb.toString();
+    }
 
     /** Check whether the give unit size conforms the criterion
      * @param size the size of the checked unit;
