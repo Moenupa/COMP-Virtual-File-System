@@ -2,13 +2,13 @@ package hk.edu.polyu.comp.comp2021.cvfs.model;
 
 import java.util.HashMap;
 import java.util.Map;
-//import hk.edu.polyu.comp.comp2021.cvfs.model.DocType;
+//import hk.edu.polyu.comp.comp2021.cvfs .model.DocType;
 
 public class Directory extends Unit {
     /**
      * The contents in the directory.
      */
-    private Map<String, Unit> catalog = new HashMap<>();
+    private final Map<String, Unit> catalog = new HashMap<>();
 
     /**
      * Construct a new directory.
@@ -40,7 +40,6 @@ public class Directory extends Unit {
             return;
         }
         this.catalog.put(name, new Directory(name, this));
-        return;
     }
 
     /**
@@ -58,7 +57,7 @@ public class Directory extends Unit {
             return;
         }
         this.catalog.put(name, new Document(name, this, type, content));
-        return;
+        updateSizeBy(this, this.catalog.get(name).getSize());
     }
 
     /**
@@ -69,6 +68,7 @@ public class Directory extends Unit {
      * @param name The name of the file to be deleted.
      */
     public void delete(String name) {
+        updateSizeBy(this, -this.catalog.get(name).getSize());
         this.catalog.remove(name);
     }
 
@@ -82,11 +82,9 @@ public class Directory extends Unit {
      * @param newName The new name of the file.
      */
     public void rename(String oldName, String newName) {
-        Unit renamedItem = null;
-        if (this.catalog.get(oldName) instanceof Directory)
-            renamedItem = (Directory) this.catalog.get(oldName);
-        if (this.catalog.get(oldName) instanceof Document)
-            renamedItem = (Document) this.catalog.get(oldName);
+        Unit renamedItem;
+        renamedItem = this.catalog.get(oldName);
+        this.catalog.get(oldName).setName(newName);
         this.catalog.remove(oldName);
         this.catalog.put(newName, renamedItem);
 
@@ -98,15 +96,15 @@ public class Directory extends Unit {
      * For each directory, list the name and size.
      */
     public void list() {
-        if (this.catalog.size() == 0) {
+        if (this.getCatalog().isEmpty()) {
             System.out.println("\033[31m" + "There is no files in current directory!");
             return;
         }
         for (String name : this.catalog.keySet()) {
             if (this.catalog.get(name) instanceof Directory)
-                System.out.println("\033[32m" + name);
+                System.out.println("\033[32m" + name + " " + this.catalog.get(name).getSize());
             if (this.catalog.get(name) instanceof Document)
-                System.out.println("\033[30m" + name);
+                System.out.println("\033[30m" + name + " " + ((Document) this.catalog.get(name)).getType() + " " + this.catalog.get(name).getSize());
         }
     }
 
@@ -115,48 +113,61 @@ public class Directory extends Unit {
      * Use indentation to indicate the level of each line.
      * Report the total number and size of files listed.
      */
-    public void rList(Directory currDict) {
-        // if current directory is the disk
-        if (currDict.getParent() == null) {
-            System.out.println("\033[32m" + currDict.getName());// 一级目录只打名称
+    public void down_rList(Directory currDir, int level) {
+        if (currDir.getCatalog().isEmpty())
+            return;
+        //System.out.println(currDir.getName());
+        for (String name : currDir.getCatalog().keySet()) {
+            for (int i = 0; i < level; i++) {
+                System.out.print("\t");
+            }
+            if (currDir.getCatalog().get(name) instanceof Document)
+                System.out.println("\033[30m" + "├" + name + " " + ((Document) currDir.getCatalog().get(name)).getType() + " " + currDir.getCatalog().get(name).getSize());
+            if (currDir.getCatalog().get(name) instanceof Directory) {
+                System.out.println("\033[32m" + "├" + name + " " + currDir.getCatalog().get(name).getSize());
+                down_rList((Directory) currDir.getCatalog().get(name), level + 1);
+            }
+        }
+    }
+
+    public void up_rList(Directory currDir) {
+        if (currDir.getParent() == null) {
+            System.out.println("\033[32m" + currDir.getName());
             return;
         }
 
-        rList((Directory) currDict.getParent());
+        up_rList((Directory) currDir.getParent());
 
-        for (String name : ((Directory) currDict.getParent()).getCatalog().keySet()) {
-            // print
-            if (name != currDict.getName()) {
-                for (int i = 0; i < currDict.getLevel(); i++) {
-                    System.out.print(" ");
+        Directory parent = ((Directory) currDir.getParent());
+        for (String name : parent.getCatalog().keySet()) {
+            if (!name.equals(currDir.getName())) {
+                for (int i = 0; i < currDir.getLevel(); i++) {
+                    System.out.print("\t");
                 }
-                if (((Directory) currDict.getParent()).getCatalog().get(name) instanceof Directory)
-                    System.out.println("\033[32m" + "├" + name);
-                if (((Directory) currDict.getParent()).getCatalog().get(name) instanceof Document)
-                    System.out.println("\033[30m" + "├" + name);
+                if (parent.getCatalog().get(name) instanceof Directory)
+                    System.out.println("\033[32m" + "├" + name + " " + parent.getCatalog().get(name).getSize());
+                if (parent.getCatalog().get(name) instanceof Document)
+                    System.out.println("\033[30m" + "├" + name + " " + ((Document)parent.getCatalog().get(name)).getType() + " " + parent.getCatalog().get(name).getSize());
             }
         }
-        for (int i = 0; i < currDict.getLevel(); i++) {
-            System.out.print(" ");
+        for (int i = 0; i < currDir.getLevel(); i++) {
+            System.out.print("\t");
         }
 
-        if (currDict.getLevel() == this.getLevel()) {
-            System.out.println("├" + currDict.getName() + "(Current Directory)");
+        if (currDir.getLevel() == this.getLevel()) {
+            System.out.println("├" + currDir.getName() + " " + currDir.getSize() + "(Current Directory)");
             for (String name : this.catalog.keySet()) {
-                for (int i = 0; i < currDict.getLevel() + 1; i++) {
-                    System.out.print(" ");
+                for (int i = 0; i < currDir.getLevel() + 1; i++) {
+                    System.out.print("\t");
                 }
                 if (this.catalog.get(name) instanceof Directory)
-                    System.out.println("\033[32m" + "├" + name);
+                    System.out.println("\033[32m" + name + " " + this.catalog.get(name).getSize());
                 if (this.catalog.get(name) instanceof Document)
-                    System.out.println("\033[30m" + "├" + name);
-
+                    System.out.println("\033[30m" + name + " " + ((Document) this.catalog.get(name)).getType() + " " + this.catalog.get(name).getSize());
             }
 
-        }
-        else
-            System.out.println("\033[32m" + "├" + currDict.getName());
-
+        } else
+            System.out.println("\033[32m" + "├" + currDir.getName() + " " + currDir.getSize());
     }
 
     /**
@@ -165,7 +176,18 @@ public class Directory extends Unit {
      * @param criName The filter.
      */
     public void search(Criterion criName) {
-        return;
+        if (this.catalog.isEmpty()) {
+            System.out.println("\033[31m" + "There is no files in current directory!");
+            return;
+        }
+        for (String name : this.catalog.keySet()) {
+            if (criName.check(this.catalog.get(name))) {
+                if (this.catalog.get(name) instanceof Directory)
+                    System.out.println("\033[32m" + name + " " + this.catalog.get(name).getSize());
+                if (this.catalog.get(name) instanceof Document)
+                    System.out.println("\033[30m" + name + " " + ((Document) this.catalog.get(name)).getType() + " " + this.catalog.get(name).getSize());
+            }
+        }
     }
 
     /**
@@ -173,13 +195,28 @@ public class Directory extends Unit {
      *
      * @param criName The filter.
      */
-    public void rSearch(Criterion criName) {
-        return;
+    public void rSearch(Directory currDir, int level, Criterion criName) {
+        if (currDir.getCatalog().isEmpty())
+            return;
+        //System.out.println(currDir.getName());
+        for (String name : currDir.getCatalog().keySet()) {
+            if (criName.check(this.catalog.get(name))) {
+                for (int i = 0; i < level; i++) {
+                    System.out.print("\t");
+                }
+                if (currDir.getCatalog().get(name) instanceof Document)
+                    System.out.println("\033[30m" + "├" + name + " " + ((Document) currDir.getCatalog().get(name)).getType() + " " + currDir.getCatalog().get(name).getSize());
+                if (currDir.getCatalog().get(name) instanceof Directory) {
+                    System.out.println("\033[32m" + "├" + name + " " + currDir.getCatalog().get(name).getSize());
+                    rSearch((Directory) currDir.getCatalog().get(name), level + 1, criName);
+                }
+            }
+        }
     }
 
     public static void main(String[] args) {
         Disk root = new Disk(100);
-        root.newDoc("config",DocType.TXT,"");
+        root.newDoc("config", DocType.TXT, "");
         root.newDir("Desktop");
         root.newDir("Download");
 
@@ -190,23 +227,28 @@ public class Directory extends Unit {
         desktop.newDir("CV");
         desktop.newDir("PYTHON");
         desktop.newDir("JAVA");
-        desktop.newDoc("1.txt", DocType.TXT, "1");
-        desktop.newDoc("2.txt", DocType.TXT, "2");
-        desktop.newDoc("3.txt", DocType.TXT, "3");
+        //desktop.list();
+        desktop.newDoc("1", DocType.TXT, "1");
+        //desktop.list();
+        desktop.newDoc("2", DocType.TXT, "2");
+        desktop.newDoc("3", DocType.TXT, "3");
 
         download.newDir("Download1");
         download.newDir("Download2");
         download.newDir("Download3");
 
         Directory nlp = (Directory) desktop.getCatalog().get("NLP");
+        Directory java = (Directory) desktop.getCatalog().get("JAVA");
         nlp.newDir("data1");
         nlp.newDir("data2");
         nlp.newDir("data3");
-        nlp.newDoc("EMNLP2020.txt",DocType.TXT,"blah~blah~");
-        desktop.list();
-        System.out.println();
-        nlp.rList(nlp);
+        nlp.newDoc("EMNLP2020", DocType.TXT, "blah~blah~");
+        java.newDoc("test", DocType.JAVA, "xxx");
 
+        System.out.println(nlp.getCatalog().get("EMNLP2020"));
+        //root.down_rList(root, 0);
+        //nlp.up_rList(nlp);
+        //desktop.list();
     }
 }
 
