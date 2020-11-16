@@ -99,6 +99,7 @@ public class Criterion implements Cloneable {
         op = x.getOp();
         val = x.getVal();
         other = x.getOther();
+        logicOp = x.logicOp;
     }
 
     public Object clone() {
@@ -141,6 +142,7 @@ public class Criterion implements Cloneable {
     }
 
     /** set a valid criterion onto the this.other
+     * @param logicOp logic operator to this.other
      * @param other Criterion to be on this.other
      */
     public void setOther(String logicOp, Criterion other) {
@@ -282,9 +284,13 @@ public class Criterion implements Cloneable {
 
         cri3.setOther("&&", cri2);
         cri1.setOther("||", cri3);
+        Criterion cri4 = cri1.getNegCri();
 
         System.out.println(cri1);
         System.out.println("sizedoc: " + cri1.check(sizedoc) + ", txtdoc: " + cri1.check(txtdoc));
+        System.out.println(cri4);
+        System.out.println("sizedoc: " + cri4.check(sizedoc) + ", txtdoc: " + cri4.check(txtdoc));
+
     }
 
     // ===================================== private methods for implementation
@@ -306,7 +312,7 @@ public class Criterion implements Cloneable {
         return sb.toString();
     }
 
-    /** toJsString for a single Criterion object
+    /** toString for a single Criterion object
      * @param cur current Criterion object;
      * @return toString
      */
