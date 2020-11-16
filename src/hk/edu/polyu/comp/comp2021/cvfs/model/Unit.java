@@ -30,6 +30,7 @@ public abstract class Unit {
     public Unit(String name, Unit parent) {
         this.name = name;
         this.parent = parent;
+        this.size = 0;
     }
 
     /**
@@ -102,8 +103,13 @@ public abstract class Unit {
      *
      * @param offset Positive if the size increases, vice versa.
      */
-    public void updateSizeBy(int offset) {
-        getParent().updateSizeBy(offset);
+    public void updateSizeBy(Unit u, int offset) {
+        if (u.getParent() == null) {
+            u.setSize(u.size + offset);
+            return;
+        }
+        updateSizeBy(u.parent, offset);
+        u.setSize(u.size + offset);
     }
 
     /**
