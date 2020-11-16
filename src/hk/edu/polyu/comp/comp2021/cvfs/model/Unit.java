@@ -39,7 +39,7 @@ public abstract class Unit {
      * @return true if it is valid.
      */
     static public boolean isValidName(String name) {
-        return false;
+        return true;
     }
 
     /**
@@ -104,6 +104,19 @@ public abstract class Unit {
      */
     public void updateSizeBy(int offset) {
         getParent().updateSizeBy(offset);
+    }
+
+    /**
+     * get the level index of this unit;
+     */
+    public int getLevel() {
+        Unit temp = this;
+        int level = 0;
+        while (temp.parent != null) {
+            temp = temp.parent;
+            level++;
+        }
+        return level;
     }
 
     /**
