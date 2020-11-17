@@ -52,6 +52,38 @@ public class CVFS {
         criteria.put(name, newCri);
     }
 
+    public static void main(String[] args) {
+        CVFS cvfs = new CVFS();
+        Document txtdoc = new Document("mydoc", null, DocType.TXT, "");
+        Document sizedoc = new Document("mydoc", null, DocType.HTML, "something more than just content");
+
+        System.out.println(sizedoc.toString());
+
+        cvfs.newSimpleCri("aa", "type", "equals", "\"txt\"");
+        cvfs.newSimpleCri("aa", "type", "equals", "\"txt\"");
+
+        cvfs.newSimpleCri("bb", "size", ">=", "\"txt\"");
+        // bb is invalid
+
+        cvfs.newSimpleCri("cc", "size", ">=", "30");
+        cvfs.newBinaryCri("dd", "aa", "||", "cc");
+        cvfs.newBinaryCri("ee", "aa", "&&", "cc");
+        cvfs.newBinaryCri("ff", "dd", "&&", "ee");
+
+        cvfs.newNegation("df", "ff");
+        cvfs.newNegation("hh", "dd");
+        cvfs.newNegation("gg", "ee");
+        cvfs.newBinaryCri("ii", "hh", "&&", "gg");
+        cvfs.newBinaryCri("zz", "df", "||", "aa");
+
+        System.out.println("txtdoc exam zz: " + cvfs.criteria.get("zz").check(txtdoc));
+        System.out.println("sizedoc exam zz: " + cvfs.criteria.get("zz").check(sizedoc));
+        System.out.println("sizedoc exam df: " + cvfs.criteria.get("df").check(sizedoc));
+
+        cvfs.printAllCriteria();
+
+    }
+
     /**
      * Create a negated criterion of name2.
      * Print a warning and return if name2 can't be found OR
@@ -65,14 +97,13 @@ public class CVFS {
             System.out.println("Error: Invalid Arguments. Details: Already exists Criterion " + name1);
             return;
         }
-        if (!Criterion.isValidCriName(name1)){
-            System.out.println("Error: Invalid Criterion Name "+ name1);
+        if (!Criterion.isValidCriName(name1)) {
+            System.out.println("Error: Invalid Criterion Name " + name1);
             return;
         }
-        Criterion prev = criteria.get(name2);
-        criteria.put(name1, prev.getNegCri());
-    }
 
+        criteria.put(name1, criteria.get(name2).getNegCri(name1));
+    }
 
     /**
      * Create a combined criterion.
@@ -90,13 +121,13 @@ public class CVFS {
             if(criteria.containsKey(name1))
                 throw new Exception("Error: Invalid Arguments. Details: Already exists Criterion " + name1);
             if (!Criterion.isValidCriName(name1))
-                throw new Exception("Error: Invalid Criterion Name "+name1);
-            if (!op.equals("||")&&!op.equals("&&"))
-                throw new Exception("Error: Invalid Argument op "+op);
-            if(!criteria.containsKey(name3)||name3==null)
-                throw new Exception("Error: Cannot find argument "+ name3);
-            if(!criteria.containsKey(name4)||name4==null)
-                throw new Exception("Error: Cannot find argument "+ name4);
+                throw new Exception("Error: Invalid Criterion Name " + name1);
+            if (!op.equals("||") && !op.equals("&&"))
+                throw new Exception("Error: Invalid Argument op " + op);
+            if (!criteria.containsKey(name3) || name3 == null)
+                throw new Exception("Error: Cannot find argument " + name3);
+            if (!criteria.containsKey(name4) || name4 == null)
+                throw new Exception("Error: Cannot find argument " + name4);
         }
         catch (Exception e){
             System.out.println(e.getMessage());
@@ -111,27 +142,9 @@ public class CVFS {
     public void printAllCriteria() {
         System.out.println("┍ printing all the criteria");
         criteria.forEach((key, value)->
-                {
-            System.out.println("┝━━ " + value);
-                }
+                        System.out.println("┝━━ " + value)
                 );
         System.out.println("┕ " + criteria.size() + " criteria(criterion) in total");
-        return;
-    }
-
-    public static void main(String[] args) {
-        CVFS cvfs = new CVFS();
-        cvfs.newSimpleCri("aa", "type", "equals", "\"txt\"");
-        cvfs.newSimpleCri("aa", "type", "equals", "\"txt\"");
-        cvfs.newSimpleCri("bb", "size", ">=", "\"txt\"");
-        cvfs.newSimpleCri("cc", "size", ">=", "30");
-        cvfs.newBinaryCri("dd","aa","||","cc");
-        cvfs.newBinaryCri("dd","aa","||","cc");
-        cvfs.newBinaryCri("ee","aa","&&","cc");
-        cvfs.newBinaryCri("ff","dd","&&","ee");
-
-        cvfs.printAllCriteria();
-
     }
 
 }

@@ -40,7 +40,9 @@ public class Document extends Unit {
      */
     @Override
     public String toString() {
-        String str = String.format("Document %s.%s, size: %s\n\t%s", getName(), getType(), getSize(), content);
+        String str;
+        str = "Document " + getName() + '.' + getType() + ", size = " + getSize() + "\n"
+                + "\033[32m" + content;
         return str;
     }
 

@@ -30,25 +30,10 @@ public class Criterion implements Cloneable {
      */
     private String val;
 
-//    /**
-//     * Null by default, set when a binary criteria is generated.
-//     */
-//    private Criterion other;
-
     /**
      * To decide whether the result of check should be negated, false by default.
      */
     private boolean negation = false;
-
-    /**
-     * When this is a binary criteria, the field is to determine the logic relation between two conditions.
-     * 0 means this is not a binary criteria.
-     */
-    private int logicOp = 0;
-
-    static final int AND = 1;
-    static final int OR = 2;
-    static final String[] logicOpString = {" Error "," && "," || "};
 
     /**
      * Used to mark the special criterion IsDocument
@@ -93,7 +78,9 @@ public class Criterion implements Cloneable {
     /**
      * Constructor with only name initialized.
      */
-    public Criterion(String name){this.name=name;}
+    public Criterion(String name) {
+        this.name = name;
+    }
 
     /**
      * A clone constructor
@@ -103,8 +90,7 @@ public class Criterion implements Cloneable {
         attr = x.getAttr();
         op = x.getOp();
         val = x.getVal();
-//        other = x.getOther();
-        logicOp = x.logicOp;
+        negation = x.negation;
     }
 
     public Object clone() {
@@ -116,6 +102,29 @@ public class Criterion implements Cloneable {
      */
     public String getName() {
         return name;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(new Criterion("aa", "type", "equals", "\"txt\""));
+        boolean flag;
+        flag = Criterion.isValidCri("aa", "type", "equals", "\"txt\"");
+        System.out.println(flag);
+
+
+        Document txtdoc = new Document("mydoc", null, DocType.TXT, "");
+        Document sizedoc = new Document("mydoc", null, DocType.HTML, "something more than just content");
+
+        System.out.println(sizedoc);
+
+        Criterion cri1 = new Criterion("aa", "type", "equals", "\"txt\"");
+
+        Criterion cri4 = cri1.getNegCri("dd");
+
+        System.out.println(cri1);
+        System.out.println("sizedoc: " + cri1.check(sizedoc) + ", txtdoc: " + cri1.check(txtdoc));
+        System.out.println(cri4);
+        System.out.println("sizedoc: " + cri4.check(sizedoc) + ", txtdoc: " + cri4.check(txtdoc));
+
     }
 
     /**
@@ -139,34 +148,6 @@ public class Criterion implements Cloneable {
         return val;
     }
 
-//    /**
-//     * @return The other Binary Criterion
-//     */
-//    public Criterion getOther() {
-//        return other;
-//    }
-
-//    /** set a valid criterion onto the this.other
-//     * @param logicOp logic operator to this.other
-//     * @param other Criterion to be on this.other
-//     */
-//    public void setOther(String logicOp, Criterion other) {
-//        if (other == null) {
-//            System.out.println("Error: Invalid Arguments. Details: null added to " + this);
-//            return;
-//        }
-//        if (!logicOp.equals("&&") && !logicOp.equals("||")) {
-//            System.out.println("Error: Invalid Arguments. Details: illegal LogicOp added to " + this + logicOp);
-//            return;
-//        }
-//
-//        if (this.other == null) this.other = other;
-//        else System.out.println("Error: Invalid Arguments. Details: other is not null " + this);
-//
-//        if (logicOp.equals("&&")) this.logicOp = AND;
-//        else if (logicOp.equals("||")) this.logicOp = OR;
-//    }
-
     /**
      * Set this Criterion to its Negative
      */
@@ -175,18 +156,41 @@ public class Criterion implements Cloneable {
     }
 
     /**
-     * @return a negative criterion of this
+     * toJsString for a single Criterion object
+     *
+     * @param cur current Criterion object;
+     * @return toString
      */
-    public Criterion getNegCri() {
-        Criterion that = new Criterion(this);
-        that.setNeg();
-        return that;
+    private static String criToJsString(Criterion cur) {
+        String base;
+        switch (cur.getAttr()) {
+            case "name":
+                base = "\"" + cur.getAttr() + "\"" + ".contains(\"" + cur.getVal() + "\")";
+                break;
+            case "type":
+                base = cur.getAttr() + "==" + cur.getVal();
+                break;
+            case "size":
+                base = cur.getAttr() + cur.getOp() + cur.getVal();
+                break;
+            default:
+                System.out.println("Error: Invalid Argument. Details: getAttr() failure: " + cur);
+                return "";
+        }
+
+        if (cur.isNeg())
+            base = "!(" + base + ")";
+
+        return base;
     }
 
-    public String toString() {
-        if (isDocumentMark) return "Criterion {IsDocument}";
-
-        return String.format("Criterion '%s', {", getName()) + criToString() + "}";
+    /***
+     * set the this.name to param
+     * !!! Does NOT check valid or not !!!
+     * @param name new name
+     */
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**
@@ -259,43 +263,27 @@ public class Criterion implements Cloneable {
         return Objects.hash(name, attr, op, val, negation);
     }
 
-    public static void main(String[] args) {
-        System.out.println(new Criterion("aa", "type", "equals", "\"txt\""));
-        boolean flag;
-        flag = Criterion.isValidCri("aa", "type", "equals", "\"txt\"");
-        flag &= Criterion.isValidCriName("bA");
-        flag &= Criterion.isValidCriName("cE");
-        System.out.println(flag);
-
-
-        Document txtdoc = new Document("mydoc", null, DocType.TXT, "");
-        Document sizedoc = new Document("mydoc", null, DocType.HTML, "something more than just content");
-
-        System.out.println(sizedoc);
-
-        Criterion cri1 = new Criterion("aa", "type", "equals", "\"txt\"");
-        Criterion cri2 = new Criterion("bb", "size", "<=", "100");
-        Criterion cri3 = new Criterion("cc", "size", ">=", "30");
-
-//        cri3.setOther("&&", cri2);
-//        cri1.setOther("||", cri3);
-        Criterion cri4 = cri1.getNegCri();
-
-        System.out.println(cri1);
-        System.out.println("sizedoc: " + cri1.check(sizedoc) + ", txtdoc: " + cri1.check(txtdoc));
-        System.out.println(cri4);
-        System.out.println("sizedoc: " + cri4.check(sizedoc) + ", txtdoc: " + cri4.check(txtdoc));
-
+    /**
+     * @param negName the name of the negative criterion
+     * @return a negative criterion of this
+     */
+    public Criterion getNegCri(String negName) {
+        Criterion that = new Criterion(this);
+        that.setNeg();
+        that.setName(negName);
+        return that;
     }
 
-    /** Check whether CriName is valid.
+    /**
+     * Check whether CriName is valid.
+     *
      * @param name the name of the criterion
      * @return boolean, whether it contains exactly 2 English letters.
      */
     public static boolean isValidCriName(String name) {
         if (name == null || name.length() != 2) return false;
 
-        for (char letter: name.toCharArray())
+        for (char letter : name.toCharArray())
             if (!Character.isLetter(letter)) return false;
 
         return true;
@@ -303,51 +291,31 @@ public class Criterion implements Cloneable {
 
     // ===================================== private and protected methods for implementation
 
-    /** Convert to a js String to evaluate
+    /**
+     * Convert to a js String to evaluate
+     *
      * @return js String
      */
     private String toJsString() {
-        // the last one in the linked list
-
         return criToJsString(this);
     }
 
-    /** toString for a single Criterion object
+    public String toString() {
+        if (isDocumentMark) return "Criterion { IsDocument }";
+
+        return "Criterion '" + getName() + "', { " + criToString() + " }";
+    }
+
+    /**
+     * toString for a single Criterion object
+     *
      * @return toString
      */
     protected String criToString() {
         String base;
-        base = String.format("%s %s %s", getAttr(), getOp(), getVal());
+        base = getAttr() + ' ' + getOp() + ' ' + getVal();
 
         if (isNeg())
-            base = "!(" + base + ")";
-
-        return base;
-    }
-
-    /** toJsString for a single Criterion object
-     * @param cur current Criterion object;
-     * @return toString
-     */
-    private static String criToJsString(Criterion cur) {
-        String base;
-        switch (cur.getAttr()) {
-            case "name":
-                base = String.format("\"%s\".contains(\"%s\")", cur.getAttr(), cur.getVal());
-                break;
-
-            case "type":
-                base = String.format("%s == %s", cur.getAttr(), cur.getVal());
-                break;
-
-            case "size":
-                base = String.format("%s %s %s", cur.getAttr(), cur.getOp(), cur.getVal());
-                break;
-            default:
-                throw new IllegalArgumentException();
-        }
-
-        if (cur.isNeg())
             base = "!(" + base + ")";
 
         return base;
