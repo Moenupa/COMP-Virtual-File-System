@@ -23,6 +23,14 @@ public class Document extends Unit {
         super(name, parent);
         this.type = type;
         this.content = content;
+        setSize(40 + content.length() * 2);
+    }
+
+    /**
+     * @return The type of the document.
+     */
+    public DocType getType() {
+        return type;
     }
 
     /**
@@ -37,8 +45,17 @@ public class Document extends Unit {
      *
      * @return the formatted output.
      */
+    @Override
     public String toString() {
-        return "";
+        String str;
+        str = "Document " + getName() + '.' + getType() + ", size = " + getSize() + "\n"
+                + "\033[32m" + content;
+        return str;
+    }
+
+    public static void main(String[] args) {
+        Document newdoc = new Document("mydoc", null, DocType.TXT, "content");
+        System.out.println(newdoc.toString());
     }
 
     /**
