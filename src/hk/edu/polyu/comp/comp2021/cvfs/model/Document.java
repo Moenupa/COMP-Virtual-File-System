@@ -42,7 +42,7 @@ public class Document extends Unit {
     public String toString() {
         String str;
         str = "Document " + getName() + '.' + getType() + ", size = " + getSize() + "\n"
-                + "\033[32m" + content;
+                + "\033[32m" + content + "\033[0m";
         return str;
     }
 

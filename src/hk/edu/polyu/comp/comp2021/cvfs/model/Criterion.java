@@ -54,6 +54,7 @@ public class Criterion implements Cloneable {
 
     /**
      * Get the special criterion isDocument
+     *
      * @return the reference to isDocument
      */
     public static Criterion getIsDocument() {
@@ -93,6 +94,7 @@ public class Criterion implements Cloneable {
         negation = x.negation;
     }
 
+    @Override
     public Object clone() {
         return new Criterion(this);
     }
@@ -102,29 +104,6 @@ public class Criterion implements Cloneable {
      */
     public String getName() {
         return name;
-    }
-
-    public static void main(String[] args) {
-        System.out.println(new Criterion("aa", "type", "equals", "\"txt\""));
-        boolean flag;
-        flag = Criterion.isValidCri("aa", "type", "equals", "\"txt\"");
-        System.out.println(flag);
-
-
-        Document txtdoc = new Document("mydoc", null, DocType.TXT, "");
-        Document sizedoc = new Document("mydoc", null, DocType.HTML, "something more than just content");
-
-        System.out.println(sizedoc);
-
-        Criterion cri1 = new Criterion("aa", "type", "equals", "\"txt\"");
-
-        Criterion cri4 = cri1.getNegCri("dd");
-
-        System.out.println(cri1);
-        System.out.println("sizedoc: " + cri1.check(sizedoc) + ", txtdoc: " + cri1.check(txtdoc));
-        System.out.println(cri4);
-        System.out.println("sizedoc: " + cri4.check(sizedoc) + ", txtdoc: " + cri4.check(txtdoc));
-
     }
 
     /**
@@ -156,37 +135,9 @@ public class Criterion implements Cloneable {
     }
 
     /**
-     * toJsString for a single Criterion object
-     *
-     * @param cur current Criterion object;
-     * @return toString
-     */
-    private static String criToJsString(Criterion cur) {
-        String base;
-        switch (cur.getAttr()) {
-            case "name":
-                base = "\"" + cur.getAttr() + "\"" + ".contains(\"" + cur.getVal() + "\")";
-                break;
-            case "type":
-                base = cur.getAttr() + "==" + cur.getVal();
-                break;
-            case "size":
-                base = cur.getAttr() + cur.getOp() + cur.getVal();
-                break;
-            default:
-                System.out.println("Error: Invalid Argument. Details: getAttr() failure: " + cur);
-                return "";
-        }
-
-        if (cur.isNeg())
-            base = "!(" + base + ")";
-
-        return base;
-    }
-
-    /***
      * set the this.name to param
-     * !!! Does NOT check valid or not !!!
+     * without valid-name-checking
+     *
      * @param name new name
      */
     public void setName(String name) {
@@ -202,7 +153,11 @@ public class Criterion implements Cloneable {
 
     /**
      * Check whether all parameters are valid. Rubrics over the declarations of fields.
-     * !!! Does not support 'IsDocument' criterion !!!
+     *
+     * @param name name
+     * @param attr attribute
+     * @param op   operation
+     * @param val  value
      * @return True if all parameters are valid.
      */
     public static boolean isValidCri(String name, String attr, String op, String val){
@@ -248,22 +203,33 @@ public class Criterion implements Cloneable {
 
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Criterion criterion = (Criterion) o;
-        return negation == criterion.negation &&
-                Objects.equals(name, criterion.name) &&
-                Objects.equals(attr, criterion.attr) &&
-                Objects.equals(op, criterion.op) &&
-                Objects.equals(val, criterion.val);
+        return isNeg() == criterion.isNeg() &&
+                Objects.equals(getName(), criterion.getName()) &&
+                Objects.equals(getAttr(), criterion.getAttr()) &&
+                Objects.equals(getOp(), criterion.getOp()) &&
+                Objects.equals(getVal(), criterion.getVal());
     }
 
+    @Override
     public int hashCode() {
         return Objects.hash(name, attr, op, val, negation);
     }
 
+    @Override
+    public String toString() {
+        if (isDocumentMark) return "Criterion { IsDocument }";
+
+        return "Criterion '" + getName() + "', { " + criToString() + " }";
+    }
+
     /**
+     * Get a negative copy of this
+     *
      * @param negName the name of the negative criterion
      * @return a negative criterion of this
      */
@@ -292,18 +258,12 @@ public class Criterion implements Cloneable {
     // ===================================== private and protected methods for implementation
 
     /**
-     * Convert to a js String to evaluate
+     * Convert this to a js string
      *
      * @return js String
      */
     private String toJsString() {
         return criToJsString(this);
-    }
-
-    public String toString() {
-        if (isDocumentMark) return "Criterion { IsDocument }";
-
-        return "Criterion '" + getName() + "', { " + criToString() + " }";
     }
 
     /**
@@ -321,10 +281,44 @@ public class Criterion implements Cloneable {
         return base;
     }
 
-    /** Check whether CriContent (attr, op, val) is valid.
-     * @param attr  'name'      | 'type'    | 'size'
-     * @param op    'contains'  | 'equals'  | 6 logOps
-     * @param val   '"text"'    | '"text"'  | integer
+    /**
+     * toJsString for a single Criterion object
+     *
+     * @param cur current Criterion object;
+     * @return toString
+     */
+    private static String criToJsString(Criterion cur) {
+        String base;
+        switch (cur.getAttr()) {
+            case "name":
+                // js: name.contains(matcher), matcher = [ "sth" ]
+                base = cur.getAttr() + ".contains(" + cur.getVal() + ")";
+                break;
+            case "type":
+                // js: type == matcher, matcher = [ "sth" ]
+                base = cur.getAttr() + "==" + cur.getVal();
+                break;
+            case "size":
+                // js: size >= 30
+                base = cur.getAttr() + cur.getOp() + cur.getVal();
+                break;
+            default:
+                System.out.println("Error: Invalid Argument. Details: getAttr() failure: " + cur);
+                return "";
+        }
+
+        if (cur.isNeg())
+            base = "!(" + base + ")";
+
+        return base;
+    }
+
+    /**
+     * Check whether CriContent (attr, op, val) is valid.
+     *
+     * @param attr 'name'      | 'type'    | 'size'
+     * @param op   'contains'  | 'equals'  | 6 logOps
+     * @param val  '"text"'    | '"text"'  | integer
      * @return boolean
      */
     private static boolean isValidCriContent(String attr, String op, String val) {
