@@ -19,6 +19,13 @@ public enum DocType {
     }
 
     /**
+     * Check whether type is valid or not
+     */
+    public static boolean isValidDocType(String type) {
+        return type.matches("^(txt|css|java|html)$");
+    }
+
+    /**
      * Return the text form of the enum
      *
      * @return The text of the enum.

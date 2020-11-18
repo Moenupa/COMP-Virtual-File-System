@@ -91,7 +91,7 @@ public class Criterion implements Cloneable {
         attr = x.getAttr();
         op = x.getOp();
         val = x.getVal();
-        negation = x.negation;
+        negation = x.isNeg();
     }
 
     @Override
@@ -247,12 +247,9 @@ public class Criterion implements Cloneable {
      * @return boolean, whether it contains exactly 2 English letters.
      */
     public static boolean isValidCriName(String name) {
-        if (name == null || name.length() != 2) return false;
+        if (name == null) return false;
 
-        for (char letter : name.toCharArray())
-            if (!Character.isLetter(letter)) return false;
-
-        return true;
+        return (name.matches("[a-zA-Z]{2}"));
     }
 
     // ===================================== private and protected methods for implementation
@@ -330,17 +327,17 @@ public class Criterion implements Cloneable {
         switch (attr) {
             case "name":
                 return op.equals("contains")
-                        && val.startsWith("\"") && val.endsWith("\"");
+                        && val.matches("^\\\"\\w+\\\"$");
 
             case "type":
+                if (!val.matches("\\\"(txt|html|css|java)\\\""))
+                    System.out.println("Warning: Entered file type not supported. Details: entered " + val + ".");
                 return op.equals("equals")
-                        && val.startsWith("\"") && val.endsWith("\"");
+                        && val.matches("^\\\"\\w+\\\"$");
 
             case "size":
                 boolean flagOp, flagVal;
-                flagOp = op.equals(">") || op.equals("<")
-                        || op.equals(">=") || op.equals("<=")
-                        || op.equals("==") || op.equals("!=");
+                flagOp = op.matches("([><]=?)|([!=]=)");
 
                 try {
                     Integer.parseInt(val);
