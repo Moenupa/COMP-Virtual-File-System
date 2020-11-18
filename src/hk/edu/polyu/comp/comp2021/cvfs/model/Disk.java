@@ -9,6 +9,14 @@ public class Disk extends Directory {
         this.capacity = capacity;
         this.Bin = new Directory("Bin",this);
     }
+    /**
+     * Safely get the disk bin.
+     * 
+     * @return The Disk's bin.
+     */
+    public Directory getBin() {
+        return this.Bin;
+    }
 
     /**
      * Update the current size of the disk.
