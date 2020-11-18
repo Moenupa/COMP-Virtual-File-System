@@ -1,6 +1,8 @@
 package hk.edu.polyu.comp.comp2021.cvfs.model;
 
-public abstract class Unit {
+import java.io.Serializable;
+
+public abstract class Unit implements Serializable {
     /**
      * A non-null string. Only numbers and English letters are allowed. No more than 10 chars. Can't be empty except for the disk.
      */
