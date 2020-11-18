@@ -24,6 +24,13 @@ public abstract class Unit implements Serializable {
     private boolean existent = true;
 
     /**
+     * A constant size that a Unit takes:
+     * DocSize = CONSTANT + content.length() *2
+     * DirSize = CONSTANT + sub-DocSize + sub-DirSize
+     */
+    protected static final int SIZE_CONSTANT = 40;
+
+    /**
      * Construct a new unit.
      *
      * @param name   The name of the unit.
@@ -40,8 +47,24 @@ public abstract class Unit implements Serializable {
      * @param name The string to be checked.
      * @return true if it is valid.
      */
-    static public boolean isValidName(String name) {
-        return false;
+    public static boolean isValidName(String name) {
+        if (name == null) {
+            System.out.println("Error: Invalid Argument. Details: checked with null.");
+            return false;
+        }
+
+        if (name.length() > 10) {
+            // TODO: needs phrasing
+            System.out.println("Error: Invalid Argument. Details: Name is too long");
+            return false;
+        }
+
+        for (char x: name.toCharArray()) {
+            if (!Character.isLetterOrDigit(x))
+                return false;
+        }
+
+        return true;
     }
 
     /**
