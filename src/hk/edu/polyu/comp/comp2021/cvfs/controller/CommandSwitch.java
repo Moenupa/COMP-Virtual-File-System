@@ -1,6 +1,5 @@
 package hk.edu.polyu.comp.comp2021.cvfs.controller;
 
-import hk.edu.polyu.comp.comp2021.cvfs.model.CommandType;
 import hk.edu.polyu.comp.comp2021.cvfs.model.Criterion;
 import hk.edu.polyu.comp.comp2021.cvfs.model.DocType;
 

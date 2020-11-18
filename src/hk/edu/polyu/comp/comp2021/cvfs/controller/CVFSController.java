@@ -1,17 +1,10 @@
 package hk.edu.polyu.comp.comp2021.cvfs.controller;
 
 
-import hk.edu.polyu.comp.comp2021.cvfs.model.*;
-import hk.edu.polyu.comp.comp2021.cvfs.view.CVFSView;
-
-import javax.security.auth.login.CredentialException;
-import java.util.Arrays;
-import java.util.Scanner;
-import java.util.HashMap;
-
 import hk.edu.polyu.comp.comp2021.cvfs.model.CVFS;
 import hk.edu.polyu.comp.comp2021.cvfs.model.Directory;
-import hk.edu.polyu.comp.comp2021.cvfs.model.*;
+import hk.edu.polyu.comp.comp2021.cvfs.model.DocType;
+import hk.edu.polyu.comp.comp2021.cvfs.model.Document;
 import hk.edu.polyu.comp.comp2021.cvfs.view.CVFSView;
 
 import java.util.Scanner;
