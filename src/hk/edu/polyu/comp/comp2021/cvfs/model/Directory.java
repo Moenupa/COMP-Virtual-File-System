@@ -18,6 +18,7 @@ public class Directory extends Unit {
      */
     public Directory(String name, Unit parent) {
         super(name, parent);
+        this.setSize(40);
     }
 
     /**
@@ -26,6 +27,8 @@ public class Directory extends Unit {
     public Map<String, Unit> getCatalog() {
         return this.catalog;
     }
+
+    //public void addItem
 
     /**
      * Make a new directory in the current directory.
@@ -40,6 +43,7 @@ public class Directory extends Unit {
             return;
         }
         this.catalog.put(name, new Directory(name, this));
+        updateSizeBy(this, this.catalog.get(name).getSize());
     }
 
     /**
@@ -67,9 +71,41 @@ public class Directory extends Unit {
      *
      * @param name The name of the file to be deleted.
      */
-    public void delete(String name) {
+    public void delete(Disk currDisk, String name) {
+        if (this.catalog.get(name) == null) {
+            System.out.println("No such document/directory exit.");
+            return;
+        }
+        move((Directory) currDisk.getCatalog().get("Bin"), name,false);
         updateSizeBy(this, -this.catalog.get(name).getSize());
         this.catalog.remove(name);
+    }
+
+    /**
+     * Move a document/directory to another directory.
+     *
+     * @param other Another directory.
+     * @param name The moving document/directory.
+     * @
+     */
+    public void move(Directory other, String name, boolean delete) {
+        if (this.catalog.get(name) == null) {
+            System.out.println("No such document/directory exit.");
+            return;
+        }
+        if (this.getCatalog().get(name) instanceof Directory) {
+            Directory tempDir = (Directory) this.getCatalog().get(name);
+            other.getCatalog().put(name, tempDir);
+        }
+        else {
+            Document tempDoc = (Document) this.getCatalog().get(name);
+            other.getCatalog().put(name, tempDoc);
+        }
+        updateSizeBy(other, this.catalog.get(name).getSize());
+        if (delete) {
+            updateSizeBy(this, -this.catalog.get(name).getSize());
+            this.catalog.remove(name);
+        }
     }
 
     /**
@@ -82,6 +118,10 @@ public class Directory extends Unit {
      * @param newName The new name of the file.
      */
     public void rename(String oldName, String newName) {
+        if (this.catalog.get(oldName) == null) {
+            System.out.println("No such document/directory exit.");
+            return;
+        }
         Unit renamedItem;
         renamedItem = this.catalog.get(oldName);
         this.catalog.get(oldName).setName(newName);
@@ -100,11 +140,13 @@ public class Directory extends Unit {
             System.out.println("\033[31m" + "There is no files in current directory!");
             return;
         }
+        System.out.print("\033[45m" + "Total size: ");
+        System.out.println(this.getSize() + "\033[0m");
         for (String name : this.catalog.keySet()) {
             if (this.catalog.get(name) instanceof Directory)
-                System.out.println("\033[32m" + name + " " + this.catalog.get(name).getSize());
+                System.out.println("\033[32m" + "├" + name + " " + this.catalog.get(name).getSize());
             if (this.catalog.get(name) instanceof Document)
-                System.out.println("\033[30m" + name + " " + ((Document) this.catalog.get(name)).getType() + " " + this.catalog.get(name).getSize());
+                System.out.println("\033[30m" + "├" + name + " " + ((Document) this.catalog.get(name)).getType() + " " + this.catalog.get(name).getSize());
         }
     }
 
@@ -222,6 +264,7 @@ public class Directory extends Unit {
 
         Directory desktop = (Directory) root.getCatalog().get("Desktop");
         Directory download = (Directory) root.getCatalog().get("Download");
+        Directory bin = (Directory) root.getCatalog().get("bin");
 
         desktop.newDir("NLP");
         desktop.newDir("CV");
@@ -241,14 +284,47 @@ public class Directory extends Unit {
         Directory java = (Directory) desktop.getCatalog().get("JAVA");
         nlp.newDir("data1");
         nlp.newDir("data2");
-        nlp.newDir("data3");
-        nlp.newDoc("EMNLP2020", DocType.TXT, "blah~blah~");
+        nlp.newDoc("EMNLP", DocType.TXT, "blah~blah~");
         java.newDoc("test", DocType.JAVA, "xxx");
+        System.out.println("**TEST** list nlp");
+        nlp.list();
+        System.out.println("**TEST** list java");
+        java.list();
+        /*
+        System.out.println("**TEST** copy \"EMNLP\" from nlp to java");
+        nlp.move(java,"EMNLP",false);
+        System.out.println("-list nlp");
+        nlp.list();
+        System.out.println("-list java");
+        java.list();
 
-        System.out.println(nlp.getCatalog().get("EMNLP2020"));
+        System.out.println("**TEST** move \"data1\" from nlp to java");
+        nlp.move(java,"data1",true);
+        System.out.println("-list nlp");
+        nlp.list();
+        System.out.println("-list java");
+        java.list();
+
+        System.out.println("**TEST** move \"data1\" from nlp to java");
+        nlp.move(java,"data1",true);
+        System.out.println("-list nlp");
+        nlp.list();
+        System.out.println("-list java");
+        java.list();
+
+        System.out.println("**TEST** delete \"data2\" from nlp to java");
+        nlp.delete(root,"data2");
+        System.out.println("-list nlp");
+        nlp.list();
+        System.out.println("-list bin");
+        ((Directory) root.getCatalog().get("Bin")).list();
+
+
         //root.down_rList(root, 0);
         //nlp.up_rList(nlp);
         //desktop.list();
+
+         */
     }
 }
 
