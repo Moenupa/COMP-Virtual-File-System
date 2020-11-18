@@ -23,7 +23,7 @@ public class Document extends Unit {
         super(name, parent);
         this.type = type;
         this.content = content;
-        setSize(40 + content.length() * 2);
+        setSize(SIZE_CONSTANT + content.length() * 2);
     }
 
     /**
@@ -42,13 +42,8 @@ public class Document extends Unit {
     public String toString() {
         String str;
         str = "Document " + getName() + '.' + getType() + ", size = " + getSize() + "\n"
-                + "\033[32m" + content;
+                + "\033[32m" + content + "\033[0m";
         return str;
-    }
-
-    public static void main(String[] args) {
-        Document newdoc = new Document("mydoc", null, DocType.TXT, "content");
-        System.out.println(newdoc.toString());
     }
 
     /**
@@ -56,6 +51,7 @@ public class Document extends Unit {
      *
      * @param offset Positive if the size increases, vice versa.
      */
+    @Override
     public void updateSizeBy(int offset) {
         System.out.println("Error: Access Denied.");
     }

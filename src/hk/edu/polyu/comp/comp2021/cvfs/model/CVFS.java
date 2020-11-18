@@ -52,38 +52,6 @@ public class CVFS {
         criteria.put(name, newCri);
     }
 
-    public static void main(String[] args) {
-        CVFS cvfs = new CVFS();
-        Document txtdoc = new Document("mydoc", null, DocType.TXT, "");
-        Document sizedoc = new Document("mydoc", null, DocType.HTML, "something more than just content");
-
-        System.out.println(sizedoc.toString());
-
-        cvfs.newSimpleCri("aa", "type", "equals", "\"txt\"");
-        cvfs.newSimpleCri("aa", "type", "equals", "\"txt\"");
-
-        cvfs.newSimpleCri("bb", "size", ">=", "\"txt\"");
-        // bb is invalid
-
-        cvfs.newSimpleCri("cc", "size", ">=", "30");
-        cvfs.newBinaryCri("dd", "aa", "||", "cc");
-        cvfs.newBinaryCri("ee", "aa", "&&", "cc");
-        cvfs.newBinaryCri("ff", "dd", "&&", "ee");
-
-        cvfs.newNegation("df", "ff");
-        cvfs.newNegation("hh", "dd");
-        cvfs.newNegation("gg", "ee");
-        cvfs.newBinaryCri("ii", "hh", "&&", "gg");
-        cvfs.newBinaryCri("zz", "df", "||", "aa");
-
-        System.out.println("txtdoc exam zz: " + cvfs.criteria.get("zz").check(txtdoc));
-        System.out.println("sizedoc exam zz: " + cvfs.criteria.get("zz").check(sizedoc));
-        System.out.println("sizedoc exam df: " + cvfs.criteria.get("df").check(sizedoc));
-
-        cvfs.printAllCriteria();
-
-    }
-
     /**
      * Create a negated criterion of name2.
      * Print a warning and return if name2 can't be found OR
@@ -133,7 +101,7 @@ public class CVFS {
             System.out.println(e.getMessage());
             return;
         }
-        criteria.put(name1,new BinCri(name1,criteria.get(name3),criteria.get(name4),op));
+        criteria.put(name1, new BinCri(name1, criteria.get(name3), op, criteria.get(name4)));
     }
 
     /**
