@@ -2,20 +2,11 @@ package hk.edu.polyu.comp.comp2021.cvfs.model;
 
 public class Disk extends Directory {
     private final int capacity;
-    public Directory Bin;
 
     public Disk(int capacity) {
         super("Disk",null);
         this.capacity = capacity;
-        this.Bin = new Directory("Bin",this);
-    }
-    /**
-     * Safely get the disk bin.
-     * 
-     * @return The Disk's bin.
-     */
-    public Directory getBin() {
-        return this.Bin;
+        this.newDir("Bin");
     }
 
     /**
