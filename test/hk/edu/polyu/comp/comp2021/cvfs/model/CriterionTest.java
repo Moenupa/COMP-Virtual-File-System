@@ -71,9 +71,10 @@ class CriterionTest {
 
     @Test
     void checkTest() {
-        assertEquals(sizeDoc.getSize() >= 300, sizeCri.check(sizeDoc));
-        assertEquals(cssDoc.getSize() >= 300, sizeCri.check(cssDoc));
-        assertEquals(txtDoc.getSize() >= 300, sizeCri.check(txtDoc));
+        int sizeLimit = Integer.parseInt(sizeCri.getVal());
+        assertEquals(sizeDoc.getSize() >= sizeLimit, sizeCri.check(sizeDoc));
+        assertEquals(cssDoc.getSize() >= sizeLimit, sizeCri.check(cssDoc));
+        assertEquals(txtDoc.getSize() >= sizeLimit, sizeCri.check(txtDoc));
         assertTrue(nameCri.check(sizeDoc));
     }
 
@@ -84,9 +85,10 @@ class CriterionTest {
 
     @Test
     void getNegCriTest() {
-        assertEquals(!(sizeDoc.getSize() >= 300), sizeCri.getNegCri("ne").check(sizeDoc));
-        assertEquals(!(txtDoc.getSize() >= 300), sizeCri.getNegCri("ne").check(txtDoc));
-        assertEquals(!(cssDoc.getSize() >= 300), sizeCri.getNegCri("ne").check(cssDoc));
+        int sizeLimit = Integer.parseInt(sizeCri.getVal());
+        assertEquals(!(sizeDoc.getSize() >= sizeLimit), sizeCri.getNegCri("ne").check(sizeDoc));
+        assertEquals(!(txtDoc.getSize() >= sizeLimit), sizeCri.getNegCri("ne").check(txtDoc));
+        assertEquals(!(cssDoc.getSize() >= sizeLimit), sizeCri.getNegCri("ne").check(cssDoc));
     }
 
     @Test

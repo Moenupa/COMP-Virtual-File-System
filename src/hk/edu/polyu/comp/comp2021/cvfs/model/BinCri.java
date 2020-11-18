@@ -14,11 +14,12 @@ public class BinCri extends Criterion {
     /**
      * Build a binary criteria
      *
+     * @param name name for the new Binary Criteria
      * @param cri1 The first criterion
-     * @param cri2 The second criterion
      * @param op   The relationship between two criteria
+     * @param cri2 The second criterion
      */
-    BinCri(String name, Criterion cri1, Criterion cri2, String op) {
+    BinCri(String name, Criterion cri1, String op, Criterion cri2) {
         super(name);
         this.cri1 = cri1;
         this.cri2 = cri2;
