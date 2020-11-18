@@ -25,4 +25,11 @@ public class CVFSView {
     public void updateDir(Directory cur) {
         return;
     }
+
+    /**
+     * Print a prompt including the current working directory.
+     */
+    public void printPrompt(){
+        return;
+    }
 }

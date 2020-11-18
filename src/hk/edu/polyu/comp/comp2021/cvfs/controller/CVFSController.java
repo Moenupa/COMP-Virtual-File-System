@@ -37,12 +37,18 @@ public class CVFSController {
     }
 
     /**
+     * To deal with the user input.
+     */
+    private final Scanner scanner=new Scanner(System.in);
+
+    /**
      * Change the current working directory to the desired one.
      * Print a warning and return if the desired directory does not exist.
      *
      * @param name The new directory.
      */
     public void changeDir(String name) {
+        view.updateDir(getCur());
         return;
     }
 
@@ -50,7 +56,6 @@ public class CVFSController {
 
     public String getCommand(){
 
-        Scanner scanner=new Scanner(System.in);
 
         String command = scanner.nextLine();
 
@@ -70,19 +75,20 @@ public class CVFSController {
 
         switch (type){
             case newDisk:
-                int diskSize=Integer.parseInt(elements[1]);
+                cur= cvfs.newDisk(Integer.parseInt(elements[0]));
                 //
 
             case newDoc:
-                Document newDoc=new Document(elements[1],cur, DocType.valueOf(elements[2]),elements[3]);
+                cur.newDoc(elements[1],DocType.parse(elements[2]),elements[3]);
                 //
 
             case newDir:
-                Directory newDic=new Directory(elements[1],cur);
+                cur.newDir(elements[1]);
                 //
 
             case list:
-                //
+                //TODO Mathch the command with the method provided in other classes(Directory, Criterion,CVFS).
+
 
             case rList:
                 //
@@ -102,7 +108,7 @@ public class CVFSController {
                 String unitName=elements[1];
                 //
 
-            case IsDocument:
+//            case IsDocument:
 
             case changeDir:
                 String DirName=elements[1];
@@ -126,7 +132,15 @@ public class CVFSController {
                 String val=elements[4];
 
             case printAllCriteria:
-                //
+
+
+            case undo:// Those 4 can be saved for later
+
+            case redo:
+
+            case load:
+
+            case store:
         }
 
     }
@@ -138,13 +152,17 @@ public class CVFSController {
     public void terminal() {
 
         String command;
+        //TODO better implemented with static methods
         CommandSwitch commandSwitch = new CommandSwitch();
 
 
+        view.printPrompt();
         command = getCommand();
+
         CommandType type = commandSwitch.getType(command);
 
         while (type == CommandType.invalid) {
+            System.out.println("Error: Invalid argument(s). Please try again.");
             command = getCommand();
             type = commandSwitch.getType(command);
         }

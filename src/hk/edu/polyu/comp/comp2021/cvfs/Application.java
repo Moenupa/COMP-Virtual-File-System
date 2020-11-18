@@ -21,7 +21,6 @@ public class Application {
         while (true){
             control.terminal();
 
-            view.updateDir(control.getCur());
         }
     }
 }
