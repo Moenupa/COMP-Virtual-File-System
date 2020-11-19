@@ -38,18 +38,10 @@ public class CVFS {
      * @param val  The value of the operation.
      */
     public void newSimpleCri(String name, String attr, String op, String val) {
-        if (criteria.containsKey(name)) {
-            System.out.println("Error: Invalid Arguments. Details: Already exists Criterion " + name);
-            return;
-        }
-
         if (!Criterion.isValidCri(name, attr, op, val)) {
-            System.out.println("Error: Invalid Arguments. Details: Illegal Criterion " + name);
+            System.out.println("Error: Invalid Arguments.");
             return;
         }
-
-        Criterion newCri = new Criterion(name, attr, op, val);
-        criteria.put(name, newCri);
     }
 
     /**
@@ -61,17 +53,9 @@ public class CVFS {
      * @param name2 The name of the criterion to be negated.
      */
     public void newNegation(String name1, String name2) {
-        if (criteria.containsKey(name1)) {
-            System.out.println("Error: Invalid Arguments. Details: Already exists Criterion " + name1);
-            return;
-        }
-        if (!Criterion.isValidCriName(name1)) {
-            System.out.println("Error: Invalid Criterion Name " + name1);
-            return;
-        }
-
-        criteria.put(name1, criteria.get(name2).getNegCri(name1));
+        return;
     }
+
 
     /**
      * Create a combined criterion.
@@ -85,34 +69,15 @@ public class CVFS {
      * @param name4 The name of the second criterion to be combined.
      */
     public void newBinaryCri(String name1, String name3, String op, String name4) {
-        try{
-            if(criteria.containsKey(name1))
-                throw new Exception("Error: Invalid Arguments. Details: Already exists Criterion " + name1);
-            if (!Criterion.isValidCriName(name1))
-                throw new Exception("Error: Invalid Criterion Name " + name1);
-            if (!op.equals("||") && !op.equals("&&"))
-                throw new Exception("Error: Invalid Argument op " + op);
-            if (!criteria.containsKey(name3) || name3 == null)
-                throw new Exception("Error: Cannot find argument " + name3);
-            if (!criteria.containsKey(name4) || name4 == null)
-                throw new Exception("Error: Cannot find argument " + name4);
-        }
-        catch (Exception e){
-            System.out.println(e.getMessage());
-            return;
-        }
-        criteria.put(name1, new BinCri(name1, criteria.get(name3), op, criteria.get(name4)));
+        return;
     }
 
     /**
      * Print all criteria in the memory in a formatted form.
      */
     public void printAllCriteria() {
-        System.out.println("┍ printing all the criteria");
-        criteria.forEach((key, value)->
-                        System.out.println("┝━━ " + value)
-                );
-        System.out.println("┕ " + criteria.size() + " criteria(criterion) in total");
+        return;
     }
+
 
 }

@@ -9,10 +9,6 @@ import java.util.Arrays;
 import java.util.Scanner;
 import java.util.HashMap;
 
-import hk.edu.polyu.comp.comp2021.cvfs.model.CVFS;
-import hk.edu.polyu.comp.comp2021.cvfs.model.Directory;
-import hk.edu.polyu.comp.comp2021.cvfs.view.CVFSView;
-
 public class CVFSController {
     private CVFS cvfs;
     private CVFSView view;

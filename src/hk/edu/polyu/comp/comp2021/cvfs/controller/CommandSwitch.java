@@ -90,15 +90,15 @@ public class CommandSwitch {
 
             case "newDir":
                 if(elements.length>2){
-                    System.out.println("x");
+                    System.out.println("command input too long");
                     return CommandType.invalid;
                 }
                 if (elements.length<2){
-                    System.out.println("x");
+                    System.out.println("name of new directory not found");
                     return CommandType.invalid;
                 }
                 if (!isValidName(elements[1])){
-                    System.out.println("x");
+                    System.out.println("invalid directory name: "+elements[1]);
                     return  CommandType.invalid;
                 }
 
@@ -106,15 +106,15 @@ public class CommandSwitch {
 
             case "newDoc":
                 if (elements.length<4){
-                    System.out.println("x");
+                    System.out.println("name, type or content of new document not found");
                     return CommandType.invalid;
                 }
                 if (!isValidName(elements[1])){
-                    System.out.println("x");
+                    System.out.println("invalid document name: "+elements[1]);
                     return CommandType.invalid;
                 }
                 if(!isValidDocType(elements[2])){
-                    System.out.println("x");
+                    System.out.println("invalid document type: "+elements[2]);
                     return CommandType.invalid;
                 }
 
@@ -122,15 +122,15 @@ public class CommandSwitch {
 
             case "newDisk":
                 if(elements.length>2){
-                    System.out.println("x");
+                    System.out.println("command input too long");
                     return CommandType.invalid;
                 }
                 if (elements.length<2){
-                    System.out.println("x");
+                    System.out.println("size of new disk not found");
                     return CommandType.invalid;
                 }
                 if (!elements[1].matches("\\d+")){
-                    System.out.println("x");
+                    System.out.println("size of new disk invalid");
                     return CommandType.invalid;
                 }
 
@@ -138,15 +138,15 @@ public class CommandSwitch {
 
             case "delete":
                 if(elements.length>2){
-                    System.out.println("x");
+                    System.out.println("command input too long");
                     return CommandType.invalid;
                 }
                 if (elements.length<2){
-                    System.out.println("x");
+                    System.out.println("name of file to be deleted not found");
                     return CommandType.invalid;
                 }
                 if (!isValidName(elements[1])){
-                    System.out.println("x");
+                    System.out.println("name of file to be deleted invalid");
                     return  CommandType.invalid;
                 }
 
@@ -154,19 +154,19 @@ public class CommandSwitch {
 
             case "rename":
                 if(elements.length>3){
-                    System.out.println("x");
+                    System.out.println("command inout too long");
                     return CommandType.invalid;
                 }
                 if (elements.length<3){
-                    System.out.println("x");
+                    System.out.println("old name or new name not found");
                     return CommandType.invalid;
                 }
                 if (!isValidName(elements[1])){
-                    System.out.println("x");
+                    System.out.println("old name invalid");
                     return  CommandType.invalid;
                 }
                 if (!isValidName(elements[2])){
-                    System.out.println("x");
+                    System.out.println("new name invalid");
                     return  CommandType.invalid;
                 }
 
@@ -178,15 +178,15 @@ public class CommandSwitch {
 
             case "changeDir":
                 if(elements.length>2){
-                    System.out.println("x");
+                    System.out.println("command input too long");
                     return CommandType.invalid;
                 }
                 if (elements.length<2){
-                    System.out.println("x");
+                    System.out.println("directory name not found");
                     return CommandType.invalid;
                 }
                 if (!isValidName(elements[1])){
-                    System.out.println("x");
+                    System.out.println("directory name invalid");
                     return  CommandType.invalid;
                 }
 
@@ -194,13 +194,13 @@ public class CommandSwitch {
 
             case "list":
                 if(elements.length>1){
-                    System.out.println("x");
+                    System.out.println("command input too long");
                 }
                 return CommandType.list;
 
             case "rlist":
                 if(elements.length>1){
-                    System.out.println("x");
+                    System.out.println("to be filled");
                 }
                 return CommandType.rList;
 
@@ -319,6 +319,9 @@ public class CommandSwitch {
                 }
                 return CommandType.redo;
         }
+
+        if (elements.length==0)System.out.println("Please input command");
+        else System.out.println("unknown command: "+elements[0]);
         return CommandType.invalid;
     }
 }
