@@ -38,6 +38,46 @@ class CriterionTest {
     }
 
     @Test
+    void getNameTest() {
+        assertEquals("sa", txtCri.getName());
+        assertEquals("sa", cloneCri.getName());
+        assertEquals("sz", sizeCri.getName());
+        assertEquals("nn", nameCri.getName());
+    }
+
+    @Test
+    void getAttrTest() {
+        assertEquals("type", txtCri.getAttr());
+        assertEquals("type", cloneCri.getAttr());
+        assertEquals("size", sizeCri.getAttr());
+        assertEquals("name", nameCri.getAttr());
+    }
+
+    @Test
+    void getOpTest() {
+        assertEquals("equals", txtCri.getOp());
+        assertEquals("equals", cloneCri.getOp());
+        assertEquals(">=", sizeCri.getOp());
+        assertEquals("contains", nameCri.getOp());
+    }
+
+    @Test
+    void getValTest() {
+        assertEquals("\"txt\"", txtCri.getVal());
+        assertEquals("\"txt\"", cloneCri.getVal());
+        assertEquals("300", sizeCri.getVal());
+        assertEquals("\"doc\"", nameCri.getVal());
+    }
+
+    @Test
+    void isNegTest() {
+        assertFalse(txtCri.isNeg());
+        txtCri.setNeg();
+        assertTrue(txtCri.isNeg());
+        txtCri.setNeg();
+    }
+
+    @Test
     void getIsDocumentTest() {
         assertTrue(Criterion.getIsDocument().check(sizeDoc));
         assertFalse(Criterion.getIsDocument().check(new Directory("Downloads", null)));
@@ -85,6 +125,8 @@ class CriterionTest {
 
     @Test
     void getNegCriTest() {
+        assertTrue(txtCri.getNegCri("gx").isNeg());
+        assertFalse(txtCri.getNegCri("gx").getNegCri("gy").isNeg());
         int sizeLimit = Integer.parseInt(sizeCri.getVal());
         assertEquals(!(sizeDoc.getSize() >= sizeLimit), sizeCri.getNegCri("ne").check(sizeDoc));
         assertEquals(!(txtDoc.getSize() >= sizeLimit), sizeCri.getNegCri("ne").check(txtDoc));
