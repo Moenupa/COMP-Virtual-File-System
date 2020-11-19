@@ -11,33 +11,33 @@
 ## To-do List
 
 - [ ] Design
-	- [ ]  Layout
-		- [ ]  Controller
-		- [ ]  Model
-		- [ ]  View
-	- [ ]  Implementation of important methods
-		- [ ]  Unit → Document, Dir
-		- [ ]  Criterion → BinCri
-		- [ ]  CVFS
-		- [ ]  Controller
-		- [ ]  View
+    - [ ]  Layout
+        - [ ]  Controller
+        - [ ]  Model
+        - [ ]  View
+    - [ ]  Implementation of important methods
+        - [ ]  Unit → Document, Dir
+        - [ ]  Criterion → BinCri
+        - [ ]  CVFS
+        - [ ]  Controller
+        - [ ]  View
 - [ ]  Requirements
-	- [ ]  REQ1
-	- [ ]  REQ2
-	- [ ]  REQ3
-	- [ ]  REQ4
-	- [ ]  REQ5
-	- [ ]  REQ6
-	- [ ]  REQ7
-	- [ ]  REQ8
-	- [ ]  REQ9
-	- [ ]  REQ10
-	- [ ]  REQ11
-	- [ ]  REQ12
-	- [ ]  REQ13
-	- [ ]  REQ14
-	- [ ]  BON1
-	- [ ]  BON2
+    - [ ]  REQ1
+    - [ ]  REQ2
+    - [ ]  REQ3
+    - [ ]  REQ4
+    - [ ]  REQ5
+    - [ ]  REQ6
+    - [ ]  REQ7
+    - [ ]  REQ8
+    - [ ]  REQ9
+    - [ ]  REQ10
+    - [ ]  REQ11
+    - [ ]  REQ12
+    - [ ]  REQ13
+    - [ ]  REQ14
+    - [ ]  BON1
+    - [ ]  BON2
 - [ ]  User Manual
 
 > some resources
@@ -68,40 +68,38 @@ Requirements For each (compulsory and bonus) requirement, describe 1) whether it
 1. The requirement is implemented.
 2. Implementation
 
-	[REQ1] is implemented by codes in <code>package hk.edu.polyu...cvfs.model</code>. When <code>newDoc</code> instruction is passed from the command line onto the core, the creation of a new disk is handled by <code>CVFS.newDisk()</code>, and then calls <code>Disk()</code> constructor extended from <code>Unit()</code> constructor, returning the reference to the newly-created disk. **TODO: this part needs fixing, when <code>store()</code> and <code>load()</code> is added**
-    
+    [REQ1] is implemented by codes in <code>package hk.edu.polyu...cvfs.model</code>. When <code>newDoc</code> instruction is passed from the command line onto the core, the creation of a new disk is handled by <code>CVFS.newDisk()</code>, and then calls <code>Disk()</code> constructor extended from <code>Unit()</code> constructor, returning the reference to the newly-created disk. **TODO: this part needs fixing, when <code>store()</code> and <code>load()</code> is added**
+
     ```java
-	// package 	hk.edu.polyu.comp.comp2021.cvfs.model;
-	// file 	CVFS.java
-	public class CVFS{
+    // package  hk.edu.polyu.comp.comp2021.cvfs.model;
+    // file     CVFS.java
+    public class CVFS{
         public Disk newDisk(int diskSize) {
             return new Disk(diskSize);
         }
     }
-	// file 	Disk.java
+    // file     Disk.java
     public class Disk{
-		private final int capacity;
-		
+        private final int capacity;
         public Disk(int capacity) {
             super("Disk", null);
             this.capacity = capacity;
         }
     }
-	// file 	Unit.java
-	public class Unit{
-		private String name;
-		private Unit parent;
-		
-		public Unit(String name, Unit parent) {
-			this.name = name;
-			this.parent = parent;
-		}
-	}
+    // file     Unit.java
+    public class Unit{
+        private String name;
+        private Unit parent;
+        public Unit(String name, Unit parent) {
+            this.name = name;
+            this.parent = parent;
+        }
+    }
     ```
 
 3. Error Conditions and Error Handling
 
-	command <code>newDisk</code> does not result in any error or warning, thereafter part 3 is omitted.
+    command <code>newDisk</code> does not result in any error or warning, thereafter part 3 is omitted.
 
 > [REQ2] The tool should support the creation of a new document in the working directory.
 
@@ -151,36 +149,36 @@ Requirements For each (compulsory and bonus) requirement, describe 1) whether it
 1. The requirement is implemented.
 2. Implementation
     
-[REQ9] is implemented by codes in <code>package hk.edu.polyu...cvfs.model</code>. When a valid <code>newSimpleCri</code> command is handled by controller, a new instance is raised by <code>CVFS.java</code> to and stored into a HashMap where all the criteria are stored.
+    [REQ9] is implemented by codes in <code>package hk.edu.polyu...cvfs.model</code>. When a valid <code>newSimpleCri</code> command is handled by controller, a new instance is raised by <code>CVFS.java</code> to and stored into a HashMap where all the criteria are stored.
 
-```java
-// package  hk.edu.polyu.comp.comp2021.cvfs.model
-// file     CVFS.java
-public class CVFS{
-    public void newSimpleCri(String name, String attr, String op, String val) {
-        Map<String, Criterion> criteria = new HashMap<>();
+    ```java
+    // package  hk.edu.polyu.comp.comp2021.cvfs.model
+    // file     CVFS.java
+    public class CVFS{
+        public void newSimpleCri(String name, String attr, String op, String val) {
+            Map<String, Criterion> criteria = new HashMap<>();
 
-        // Checking Error Conditions
-        Criterion newCri = new Criterion(name, attr, op, val);
-        criteria.put(name, newCri);
+            // Checking Error Conditions
+            Criterion newCri = new Criterion(name, attr, op, val);
+            criteria.put(name, newCri);
+        }
     }
-}
-// file     Criterion.java
-public class Criterion implements Clonable {
-    private String name, attr, op, val;
+    // file     Criterion.java
+    public class Criterion implements Clonable {
+        private String name, attr, op, val;
 
-    public Criterion(String name, String attr, String op, String val) {
-        this.name = name;
-        this.attr = attr;
-        this.op = op;
-        this.val = val;
+        public Criterion(String name, String attr, String op, String val) {
+            this.name = name;
+            this.attr = attr;
+            this.op = op;
+            this.val = val;
+        }
     }
-}
-```
+    ```
 
 3. Error Conditions and Error Handling
 
-TODO: Error Conditions
+    TODO: Error Conditions
 
 > [REQ10] The tool should support a simple criterion to check whether a file is a document. 
 

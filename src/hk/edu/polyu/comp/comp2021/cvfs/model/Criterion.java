@@ -2,9 +2,11 @@ package hk.edu.polyu.comp.comp2021.cvfs.model;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 import java.util.Objects;
 
+/**
+ * TODO: 要加 JavaDoc；这个文件 0 Error
+ */
 public class Criterion implements Cloneable {
     /**
      * The name of the criterion, containing exactly 2 English letters.
@@ -41,16 +43,12 @@ public class Criterion implements Cloneable {
     private boolean isDocumentMark = false;
 
     /** A ScriptEngine to evaluate the result*/
-    private static ScriptEngine engine = new ScriptEngineManager().getEngineByName("js");
+    private final static ScriptEngine engine = new ScriptEngineManager().getEngineByName("js");
 
     /**
      * The special criterion isDocument
      */
-    static Criterion isDocument = new Criterion("IsDocument");
-
-    static {
-        isDocument.isDocumentMark = true;
-    }
+    private final static Criterion isDocument = new Criterion();
 
     /**
      * Get the special criterion isDocument
@@ -78,6 +76,7 @@ public class Criterion implements Cloneable {
 
     /**
      * Constructor with only name initialized.
+     * @param name new Criterion name
      */
     public Criterion(String name) {
         this.name = name;
@@ -94,6 +93,18 @@ public class Criterion implements Cloneable {
         negation = x.isNeg();
     }
 
+    /**
+     * Special Constructor for IsDocument Criterion
+     */
+    private Criterion() {
+        this.name = "IsDocument";
+        this.isDocumentMark = true;
+    }
+
+    /**
+     * clone method
+     * @return a new cloned Criterion object
+     */
     @Override
     public Object clone() {
         return new Criterion(this);
@@ -159,8 +170,12 @@ public class Criterion implements Cloneable {
      * @param op   operation
      * @param val  value
      * @return True if all parameters are valid.
+     * @throws IllegalArgumentException if null param detected
      */
-    public static boolean isValidCri(String name, String attr, String op, String val){
+    public static boolean isValidCri(String name, String attr, String op, String val) throws IllegalArgumentException {
+        if (name == null || attr == null || op == null || val == null)
+            throw new IllegalArgumentException("Null criterion checked by isValidCri() checker.");
+
         return (isValidCriName(name) && isValidCriContent(attr, op, val));
     }
 
@@ -168,37 +183,31 @@ public class Criterion implements Cloneable {
      * Check if the unit x fits the criterion.
      * Print a warning and return false if x is null.
      *
-     * @param x The unit to be checked.
+     * @param unit The unit to be checked.
      * @return True if the condition holds.
      */
-    public boolean check(Unit x) {
-        if (x == null) {
-            System.out.println("Error: Invalid Argument. Details: Checking a null Unit with " + this);
-            return false;
-        }
+    public boolean check(Unit unit) {
+        if (unit == null) throw new RuntimeException("Null unit checked by check() checker");
 
         if (isDocumentMark)
-            return x instanceof Document;
+            return unit instanceof Document;
 
         String expression = toJsString();
 
-        engine.put("size", x.getSize());
-        engine.put("name", x.getName());
-
         if (expression.contains("type")) {
-            if (x instanceof Document)
-                engine.put("type", ((Document) x).getType().toString());
-            else {
-                System.out.println("Error: Invalid Argument. Details: Type error: " + x);
+            // only if x is a document can x be checked by type
+            if (!getIsDocument().check(unit))
                 return false;
-            }
+
+            engine.put("type", ((Document) unit).getType().toString());
         }
+        engine.put("size", unit.getSize());
+        engine.put("name", unit.getName());
 
         try {
             return (boolean) engine.eval(expression);
-        } catch (ScriptException e) {
-            System.out.println("Error: Invalid Argument. Details: invalid script: " + expression);
-            return false;
+        } catch (Exception e) {
+            throw new RuntimeException("Script Error when processing " + expression);
         }
 
     }
@@ -319,21 +328,19 @@ public class Criterion implements Cloneable {
      * @return boolean
      */
     private static boolean isValidCriContent(String attr, String op, String val) {
-        if (attr == null || op == null || val == null) {
-            System.out.println("Error: Invalid Argument. Details: Null Cri-Content detected.");
-            return false;
-        }
-
         switch (attr) {
             case "name":
                 return op.equals("contains")
-                        && val.matches("^\\\"\\w+\\\"$");
+                        && val.matches("^\"\\S+\"$");
 
             case "type":
-                if (!val.matches("\\\"(txt|html|css|java)\\\""))
-                    System.out.println("Warning: Entered file type not supported. Details: entered " + val + ".");
-                return op.equals("equals")
-                        && val.matches("^\\\"\\w+\\\"$");
+                if (op.equals("equals") && val.matches("^\"\\S+\"$")) {
+                    if (!val.matches("^\"(txt|html|css|java)\"$"))
+                        System.out.println("Warning: Unsupported file type " + val + ".");
+                    // if type not valid show *warning*, then return. this is a intended warning, not error
+                    return true;
+                }
+                return false;
 
             case "size":
                 boolean flagOp, flagVal;
