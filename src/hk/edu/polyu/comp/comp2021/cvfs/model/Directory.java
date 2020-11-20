@@ -3,7 +3,7 @@ import javax.print.Doc;
 import java.util.HashMap;
 import java.util.Map;
 //import hk.edu.polyu.comp.comp2021.cvfs .model.DocType;
-
+//TODO: Add Javadocs. Tedious but necessary.
 public class Directory extends Unit {
     /**
      * The contents in the directory.
@@ -68,8 +68,10 @@ public class Directory extends Unit {
      */
     public Directory newDir(String name) {
         if (!isValidName(name)) {
-            System.out.println("\033[31m" + "Error: Invalid Argument." + "\033[0m");
-            return null;
+            //TODO: Change Error message into exception throws. No need to add the "Error:" prefix and color change. No return statement needed.
+//            System.out.println("\033[31m" + "Error: Invalid Argument." + "\033[0m");
+//            return null;
+            throw new IllegalArgumentException("Error: Invalid Argument.");
         }
         if (this.getCatalog().get(name) != null) {
             System.out.println("\033[31m" + "A file with the same name already exists" + "\033[0m");
