@@ -8,10 +8,6 @@ public abstract class Unit implements Serializable {
      */
     private String name;
 
-    /**
-     * A reference to the parent directory. Not null except for the disk.
-     */
-    private Unit parent;
 
     /**
      * The size of the file. Variable when the unit is a directory.
@@ -36,9 +32,8 @@ public abstract class Unit implements Serializable {
      * @param name   The name of the unit.
      * @param parent The parent of the unit.
      */
-    public Unit(String name, Unit parent) {
+    public Unit(String name) {
         this.name = name;
-        this.parent = parent;
     }
 
     /**
@@ -90,18 +85,14 @@ public abstract class Unit implements Serializable {
      *
      * @return the reference of the parent.
      */
-    public Unit getParent() {
-        return parent;
-    }
+    public abstract Unit getParent();
 
     /**
      * Set a new parent to the current unit.
      *
      * @param newParent The new parent of the unit.
      */
-    public void setParent(Unit newParent) {
-        parent = newParent;
-    }
+    public abstract void setParent(Unit newParent);
 
     /**
      * Get the size of the unit.
@@ -121,29 +112,13 @@ public abstract class Unit implements Serializable {
         size = newSize;
     }
 
-    /**
-     * Recursively update the size of the directory by a certain number.
-     * First update the size of parent, then the current directory.
-     *
-     * @param offset Positive if the size increases, vice versa.
-     */
-    public void updateSizeBy(int offset) {
-        parent.updateSizeBy(offset);
-        setSize(getSize()+offset);
-    }
+
 
     /**
-     * get the level index of this unit;
+     * get
+     * @return The level index of this unit;
      */
-    public int getLevel() {
-        Unit temp = this;
-        int level = 0;
-        while (temp.parent != null) {
-            temp = temp.parent;
-            level++;
-        }
-        return level;
-    }
+    public abstract int  getLevel();
 
     /**
      * Mark the unit as deleted;

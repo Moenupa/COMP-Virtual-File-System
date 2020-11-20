@@ -16,14 +16,39 @@ public class Directory extends Unit {
     private Directory currDisk;
 
     /**
+     * A reference to the parent directory. Not null except for the disk.
+     */
+    private Directory parent;
+
+
+    /**
      * Construct a new directory.
      *
      * @param name   The name of the directory.
      * @param parent The parent of this directory.
      */
     public Directory(String name, Unit parent) {
-        super(name, parent);
+        super(name);
+        setParent(parent);
         this.setSize(SIZE_CONSTANT);
+    }
+
+    /**
+     * @return The reference to the parent.
+     */
+    @Override
+    public Directory getParent() {
+        return parent;
+    }
+
+    /**
+     * Set a new parent to the current unit.
+     *
+     * @param newParent The new parent of the unit.
+     */
+    @Override
+    public void setParent(Unit newParent) {
+        parent = (Directory) newParent;
     }
 
     /**
@@ -346,6 +371,31 @@ public class Directory extends Unit {
 
         root.down_rList();
 
+    }
+
+    /**
+     * Recursively update the size of the directory by a certain number.
+     * First update the size of parent, then the current directory.
+     *
+     * @param offset Positive if the size increases, vice versa.
+     */
+    public void updateSizeBy(int offset) {
+        getParent().updateSizeBy(offset);
+        setSize(getSize()+offset);
+    }
+
+    /**
+     * get the level index of this unit;
+     */
+    @Override
+    public int getLevel() {
+        Unit temp = this;
+        int level = 0;
+        while (temp.getParent() != null) {
+            temp = temp.getParent();
+            level++;
+        }
+        return level;
     }
 }
 
