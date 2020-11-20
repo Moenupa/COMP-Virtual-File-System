@@ -1,15 +1,13 @@
 package hk.edu.polyu.comp.comp2021.cvfs.model;
 
-public abstract class Unit {
+import java.io.Serializable;
+
+public abstract class Unit implements Serializable {
     /**
      * A non-null string. Only numbers and English letters are allowed. No more than 10 chars. Can't be empty except for the disk.
      */
     private String name;
 
-    /**
-     * A reference to the parent directory. Not null except for the disk.
-     */
-    private Unit parent;
 
     /**
      * The size of the file. Variable when the unit is a directory.
@@ -34,9 +32,8 @@ public abstract class Unit {
      * @param name   The name of the unit.
      * @param parent The parent of the unit.
      */
-    public Unit(String name, Unit parent) {
+    public Unit(String name) {
         this.name = name;
-        this.parent = parent;
     }
 
     /**
@@ -88,18 +85,14 @@ public abstract class Unit {
      *
      * @return the reference of the parent.
      */
-    public Unit getParent() {
-        return parent;
-    }
+    public abstract Unit getParent();
 
     /**
      * Set a new parent to the current unit.
      *
      * @param newParent The new parent of the unit.
      */
-    public void setParent(Unit newParent) {
-        parent = newParent;
-    }
+    public abstract void setParent(Unit newParent);
 
     /**
      * Get the size of the unit.
@@ -119,15 +112,13 @@ public abstract class Unit {
         size = newSize;
     }
 
+
+
     /**
-     * Recursively update the size of the directory by a certain number.
-     * First update the size of parent, then the current directory.
-     *
-     * @param offset Positive if the size increases, vice versa.
+     * get
+     * @return The level index of this unit;
      */
-    public void updateSizeBy(int offset) {
-        getParent().updateSizeBy(offset);
-    }
+    public abstract int  getLevel();
 
     /**
      * Mark the unit as deleted;

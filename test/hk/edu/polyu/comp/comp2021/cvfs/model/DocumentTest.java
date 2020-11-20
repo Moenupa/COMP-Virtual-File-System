@@ -4,8 +4,11 @@ import org.junit.jupiter.api.Test;
 
 class DocumentTest {
 
+    Document newDoc = new Document("newDoc", null, DocType.TXT, "no content available");
+
     @Test
-    void testToString() {
-        // TODO: may or may not need testing
+    void toStringTest() {
+        System.out.println(newDoc);
     }
+
 }

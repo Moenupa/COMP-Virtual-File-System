@@ -4,7 +4,7 @@ public class Disk extends Directory {
     private final int capacity;
 
     public Disk(int capacity) {
-        super("Disk", null);
+        super("Disk",null);
         this.capacity = capacity;
     }
 
@@ -14,6 +14,7 @@ public class Disk extends Directory {
      *
      * @param offset Positive if the size increases, vice versa.
      */
+    @Override
     public void updateSizeBy(int offset) {
         if (getSize() + offset > getCapacity()) {
             System.out.println("Error: No Enough Space Left.");

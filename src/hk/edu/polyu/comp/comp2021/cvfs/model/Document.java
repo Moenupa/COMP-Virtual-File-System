@@ -7,6 +7,11 @@ public class Document extends Unit {
     private DocType type;
 
     /**
+     * A reference to the parent directory. Not null except for the disk.
+     */
+    private Directory parent;
+
+    /**
      * The content of the document.
      */
     private String content;
@@ -20,7 +25,8 @@ public class Document extends Unit {
      * @param content The content of the document.
      */
     public Document(String name, Unit parent, DocType type, String content) {
-        super(name, parent);
+        super(name);
+        setParent(parent);
         this.type = type;
         this.content = content;
         setSize(SIZE_CONSTANT + content.length() * 2);
@@ -31,6 +37,38 @@ public class Document extends Unit {
      */
     public DocType getType() {
         return type;
+    }
+
+    /**
+     * @return The reference to the parent.
+     */
+    @Override
+    public Directory getParent() {
+        return parent;
+    }
+
+    /**
+     * Set a new parent to the current unit.
+     *
+     * @param newParent The new parent of the unit.
+     */
+    @Override
+    public void setParent(Unit newParent) {
+        parent = (Directory) newParent;
+    }
+
+    /**
+     * get the level index of this unit;
+     */
+    @Override
+    public int getLevel() {
+        Unit temp = this;
+        int level = 0;
+        while (temp.getParent() != null) {
+            temp = temp.getParent();
+            level++;
+        }
+        return level;
     }
 
     /**
@@ -46,13 +84,5 @@ public class Document extends Unit {
         return str;
     }
 
-    /**
-     * Invalid for this type.
-     *
-     * @param offset Positive if the size increases, vice versa.
-     */
-    @Override
-    public void updateSizeBy(int offset) {
-        System.out.println("Error: Access Denied.");
-    }
+
 }
