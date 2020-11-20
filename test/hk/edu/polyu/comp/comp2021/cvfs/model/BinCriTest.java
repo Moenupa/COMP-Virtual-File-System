@@ -3,8 +3,7 @@ package hk.edu.polyu.comp.comp2021.cvfs.model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class BinCriTest {
 
@@ -40,6 +39,12 @@ class BinCriTest {
     }
 
     @Test
+    void isValidOperatorTest() {
+        assertTrue(BinCri.isValidOperator("&&") && BinCri.isValidOperator("||"));
+        assertFalse(BinCri.isValidOperator("&|"));
+    }
+
+    @Test
     void checkTest() {
         assertTrue(sizeLowAndUp.check(txtDoc));
         assertFalse(sizeLowAndUp.check(txtSizeDoc));
@@ -59,5 +64,19 @@ class BinCriTest {
 
     @Test
     void toStringTest() {
+
+        assertEquals(
+                "BinaryCriteria 'gg', { (size >= 50 && size <= 300) }",
+                sizeLowAndUp.toString());
+    }
+
+    @Test
+    void hashCodeTest() {
+        assertEquals(sizeLowAndUp.hashCode(), sizeLowAndUp.clone().hashCode());
+    }
+
+    @Test
+    void equalsTest() {
+        assertEquals(sizeLowAndUp, sizeLowAndUp.clone());
     }
 }

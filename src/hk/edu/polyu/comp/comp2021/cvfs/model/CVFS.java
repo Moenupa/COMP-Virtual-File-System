@@ -147,7 +147,7 @@ public class CVFS {
                 throw new Exception("Error: Invalid Arguments. Details: Already exists Criterion " + name1);
             if (!Criterion.isValidCriName(name1))
                 throw new Exception("Error: Invalid Criterion Name " + name1);
-            if (!op.equals("||") && !op.equals("&&"))
+            if (!BinCri.isValidOperator(op))
                 throw new Exception("Error: Invalid Argument op " + op);
             if (!criteria.containsKey(name3) || name3 == null)
                 throw new Exception("Error: Cannot find argument " + name3);
