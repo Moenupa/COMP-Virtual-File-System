@@ -185,9 +185,10 @@ public class Criterion implements Cloneable {
      *
      * @param unit The unit to be checked.
      * @return True if the condition holds.
+     * @throws RuntimeException if unit null or expression error
      */
     public boolean check(Unit unit) {
-        if (unit == null) throw new RuntimeException("Null unit checked by check() checker");
+        if (unit == null) throw new RuntimeException("Null unit checked by check() checker.");
 
         if (isDocumentMark)
             return unit instanceof Document;
@@ -207,7 +208,7 @@ public class Criterion implements Cloneable {
         try {
             return (boolean) engine.eval(expression);
         } catch (Exception e) {
-            throw new RuntimeException("Script Error when processing " + expression);
+            throw new RuntimeException("Script Error when processing " + expression + ".");
         }
 
     }
@@ -267,9 +268,31 @@ public class Criterion implements Cloneable {
      * Convert this to a js string
      *
      * @return js String
+     * @throws RuntimeException if attribute invalid
      */
-    private String toJsString() {
-        return criToJsString(this);
+    private String toJsString() throws RuntimeException {
+        String base;
+        switch (getAttr()) {
+            case "name":
+                // js: name.contains(matcher), matcher = [ "sth" ]
+                base = getAttr() + ".contains(" + getVal() + ")";
+                break;
+            case "type":
+                // js: type == matcher, matcher = [ "sth" ]
+                base = getAttr() + "==" + getVal();
+                break;
+            case "size":
+                // js: size >= 30
+                base = getAttr() + getOp() + getVal();
+                break;
+            default:
+                throw new RuntimeException("Invalid attribute in " + this + ".");
+        }
+
+        if (isNeg())
+            base = "!(" + base + ")";
+
+        return base;
     }
 
     /**
@@ -282,38 +305,6 @@ public class Criterion implements Cloneable {
         base = getAttr() + ' ' + getOp() + ' ' + getVal();
 
         if (isNeg())
-            base = "!(" + base + ")";
-
-        return base;
-    }
-
-    /**
-     * toJsString for a single Criterion object
-     *
-     * @param cur current Criterion object;
-     * @return toString
-     */
-    private static String criToJsString(Criterion cur) {
-        String base;
-        switch (cur.getAttr()) {
-            case "name":
-                // js: name.contains(matcher), matcher = [ "sth" ]
-                base = cur.getAttr() + ".contains(" + cur.getVal() + ")";
-                break;
-            case "type":
-                // js: type == matcher, matcher = [ "sth" ]
-                base = cur.getAttr() + "==" + cur.getVal();
-                break;
-            case "size":
-                // js: size >= 30
-                base = cur.getAttr() + cur.getOp() + cur.getVal();
-                break;
-            default:
-                System.out.println("Error: Invalid Argument. Details: getAttr() failure: " + cur);
-                return "";
-        }
-
-        if (cur.isNeg())
             base = "!(" + base + ")";
 
         return base;
@@ -337,7 +328,8 @@ public class Criterion implements Cloneable {
                 if (op.equals("equals") && val.matches("^\"\\S+\"$")) {
                     if (!val.matches("^\"(txt|html|css|java)\"$"))
                         System.out.println("Warning: Unsupported file type " + val + ".");
-                    // if type not valid show *warning*, then return. this is a intended warning, not error
+                    // Intended warning, not error
+                    // if type not valid show *warning*, then return.
                     return true;
                 }
                 return false;

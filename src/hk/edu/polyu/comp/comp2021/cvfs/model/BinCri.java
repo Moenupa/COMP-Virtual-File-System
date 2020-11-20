@@ -1,7 +1,11 @@
 package hk.edu.polyu.comp.comp2021.cvfs.model;
 
+import java.util.Objects;
+
 /**
- * TODO: 要加 JavaDoc；这个文件 0 Error
+ * TODO: 要加 JavaDoc；这个文件 0 Error by Code Inspection
+ * 已经完成 println -> exception; 唯一 exception 在
+ * Error: 和颜色没加
  */
 public class BinCri extends Criterion {
     /**
@@ -35,6 +39,15 @@ public class BinCri extends Criterion {
     }
 
     /**
+     * check if operator is valid
+     * @param operator operator for a BinCri
+     * @return true if operator is '&&' or '||'
+     */
+    public static boolean isValidOperator(String operator) {
+        return operator.matches("&&|\\|\\|");
+    }
+
+    /**
      * get the cri1 of a BinCr object
      * @return cri1
      */
@@ -60,14 +73,13 @@ public class BinCri extends Criterion {
 
     /**
      * Clone Constructor
-     *
-     * @param x object to be cloned
+     * @param cloned object to be cloned
      */
-    private BinCri(BinCri x) {
-        super(x.getName());
-        this.cri1 = x.getCri1();
-        this.cri2 = x.getCri2();
-        this.operator = x.getOperator();
+    private BinCri(BinCri cloned) {
+        super(cloned.getName());
+        this.cri1 = cloned.getCri1();
+        this.cri2 = cloned.getCri2();
+        this.operator = cloned.getOperator();
     }
 
     /**
@@ -85,19 +97,19 @@ public class BinCri extends Criterion {
     /**
      * Check if one file fits multiple criteria.
      *
-     * @param x The unit to be checked.
+     * @param unit The unit to be checked.
      * @return True if both conditions hold.
+     * @throws RuntimeException if operator invalid
      */
     @Override
-    public boolean check(Unit x) {
+    public boolean check(Unit unit) throws RuntimeException {
         switch (operator) {
             case "&&":
-                return isNeg() ^ (cri1.check(x) && cri2.check(x));
+                return isNeg() ^ (cri1.check(unit) && cri2.check(unit));
             case "||":
-                return isNeg() ^ (cri1.check(x) || cri2.check(x));
+                return isNeg() ^ (cri1.check(unit) || cri2.check(unit));
             default:
-                System.out.println("Error: Invalid Argument. Details: Invalid operation " + operator);
-                return false;
+                throw new RuntimeException("BinCri operator invalid " + operator + ".");
         }
     }
 
@@ -122,5 +134,26 @@ public class BinCri extends Criterion {
     @Override
     public String toString() {
         return "BinaryCriteria '" + getName() + "', { " + criToString() + " }";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BinCri)) return false;
+        if (!super.equals(o)) return false;
+        BinCri binCri = (BinCri) o;
+        return cri1.equals(binCri.getCri1()) &&
+                cri2.equals(binCri.getCri2()) &&
+                operator.equals(binCri.getOperator());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getCri1(), getCri2(), getOperator());
+    }
+
+    @Override
+    public BinCri clone() {
+        return new BinCri(this);
     }
 }

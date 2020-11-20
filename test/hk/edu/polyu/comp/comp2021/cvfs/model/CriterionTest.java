@@ -38,6 +38,13 @@ class CriterionTest {
     }
 
     @Test
+    void CriterionTest() {
+        Criterion constructorTest = new Criterion("ct");
+        assertEquals("ct", constructorTest.getName());
+        assertNull(constructorTest.getAttr());
+    }
+
+    @Test
     void getNameTest() {
         assertEquals("sa", txtCri.getName());
         assertEquals("sa", cloneCri.getName());
@@ -78,6 +85,16 @@ class CriterionTest {
     }
 
     @Test
+    void cloneTest() {
+        assertEquals(txtCri.clone(), txtCri);
+    }
+
+    @Test
+    void hashCodeTest() {
+        assertEquals(txtCri.clone().hashCode(), txtCri.hashCode());
+    }
+
+    @Test
     void getIsDocumentTest() {
         assertTrue(Criterion.getIsDocument().check(sizeDoc));
         assertFalse(Criterion.getIsDocument().check(new Directory("Downloads", null)));
@@ -96,15 +113,14 @@ class CriterionTest {
 
     @Test
     void isValidCriTest() {
+        assertFalse(Criterion.isValidCri("tb", "nothing", "==", "\"txt'"));
+
         assertFalse(Criterion.isValidCri("ta", "type", "other", "\"txt\""));
-        assertFalse(Criterion.isValidCri("tb", "type", "==", "\"txt'"));
-        assertTrue(Criterion.isValidCri("tc", "type", "equals", "\"'txt\"\""));
+        assertTrue(Criterion.isValidCri("tc", "type", "equals", "\"'txt\""));
 
         assertTrue(Criterion.isValidCri("sa", "size", ">=", "30"));
-        assertFalse(Criterion.isValidCri("sb", "size", "<=", "10*10"));
         assertFalse(Criterion.isValidCri("sc", "size", "<=", "2147483648"));
 
-        assertFalse(Criterion.isValidCri("na", "name", "is", "\"'txt\"\""));
         assertFalse(Criterion.isValidCri("nb", "name", "==", "\"'GG\"'"));
         assertTrue(Criterion.isValidCri("nc", "name", "contains", "\"'txt\"\""));
     }
@@ -115,12 +131,14 @@ class CriterionTest {
         assertEquals(sizeDoc.getSize() >= sizeLimit, sizeCri.check(sizeDoc));
         assertEquals(cssDoc.getSize() >= sizeLimit, sizeCri.check(cssDoc));
         assertEquals(txtDoc.getSize() >= sizeLimit, sizeCri.check(txtDoc));
+        assertTrue(txtCri.check(txtDoc));
         assertTrue(nameCri.check(sizeDoc));
     }
 
     @Test
     void toStringTest() {
-        // awaits further definition of toString() format
+        assertEquals("Criterion { IsDocument }", Criterion.getIsDocument().toString());
+        assertEquals("Criterion 'sa', { type equals \"txt\" }", txtCri.toString());
     }
 
     @Test
