@@ -5,7 +5,11 @@ import javax.script.ScriptEngineManager;
 import java.util.Objects;
 
 /**
- * TODO: 要加 JavaDoc；这个文件 0 Error
+ * This class implements simple criterion with name, attribute,
+ * operation and value, which support instantiating and
+ * checking units with a simple criterion;
+ * and provide <code>static</code> methods
+ * to perform valid criteria check or IsDocument check.
  */
 public class Criterion implements Cloneable {
     /**
@@ -259,7 +263,7 @@ public class Criterion implements Cloneable {
     public static boolean isValidCriName(String name) {
         if (name == null) return false;
 
-        return (name.matches("[a-zA-Z]{2}"));
+        return (name.matches("^[a-zA-Z]{2}$"));
     }
 
     // ===================================== private and protected methods for implementation
@@ -336,7 +340,7 @@ public class Criterion implements Cloneable {
 
             case "size":
                 boolean flagOp, flagVal;
-                flagOp = op.matches("([><]=?)|([!=]=)");
+                flagOp = op.matches("^(([><]=?)|([!=]=))$");
 
                 try {
                     Integer.parseInt(val);

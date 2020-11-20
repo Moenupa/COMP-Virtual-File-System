@@ -1,5 +1,11 @@
 package hk.edu.polyu.comp.comp2021.cvfs.model;
 
+/**
+ * This class implements document stored in the system,
+ * and a <code>Docuemnt</code> is a Leaf on the system's storage tree.
+ * Uses s constructor, several getter/setter methods, and
+ * a <code>toString</code> method to fully implement a document.
+ */
 public class Document extends Unit {
     /**
      * The type of the document.
@@ -78,11 +84,12 @@ public class Document extends Unit {
      */
     @Override
     public String toString() {
-        String str;
-        str = "Document " + getName() + '.' + getType() + ", size = " + getSize() + "\n"
-                + "\033[32m" + content + "\033[0m";
+        String str = "Document " + getName() + '.' + getType() + ", size = " + getSize() + "\n";
+        if (content.isEmpty() || content == null)
+            str = str + "\033[31m[No Content]\033[0m";
+        else
+            str = str + "\033[32m" + content + "\033[0m";
         return str;
     }
-
 
 }

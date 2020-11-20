@@ -1,10 +1,3 @@
-/*
- * from Group Project sample
- *
- * Last Modified: NONE
- */
-
-
 package hk.edu.polyu.comp.comp2021.cvfs;
 
 import hk.edu.polyu.comp.comp2021.cvfs.model.CVFS;
