@@ -4,7 +4,7 @@ public class Disk extends Directory {
     private final int capacity;
 
     public Disk(int capacity) {
-        super("Disk", null);
+        super("Disk",null);
         this.capacity = capacity;
     }
 
