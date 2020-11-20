@@ -165,11 +165,11 @@ public class CVFS {
      * Print all criteria in the memory in a formatted form.
      */
     public void printAllCriteria() {
-        System.out.println("┍ printing all the criteria");
+        System.out.println("╓ printing all the criteria");
         criteria.forEach((key, value)->
-                        System.out.println("┝━━ " + value)
+                        System.out.println("╟── " + value)
                 );
-        System.out.println("┕ " + criteria.size() + " criteria(criterion) in total");
+        System.out.println("╙ " + criteria.size() + " criteria(criterion) in total");
     }
 
 }
