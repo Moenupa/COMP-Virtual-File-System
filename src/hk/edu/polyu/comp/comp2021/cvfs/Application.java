@@ -17,5 +17,10 @@ public class Application {
         CVFSView view = new CVFSView();
         CVFSController control = new CVFSController(cvfs, view);
         // initialize and utilize the system
+
+        while (true){
+            control.terminal();
+
+        }
     }
 }

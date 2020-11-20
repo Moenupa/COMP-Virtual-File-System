@@ -1,15 +1,16 @@
 package hk.edu.polyu.comp.comp2021.cvfs.model;
 
+import java.io.*;
+import java.nio.file.FileAlreadyExistsException;
 import java.util.HashMap;
 import java.util.Map;
 
 public class CVFS {
     // the implementation of the CVFS system.
-
     /**
-     * A hashmap storing all disks.
+     * Stores the current disk in use.
      */
-    Map<String, Disk> disks = new HashMap<>();
+    private Disk disk;
 
     /**
      * A hashmap storing all criteria.
@@ -26,7 +27,63 @@ public class CVFS {
      * @return The reference of the disk.
      */
     public Disk newDisk(int diskSize) {
-        return new Disk(diskSize);
+        disk = new Disk(diskSize);
+        return disk;
+    }
+
+    /**
+     * Stores the current disk in local storage.
+     * Throw an exception if the name is invalid OR
+     * such file already exists.
+     * @param name The name of the file.
+     */
+    public void store(String name){
+        try{
+            if(!Unit.isValidName(name))
+                throw new IllegalArgumentException("Error: Invalid name.");
+            String path =System.getProperty("user.dir")+"/disks/"+name+".ser";
+            File file = new File(path);
+            if(file.exists())
+                throw new FileAlreadyExistsException("Error: File Already Exists.");
+            file.createNewFile();
+            FileOutputStream buffer = new FileOutputStream(path);
+            ObjectOutputStream out = new ObjectOutputStream(buffer);
+            out.writeObject(disk);
+            out.close();
+            buffer.close();
+            System.out.println("Current disk stored in "+path);
+        }
+        catch (IllegalArgumentException e){
+            System.out.println(e.getMessage());
+        }
+        catch (FileAlreadyExistsException e){
+            System.out.println(e.getLocalizedMessage());
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public Disk load(String name){
+        try{
+            String path =System.getProperty("user.dir")+"/disks/"+name+".ser";
+            if(!new File(path).exists())
+                throw new FileNotFoundException("Error: File Not Found.");
+            FileInputStream buffer = new FileInputStream(path);
+            ObjectInputStream in = new ObjectInputStream(buffer);
+            disk = (Disk) in.readObject();
+            in.close();
+            buffer.close();
+        }
+        catch (FileNotFoundException e){
+            System.out.println(e.getLocalizedMessage());
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+        catch (ClassNotFoundException ignored){}
+        System.out.println("Disk "+name+" Loaded.");
+        return disk;
     }
 
     /**
@@ -90,7 +147,7 @@ public class CVFS {
                 throw new Exception("Error: Invalid Arguments. Details: Already exists Criterion " + name1);
             if (!Criterion.isValidCriName(name1))
                 throw new Exception("Error: Invalid Criterion Name " + name1);
-            if (!op.equals("||") && !op.equals("&&"))
+            if (!BinCri.isValidOperator(op))
                 throw new Exception("Error: Invalid Argument op " + op);
             if (!criteria.containsKey(name3) || name3 == null)
                 throw new Exception("Error: Cannot find argument " + name3);
@@ -108,11 +165,11 @@ public class CVFS {
      * Print all criteria in the memory in a formatted form.
      */
     public void printAllCriteria() {
-        System.out.println("┍ printing all the criteria");
+        System.out.println("╓ printing all the criteria");
         criteria.forEach((key, value)->
-                        System.out.println("┝━━ " + value)
+                        System.out.println("╟── " + value)
                 );
-        System.out.println("┕ " + criteria.size() + " criteria(criterion) in total");
+        System.out.println("╙ " + criteria.size() + " criteria(criterion) in total");
     }
 
 }
