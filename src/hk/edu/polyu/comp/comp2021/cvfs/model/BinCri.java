@@ -1,29 +1,61 @@
 package hk.edu.polyu.comp.comp2021.cvfs.model;
 
+/**
+ * TODO: 要加 JavaDoc；这个文件 0 Error
+ */
 public class BinCri extends Criterion {
     /**
-     * Two distinct criteria to be linked
+     * Two distinct criteria to be linked; the first
      */
-    Criterion cri1, cri2;
+    private Criterion cri1;
+
+    /**
+     * Two distinct criteria to be linked; the second
+     */
+    private Criterion cri2;
 
     /**
      * Stores the logical operation between the criteria
      */
-    String op;
+    private String operator;
 
     /**
      * Build a binary criteria
      *
      * @param name name for the new Binary Criteria
      * @param cri1 The first criterion
-     * @param op   The relationship between two criteria
+     * @param operator the logical operator of the two criteria
      * @param cri2 The second criterion
      */
-    BinCri(String name, Criterion cri1, String op, Criterion cri2) {
+    BinCri(String name, Criterion cri1, String operator, Criterion cri2) {
         super(name);
         this.cri1 = cri1;
         this.cri2 = cri2;
-        this.op = op;
+        this.operator = operator;
+    }
+
+    /**
+     * get the cri1 of a BinCr object
+     * @return cri1
+     */
+    public Criterion getCri1() {
+        return cri1;
+    }
+
+    /**
+     * get the cr2 of a BinCr object
+     * @return cr2
+     */
+    public Criterion getCri2() {
+        return cri2;
+    }
+
+    /**
+     * get the Operator of a BinCr object
+     * @return operator
+     */
+    public String getOperator() {
+        return operator;
     }
 
     /**
@@ -33,9 +65,9 @@ public class BinCri extends Criterion {
      */
     private BinCri(BinCri x) {
         super(x.getName());
-        this.cri1 = x.cri1;
-        this.cri2 = x.cri2;
-        this.op = x.op;
+        this.cri1 = x.getCri1();
+        this.cri2 = x.getCri2();
+        this.operator = x.getOperator();
     }
 
     /**
@@ -58,13 +90,13 @@ public class BinCri extends Criterion {
      */
     @Override
     public boolean check(Unit x) {
-        switch (op) {
+        switch (operator) {
             case "&&":
                 return isNeg() ^ (cri1.check(x) && cri2.check(x));
             case "||":
                 return isNeg() ^ (cri1.check(x) || cri2.check(x));
             default:
-                System.out.println("Error: Invalid Argument. Details: Invalid operation " + op);
+                System.out.println("Error: Invalid Argument. Details: Invalid operation " + operator);
                 return false;
         }
     }
@@ -75,7 +107,7 @@ public class BinCri extends Criterion {
      */
     @Override
     protected String criToString() {
-        String base = "(" + cri1.criToString() + ' ' + op + ' ' + cri2.criToString() + ")";
+        String base = "(" + cri1.criToString() + ' ' + operator + ' ' + cri2.criToString() + ")";
 
         if (isNeg())
             base = "!" + base;
