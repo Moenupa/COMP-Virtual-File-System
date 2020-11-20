@@ -80,16 +80,11 @@ public class Document extends Unit {
     /**
      * Format the output
      *
-     * @return the formatted output.
+     * @return the formatted output in white.
      */
     @Override
     public String toString() {
-        String str = "Document " + getName() + '.' + getType() + ", size = " + getSize() + "\n";
-        if (content.isEmpty() || content == null)
-            str = str + "\033[31m[No Content]\033[0m";
-        else
-            str = str + "\033[32m" + content + "\033[0m";
-        return str;
+        return "\033[30m" + "├" + this.getName() + " " + this.getType() + " " + this.getSize() + "\033[0m";
     }
 
 }
