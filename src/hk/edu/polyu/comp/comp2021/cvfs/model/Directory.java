@@ -82,12 +82,12 @@ public class Directory extends Unit {
      * @param name The name of the new directory.
      * @return The reference to the new directory.
      */
-    public Directory newDir(String name) {
+    public Directory newDir(String name) throws Exception {
         if (!isValidName(name)) {
             //TODO: Change Error message into exception throws. No need to add the "Error:" prefix and color change. No return statement needed.
 //            System.out.println("\033[31m" + "Error: Invalid Argument." + "\033[0m");
 //            return null;
-            throw new IllegalArgumentException("Error: Invalid Argument.");
+            throw new Exception("Invalid Argument.");
         }
         if (this.getCatalog().get(name) != null) {
             System.out.println("\033[31m" + "A file with the same name already exists" + "\033[0m");
