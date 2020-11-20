@@ -8,7 +8,7 @@ import hk.edu.polyu.comp.comp2021.cvfs.model.Document;
 import hk.edu.polyu.comp.comp2021.cvfs.view.CVFSView;
 
 import java.util.Scanner;
-
+//TODO: Add Javadocs.
 public class CVFSController {
     private CVFS cvfs;
     private CVFSView view;
