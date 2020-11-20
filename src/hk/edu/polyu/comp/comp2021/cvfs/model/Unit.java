@@ -43,23 +43,7 @@ public abstract class Unit implements Serializable {
      * @return true if it is valid.
      */
     public static boolean isValidName(String name) {
-        if (name == null) {
-            System.out.println("Error: Invalid Argument. Details: checked with null.");
-            return false;
-        }
-
-        if (name.length() > 10) {
-            // TODO: needs phrasing
-            System.out.println("Error: Invalid Argument. Details: Name is too long");
-            return false;
-        }
-
-        for (char x: name.toCharArray()) {
-            if (!Character.isLetterOrDigit(x))
-                return false;
-        }
-
-        return true;
+        return name.matches("^[a-zA-Z0-9]{1,10}$");
     }
 
     /**
@@ -111,8 +95,6 @@ public abstract class Unit implements Serializable {
     public void setSize(int newSize) {
         size = newSize;
     }
-
-
 
     /**
      * get

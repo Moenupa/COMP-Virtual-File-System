@@ -3,9 +3,9 @@ package hk.edu.polyu.comp.comp2021.cvfs.model;
 import java.util.Objects;
 
 /**
- * TODO: 要加 JavaDoc；这个文件 0 Error by Code Inspection
- * 已经完成 println -> exception; 唯一 exception 在
- * Error: 和颜色没加
+ * This class implements binary criteria using a binary tree,
+ * which support instantiating and checking units with a binary criteria,
+ * and provide a <code>static</code> method to perform operator check.
  */
 public class BinCri extends Criterion {
     /**
@@ -44,7 +44,7 @@ public class BinCri extends Criterion {
      * @return true if operator is '&&' or '||'
      */
     public static boolean isValidOperator(String operator) {
-        return operator.matches("&&|\\|\\|");
+        return operator.matches("^&&|\\|\\|$");
     }
 
     /**
