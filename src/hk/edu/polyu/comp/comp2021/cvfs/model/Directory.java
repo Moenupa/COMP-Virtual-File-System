@@ -9,7 +9,11 @@ public class Directory extends Unit {
      * The contents in the directory.
      */
     private final Map<String, Unit> catalog = new HashMap<>();
-    Disk currDisk;
+
+    /**
+     * Stores the reference to the current disk.
+     */
+    private Directory currDisk;
 
     /**
      * Construct a new directory.
@@ -19,7 +23,7 @@ public class Directory extends Unit {
      */
     public Directory(String name, Unit parent) {
         super(name, parent);
-        this.setSize(40);
+        this.setSize(SIZE_CONSTANT);
     }
 
     /**
@@ -35,6 +39,7 @@ public class Directory extends Unit {
      * First update the size of the current directory, then create the file.
      *
      * @param name The name of the new directory.
+     * @return The reference to the new directory.
      */
     public Directory newDir(String name) {
         if (!isValidName(name)) {
@@ -46,7 +51,7 @@ public class Directory extends Unit {
             return null;
         }
         this.getCatalog().put(name, new Directory(name, this));
-        updateSizeBy(this, this.getCatalog().get(name).getSize());
+        updateSizeBy(this.getCatalog().get(name).getSize());
         return (Directory) this.getCatalog().get(name);
     }
 
@@ -69,7 +74,7 @@ public class Directory extends Unit {
             return null;
         }
         this.getCatalog().put(name, new Document(name, this, type, content));
-        updateSizeBy(this, this.getCatalog().get(name).getSize());
+        updateSizeBy(this.getCatalog().get(name).getSize());
         return (Document) this.getCatalog().get(name);
     }
 
@@ -87,7 +92,7 @@ public class Directory extends Unit {
             return;
         }
         move((Directory) currDisk.getCatalog().get("Bin"), name,false);
-        updateSizeBy(this, -this.getCatalog().get(name).getSize());
+        updateSizeBy(-this.getCatalog().get(name).getSize());
         this.getCatalog().remove(name);
     }
 
@@ -99,7 +104,7 @@ public class Directory extends Unit {
      * @param name The name of the file to be deleted.
      */
     public void delete(String name) {
-        updateSizeBy(this, -this.getCatalog().get(name).getSize());
+        updateSizeBy(-this.getCatalog().get(name).getSize());
         if (this.getCatalog().get(name) == null) {
             System.out.println("\033[31m" + "Error: No such document/directory exit." + "\033[0m");
             return;
@@ -133,9 +138,9 @@ public class Directory extends Unit {
             Document tempDoc = (Document) this.getCatalog().get(name);
             other.getCatalog().put(name, tempDoc);
         }
-        updateSizeBy(other, this.getCatalog().get(name).getSize());
+        updateSizeBy(this.getCatalog().get(name).getSize());
         if (delete) {
-            updateSizeBy(this, -this.getCatalog().get(name).getSize());
+            updateSizeBy(-this.getCatalog().get(name).getSize());
             this.getCatalog().remove(name);
         }
     }

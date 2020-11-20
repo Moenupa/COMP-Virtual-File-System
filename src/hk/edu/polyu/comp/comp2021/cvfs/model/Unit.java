@@ -127,13 +127,9 @@ public abstract class Unit implements Serializable {
      *
      * @param offset Positive if the size increases, vice versa.
      */
-    public void updateSizeBy(Unit u, int offset) {
-        if (u.getParent() == null) {
-            u.setSize(u.size + offset);
-            return;
-        }
-        updateSizeBy(u.parent, offset);
-        u.setSize(u.size + offset);
+    public void updateSizeBy(int offset) {
+        parent.updateSizeBy(offset);
+        setSize(getSize()+offset);
     }
 
     /**
