@@ -2,8 +2,6 @@ package hk.edu.polyu.comp.comp2021.cvfs.model;
 
 import java.util.HashMap;
 import java.util.Map;
-//import hk.edu.polyu.comp.comp2021.cvfs.model.DocType;
-//TODO: Add Javadocs. Tedious but necessary.
 
 /**
  *  This class implement directory that can stored documents or other directory
@@ -25,7 +23,6 @@ public class Directory extends Unit {
      * A reference to the parent directory. Not null except for the disk.
      */
     private Directory parent;
-
 
     /**
      * Construct a new directory.
@@ -337,6 +334,7 @@ public class Directory extends Unit {
         }
         rSearch(this,0,criName);
     }
+
     /**
      * A rList with a filter.
      *
@@ -344,15 +342,23 @@ public class Directory extends Unit {
      * @param currDir The current Directory of each recursive level.
      * @param level The level of each recursive.
      */
-    public void rSearch(Directory currDir, int level, Criterion criName) {
-        for (String name : currDir.getCatalog().keySet()) {
-            if (criName.check(this.getCatalog().get(name))) {
-                for (int i = 0; i < level; i++) {
-                    System.out.print("\t");
+    public static void rSearch(Directory currDir, int level, Criterion criName) {
+        currDir.getCatalog().forEach((name, unit) ->
+                {
+                    if (criName.check(unit)) {
+                        for (int i = 0; i < level; i++) System.out.print("\t");
+                        System.out.println(unit.toString());
+                    }
                 }
-                System.out.println(currDir.getCatalog().get(name));
-            }
-        }
+        );
+//        for (String name : currDir.getCatalog().keySet()) {
+//            if (criName.check(this.getCatalog().get(name))) {
+//                for (int i = 0; i < level; i++) {
+//                    System.out.print("\t");
+//                }
+//                System.out.println(currDir.getCatalog().get(name));
+//            }
+//        }
     }
 
     /**
@@ -398,8 +404,8 @@ public class Directory extends Unit {
      * @param offset Positive if the size increases, vice versa.
      */
     public void updateSizeBy(int offset) {
+        setSize(getSize() + offset);
         getParent().updateSizeBy(offset);
-        setSize(getSize()+offset);
     }
 
     /**
@@ -416,52 +422,3 @@ public class Directory extends Unit {
         return level;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
