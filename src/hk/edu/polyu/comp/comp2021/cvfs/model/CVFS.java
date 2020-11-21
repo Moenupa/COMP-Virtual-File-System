@@ -239,21 +239,20 @@ public class CVFS {
      * Print a warning and return if the desired directory does not exist.
      *
      * @param name The new directory.
-     * @throws Exception If No such directory exists.
      */
-    public void changeDir(String name) throws Exception{
+    public void changeDir(String name) {
         if(name.equals("..")){
             if (cwd.getParent()==null)
-                throw new Exception("This is the root directory.");
+                throw new IllegalArgumentException("This is the root directory.");
             setCwd(cwd.getParent());
             return;
         }
         Map<String,Unit> cat = getCwd().getCatalog();
         if(!cat.containsKey(name))
-            throw new Exception("No such directory.");
+            throw new IllegalArgumentException("No such directory.");
         Unit newDir = cat.get(name);
         if(!(newDir instanceof Directory))
-            throw new Exception("This is not a directory.");
+            throw new IllegalArgumentException("This is not a directory.");
         TraceLogger.getInstance().newLog(TraceLogger.OpType.CD,getCwd(),newDir);
         setCwd((Directory) newDir);
     }

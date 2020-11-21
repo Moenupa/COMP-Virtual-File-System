@@ -286,9 +286,8 @@ public class CVFSController {
 
         /**
          * To undo a step.
-         * @throws Exception If no more steps can be undone.
          */
-        public void undo() throws Exception {
+        public void undo() {
             TraceLogger.Tracelog log;
             log=logger.getlog();
             parse(log);
@@ -296,9 +295,8 @@ public class CVFSController {
 
         /**
          * To redo a step.
-         * @throws Exception If no more steps can be redone.
          */
-        public void redo() throws Exception {
+        public void redo() {
             TraceLogger.Tracelog log;
             log=logger.getRlog();
             parse(log);

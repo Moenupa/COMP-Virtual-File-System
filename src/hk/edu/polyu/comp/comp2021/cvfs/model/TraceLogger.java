@@ -125,11 +125,10 @@ public final class TraceLogger {
     /**
      * Return the latest log and push it into redo logger.
      * @return The latest piece of log
-     * @throws Exception If the logger is empty.
      */
-    public Tracelog getlog() throws Exception {
+    public Tracelog getlog(){
         if(logger.isEmpty())
-            throw new Exception("No more step can be undone.");
+            throw new IllegalStateException("No more step can be undone.");
         Tracelog tmp = logger.pop();
         OpType type = tmp.getType();
         rLogger.push(tmp.switchLog());
@@ -138,11 +137,10 @@ public final class TraceLogger {
 
     /**
      * @return The latest piece of redo log and push it into the logger.
-     * @throws Exception If the logger is empty.
      */
-    public Tracelog getRlog()throws Exception {
+    public Tracelog getRlog(){
         if(rLogger.isEmpty())
-            throw new Exception("No more step can be redone");
+            throw new IllegalStateException("No more step can be redone");
          Tracelog tmp = rLogger.pop();
          logger.push(tmp.switchLog());
          return tmp;
