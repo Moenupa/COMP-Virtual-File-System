@@ -345,7 +345,8 @@ public class Directory extends Unit {
         for (Unit unit : currDir.getCatalog().values()) {
             if (criName.check(unit)) {
                 for (int i = 0; i < level; i++) System.out.print("\t");
-                System.out.println(unit.toString());
+                System.out.println(unit);
+                if (unit instanceof Directory) rSearch((Directory) unit, ++level, criName);
             }
         }
     }
