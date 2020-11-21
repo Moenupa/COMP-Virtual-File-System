@@ -1,14 +1,17 @@
 package hk.edu.polyu.comp.comp2021.cvfs.controller;
 
 
-import hk.edu.polyu.comp.comp2021.cvfs.model.CVFS;
-import hk.edu.polyu.comp.comp2021.cvfs.model.Directory;
-import hk.edu.polyu.comp.comp2021.cvfs.model.DocType;
-import hk.edu.polyu.comp.comp2021.cvfs.model.Document;
+import hk.edu.polyu.comp.comp2021.cvfs.model.*;
 import hk.edu.polyu.comp.comp2021.cvfs.view.CVFSView;
 
+import javax.security.auth.login.CredentialException;
+import java.util.Arrays;
 import java.util.Scanner;
-//TODO: Add Javadocs.
+import java.util.HashMap;
+
+/**
+ * the control element of the CVFS
+ */
 public class CVFSController {
     private CVFS cvfs;
     private CVFSView view;
@@ -31,6 +34,7 @@ public class CVFSController {
 
     /**
      * return the current working directory
+     * @return get current working directory
      */
     public Directory getCur(){
         return cur;
@@ -45,7 +49,7 @@ public class CVFSController {
      * Change the current working directory to the desired one.
      * Print a warning and return if the desired directory does not exist.
      *
-     * @param name The new directory.
+     * @param name The new working directory.
      */
     public void changeDir(String name) {
         view.updateDir(getCur());
@@ -54,16 +58,21 @@ public class CVFSController {
 
 
 
+
+    /**
+     * @return command input from the keyboard or the system
+     */
     public String getCommand(){
 
 
-        String command = scanner.nextLine();
-
-        return command;
+        return scanner.nextLine();
     }
 
 
-
+    /**
+     * @param type type of command input
+     * @param command command input
+     */
     public void processCommand(CommandType type, String command){
 
         String[] elements=new String[]{"","","","",""};
