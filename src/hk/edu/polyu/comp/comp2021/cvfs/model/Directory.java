@@ -82,16 +82,13 @@ public class Directory extends Unit {
      * @param name The name of the new directory.
      * @return The reference to the new directory.
      */
-    public Directory newDir(String name) throws Exception {
+    public Directory newDir(String name) {
         if (!isValidName(name)) {
             //TODO: Change Error message into exception throws. No need to add the "Error:" prefix and color change. No return statement needed.
-//            System.out.println("\033[31m" + "Error: Invalid Argument." + "\033[0m");
-//            return null;
-            throw new Exception("Invalid Argument.");
+            throw new IllegalArgumentException("Error: Invalid Argument.");
         }
         if (this.getCatalog().get(name) != null) {
-            System.out.println("\033[31m" + "A file with the same name already exists" + "\033[0m");
-            return null;
+            throw new IllegalArgumentException("A directory with the same name already exists");
         }
         this.getCatalog().put(name, new Directory(name, this));
         updateSizeBy(this.getCatalog().get(name).getSize());
@@ -110,12 +107,10 @@ public class Directory extends Unit {
      */
     public Document newDoc(String name, DocType type, String content) {
         if (!isValidName(name) || type == null || content == null) {
-            System.out.println("\033[31m" + "Error: Invalid Argument." + "\033[0m");
-            return null;
+            throw new IllegalArgumentException("Error: Invalid Argument.");
         }
         if (this.getCatalog().get(name) != null) {
-            System.out.println("\033[31m" + "A file with the same name already exists" + "\033[0m");
-            return null;
+            throw new IllegalArgumentException("A document with the same name already exists");
         }
         this.getCatalog().put(name, new Document(name, this, type, content));
         updateSizeBy(this.getCatalog().get(name).getSize());
@@ -148,11 +143,10 @@ public class Directory extends Unit {
      * @param name The name of the file to be deleted.
      */
     public void delete(String name) {
-        updateSizeBy(-this.getCatalog().get(name).getSize());
         if (this.getCatalog().get(name) == null) {
-            System.out.println("\033[31m" + "Error: No such document/directory exit." + "\033[0m");
-            return;
+            throw new IllegalArgumentException("Error: Can't find "+name+" in this directory.");
         }
+        updateSizeBy(-this.getCatalog().get(name).getSize());
         this.getCatalog().remove(name);
     }
 
@@ -165,13 +159,11 @@ public class Directory extends Unit {
      */
     public void move(Directory other, String name, boolean delete) {
         if (this.getCatalog().get(name) == null) {
-            System.out.println("\033[31m" + "Error: No such document/directory exist." + "\033[0m");
-            return;
+            throw new IllegalArgumentException("Error: Can't find "+name+" in this directory.");
         }
 
         if (other.getCatalog().get(name) != null) {
-            System.out.println("\033[31m" + "Error: The target directory contains a file with the same name, please rename the file you want to move or delete the file with the same name in the target directory." + "\033[0m");
-            return;
+            throw new IllegalArgumentException("A file with the same name already exists in the destination directory");
         }
 
         if (this.getCatalog().get(name) instanceof Directory) {
@@ -183,10 +175,8 @@ public class Directory extends Unit {
             other.getCatalog().put(name, tempDoc);
         }
         updateSizeBy(this.getCatalog().get(name).getSize());
-        if (delete) {
-            updateSizeBy(-this.getCatalog().get(name).getSize());
-            this.getCatalog().remove(name);
-        }
+        if(delete)
+            this.delete(name);
     }
 
     /**
@@ -200,12 +190,13 @@ public class Directory extends Unit {
      */
     public void rename(String oldName, String newName) {
         if (this.getCatalog().get(oldName) == null) {
-            System.out.println("\033[31m" + "Error: No such document/directory exist." + "\033[0m");
-            return;
+            throw new IllegalArgumentException("Error: Can't find "+oldName+" in this directory.");
+        }
+        if (!isValidName(newName)) {
+            throw new IllegalArgumentException("Error: Invalid Argument.");
         }
         if (this.getCatalog().get(newName) != null ) {
-            System.out.println("\033[31m" + "Error: The document/directory whose same is same with the new name has exist." + "\033[0m");
-            return;
+            throw new IllegalArgumentException("A file with the same new name already exists in this directory");
         }
         Unit renamedItem;
         renamedItem = this.getCatalog().get(oldName);
@@ -270,7 +261,7 @@ public class Directory extends Unit {
      */
     public void up_rList() {
         if (this.getParent() == null) {
-            System.out.println("You are already in the root directory！");
+            System.out.println("\033[31m" + "You are already in the root directory！" + "\033[0m");
             return;
         }
         up_rList(this);
