@@ -64,7 +64,7 @@ public final class TraceLogger {
          * @param type The type of the operation
          * @param args The arguments of the operation
          */
-        public Tracelog(OpType type, Object[] args){
+        public Tracelog(OpType type, Object... args){
             this.type=type;
             this.args=args;
         }
@@ -81,6 +81,30 @@ public final class TraceLogger {
          */
         public OpType getType() {
             return type;
+        }
+
+        /**
+         * @return Switch the log between redo and undo.
+         */
+        public Tracelog switchLog(){
+            switch (type){
+                case ADD:
+                    return new Tracelog(OpType.DEL, args);
+                case DEL:
+                    return new Tracelog(OpType.ADD, args);
+                case REN:
+                    return new Tracelog(OpType.REN,args[0],args[2],args[1]);
+                case CD:
+                    return new Tracelog(OpType.CD,args[1],args[0]);
+                case SD:
+                    return new Tracelog(OpType.SD,args[1],args[0]);
+                case DD:
+                    return new Tracelog(OpType.LD,args);
+                case LD:
+                    return new Tracelog(OpType.DD,args);
+                default:
+                    return null;
+            }
         }
     }
 
@@ -107,7 +131,8 @@ public final class TraceLogger {
         if(logger.isEmpty())
             throw new Exception("No more step can be undone.");
         Tracelog tmp = logger.pop();
-        rLogger.push(tmp);
+        OpType type = tmp.getType();
+        rLogger.push(tmp.switchLog());
         return tmp;
     }
 
@@ -119,7 +144,7 @@ public final class TraceLogger {
         if(rLogger.isEmpty())
             throw new Exception("No more step can be redone");
          Tracelog tmp = rLogger.pop();
-         logger.push(tmp);
+         logger.push(tmp.switchLog());
          return tmp;
     }
 

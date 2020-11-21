@@ -4,6 +4,7 @@ package hk.edu.polyu.comp.comp2021.cvfs.controller;
 import hk.edu.polyu.comp.comp2021.cvfs.model.*;
 import hk.edu.polyu.comp.comp2021.cvfs.view.CVFSView;
 
+import java.util.HashMap;
 import java.util.Scanner;
 
 /**
@@ -150,6 +151,120 @@ public class CVFSController {
             type = commandSwitch.getType(command);
         }
         processCommand(type, command);
+    }
+
+    /**
+     * Used to parse and operate undo and redo command
+     */
+    public static class loggerParser{
+        /**
+         * Reflect on different kinds of optypes.
+         */
+        public interface Ops{
+            /**
+             * To operate on an logger.
+             * @param args The arguments of the operation.
+             */
+            void operate(Object[] args);
+        }
+        /**
+         * Add an object.
+         */
+        private Ops add = args -> {
+            Unit unit = (Unit) args[0];
+        };
+
+        /**
+         * Delete an Object.
+         */
+        private Ops del = args -> {
+            Unit unit = (Unit) args[0];
+        };
+
+        /**
+         * Rename an object.
+         */
+        private Ops ren = args -> {
+            Unit unit = (Unit) args[0];
+            String newName = (String)args[1];
+            String oldName = (String)args[2];
+
+        };
+        /**
+         * Change directory.
+         * */
+        private Ops cd = args -> {
+            Directory newDir = (Directory) args[0];
+            Directory oldDir = (Directory) args[1];
+
+        };
+        /**
+         * Switch to another disk.
+         */
+        private  Ops sd = args -> {
+            Disk newDisk = (Disk) args[0];
+            Disk oldDisk = (Disk) args[1];
+
+        };
+        /**
+         * Delete a disk.
+         */
+        private Ops dd = args -> {
+            String name = (String)args[0];
+
+        };
+        /**
+         * Store a disk to local storage.
+         */
+        private Ops ld = args -> {
+            String name = (String)args[0];
+
+        };
+
+        private TraceLogger logger = TraceLogger.getInstance();
+
+        private HashMap<TraceLogger.OpType,Ops> typeMap = new HashMap<>();
+        {
+            typeMap.put(TraceLogger.OpType.ADD,add);
+            typeMap.put(TraceLogger.OpType.DEL,del);
+            typeMap.put(TraceLogger.OpType.REN,ren);
+            typeMap.put(TraceLogger.OpType.CD,cd);
+            typeMap.put(TraceLogger.OpType.SD,sd);
+            typeMap.put(TraceLogger.OpType.DD,dd);
+            typeMap.put(TraceLogger.OpType.LD,ld);
+        }
+
+        /**
+         * To parse and operate a log.
+         * @param log The log to be parsed.
+         */
+        public void parse(TraceLogger.Tracelog log){
+            TraceLogger.OpType type = log.getType();
+            Object[] args = log.getArgs();
+            Ops ops= typeMap.get(type);
+            ops.operate(args);
+        }
+
+        /**
+         * To undo a step.
+         * @throws Exception If no more steps can be undone.
+         */
+        public void undo() throws Exception {
+            TraceLogger.Tracelog log;
+            log=logger.getlog();
+            parse(log);
+        }
+
+        /**
+         * To redo a step.
+         * @throws Exception If no more steps can be redone.
+         */
+        public void redo() throws Exception {
+            TraceLogger.Tracelog log;
+            log=logger.getRlog();
+            parse(log);
+
+        }
     }
 
 }
