@@ -350,8 +350,8 @@ public class Directory extends Unit {
                 for (int i = 0; i < level; i++) System.out.print("\t");
                 System.out.println(unit);
                 if (currDir.getCatalog().get(name) instanceof Directory) {
-                rSearch((Directory) currDir.getCatalog().get(name), level + 1);
-              }
+                    rSearch((Directory) currDir.getCatalog().get(name), level + 1, criName);
+                }
             }
         }
     }
