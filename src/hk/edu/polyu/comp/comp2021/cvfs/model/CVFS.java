@@ -44,6 +44,7 @@ public class CVFS {
      */
     public Disk newDisk(int diskSize) {
         disk = new Disk(diskSize);
+        TraceLogger.getInstance().newLog(TraceLogger.OpType.SD,this.disk,disk,this);
         cwd = disk;
         return disk;
     }
@@ -126,7 +127,9 @@ public class CVFS {
                 throw new FileNotFoundException("Error: File Not Found.");
             FileInputStream buffer = new FileInputStream(path);
             ObjectInputStream in = new ObjectInputStream(buffer);
-            disk = (Disk) in.readObject();
+            Disk tmp = (Disk) in.readObject();
+            TraceLogger.getInstance().newLog(TraceLogger.OpType.SD,disk,tmp,this);
+            setDisk(tmp);
             in.close();
             buffer.close();
         }
@@ -162,6 +165,7 @@ public class CVFS {
 
         Criterion newCri = new Criterion(name, attr, op, val);
         criteria.put(name, newCri);
+        TraceLogger.getInstance().newLog(TraceLogger.OpType.DEL,newCri,this);
     }
 
     /**
@@ -182,7 +186,9 @@ public class CVFS {
             return;
         }
 
-        criteria.put(name1, criteria.get(name2).getNegCri(name1));
+        Criterion newCri =criteria.get(name2).getNegCri(name1);
+        TraceLogger.getInstance().newLog(TraceLogger.OpType.DEL,newCri,this);
+        criteria.put(name1, newCri);
     }
 
     /**
@@ -213,7 +219,9 @@ public class CVFS {
             System.out.println(e.getMessage());
             return;
         }
-        criteria.put(name1, new BinCri(name1, criteria.get(name3), op, criteria.get(name4)));
+        BinCri newCri = new BinCri(name1, criteria.get(name3), op, criteria.get(name4));
+        TraceLogger.getInstance().newLog(TraceLogger.OpType.DEL,newCri,this);
+        criteria.put(name1, newCri);
     }
 
     /**

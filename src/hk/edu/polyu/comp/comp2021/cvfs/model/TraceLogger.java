@@ -117,7 +117,7 @@ public final class TraceLogger {
      * @param type The type of the log.
      * @param args The arguments of the log.
      */
-    public void newLog(OpType type, Object[] args){
+    public void newLog(OpType type, Object... args){
         rLogger.clear();
         logger.push(new Tracelog(type, args));
     }

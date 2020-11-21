@@ -126,6 +126,9 @@ public class CVFSController {
             case load:
 
             case store:
+
+
+                TraceLogger.getInstance().newLog(TraceLogger.OpType.DD,elements[1],cvfs);
         }
 
     }
@@ -238,7 +241,7 @@ public class CVFSController {
          */
         private Ops dd = args -> {
             String name = (String)args[0];
-            CVFS cvfs = (CVFS) args[2];
+            CVFS cvfs = (CVFS) args[1];
             cvfs.delDisk(name);
 
         };
@@ -247,7 +250,7 @@ public class CVFSController {
          */
         private Ops ld = args -> {
             String name = (String)args[0];
-            CVFS cvfs = (CVFS) args[2];
+            CVFS cvfs = (CVFS) args[1];
             cvfs.store(name);
 
         };
