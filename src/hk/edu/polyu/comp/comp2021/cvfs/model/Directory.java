@@ -61,7 +61,7 @@ public class Directory extends Unit {
      */
     @Override
     public String toString() {
-        return "\033[32m" + "├" + this.getName() + " " + this.getSize() + "\033[0m";
+        return String.format("\033[32m%-10s \033[33m%s\033[0m", getName(), getSize());
     }
 
     /**
@@ -220,7 +220,6 @@ public class Directory extends Unit {
         }
     }
 
-
     /**
      * Recursively list the files in the directory.
      * Use indentation to indicate the level of each line.
@@ -329,10 +328,10 @@ public class Directory extends Unit {
      */
     public void rSearch(Criterion criName) {
         if (this.getCatalog().isEmpty()) {
-            System.out.println("\033[31m" + "There is no files/directories in current directory!" + "\033[0m");
+            System.out.println("\033[31m" + "There are no files/directories in current directory!" + "\033[0m");
             return;
         }
-        rSearch(this,0,criName);
+        rSearch(this, 0, criName);
     }
 
     /**

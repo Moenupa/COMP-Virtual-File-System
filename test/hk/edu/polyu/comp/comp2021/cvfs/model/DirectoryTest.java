@@ -69,7 +69,7 @@ class DirectoryTest {
     @Test
     void toStringTest() {
         root.down_rList();
-        root.toString();
+        System.out.println(root.toString());
     }
 
 }
