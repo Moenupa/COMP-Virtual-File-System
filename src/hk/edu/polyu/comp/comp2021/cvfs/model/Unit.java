@@ -8,7 +8,6 @@ public abstract class Unit implements Serializable {
      */
     private String name;
 
-
     /**
      * The size of the file. Variable when the unit is a directory.
      */
