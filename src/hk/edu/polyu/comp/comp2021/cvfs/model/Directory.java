@@ -242,14 +242,12 @@ public class Directory extends Unit {
      * @param level The level of each recursive.
      */
     public void down_rList(Directory currDir, int level) {
-        for (String name : currDir.getCatalog().keySet()) {
-            for (int i = 0; i < level; i++) {
+        for (Unit unit : currDir.getCatalog().values()) {
+            for (int i = 0; i < level; i++)
                 System.out.print("\t");
-            }
-            System.out.println(currDir.getCatalog().get(name));
-            if (currDir.getCatalog().get(name) instanceof Directory) {
-                down_rList((Directory) currDir.getCatalog().get(name), level + 1);
-            }
+            System.out.println(unit);
+            if (unit instanceof Directory)
+                down_rList((Directory) unit, level + 1);
         }
     }
 
@@ -349,8 +347,8 @@ public class Directory extends Unit {
             if (criName.check(unit)) {
                 for (int i = 0; i < level; i++) System.out.print("\t");
                 System.out.println(unit);
-                if (currDir.getCatalog().get(name) instanceof Directory) {
-                    rSearch((Directory) currDir.getCatalog().get(name), level + 1, criName);
+                if (unit instanceof Directory) {
+                    rSearch((Directory) unit, level + 1, criName);
                 }
             }
         }
