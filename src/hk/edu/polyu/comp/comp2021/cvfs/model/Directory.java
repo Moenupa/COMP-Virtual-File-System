@@ -1,9 +1,13 @@
 package hk.edu.polyu.comp.comp2021.cvfs.model;
-import javax.print.Doc;
+
 import java.util.HashMap;
 import java.util.Map;
-//import hk.edu.polyu.comp.comp2021.cvfs .model.DocType;
-//TODO: Add Javadocs. Tedious but necessary.
+
+/**
+ *  This class implement directory that can stored documents or other directory
+ *  to form a file system's storage tree with disk as root.
+ *  This class also provids methods for revision, move, copy, delete, list, search and so on.
+ */
 public class Directory extends Unit {
     /**
      * The contents in the directory.
@@ -19,7 +23,6 @@ public class Directory extends Unit {
      * A reference to the parent directory. Not null except for the disk.
      */
     private Directory parent;
-
 
     /**
      * Construct a new directory.
@@ -52,6 +55,16 @@ public class Directory extends Unit {
     }
 
     /**
+     * Format the output
+     *
+     * @return the formatted output in green.
+     */
+    @Override
+    public String toString() {
+        return String.format("\033[32m%-14s \033[33m%s\033[0m", getName(), getSize());
+    }
+
+    /**
      * @return The catalog of the current directory.
      */
     public Map<String, Unit> getCatalog() {
@@ -69,13 +82,10 @@ public class Directory extends Unit {
     public Directory newDir(String name) {
         if (!isValidName(name)) {
             //TODO: Change Error message into exception throws. No need to add the "Error:" prefix and color change. No return statement needed.
-//            System.out.println("\033[31m" + "Error: Invalid Argument." + "\033[0m");
-//            return null;
             throw new IllegalArgumentException("Error: Invalid Argument.");
         }
         if (this.getCatalog().get(name) != null) {
-            System.out.println("\033[31m" + "A file with the same name already exists" + "\033[0m");
-            return null;
+            throw new IllegalArgumentException("A directory with the same name already exists");
         }
         this.getCatalog().put(name, new Directory(name, this));
         updateSizeBy(this.getCatalog().get(name).getSize());
@@ -90,15 +100,14 @@ public class Directory extends Unit {
      * @param name    The name of the document.
      * @param type    The type of the document.
      * @param content The content of the document.
+     * @return The reference to the new Document.
      */
     public Document newDoc(String name, DocType type, String content) {
         if (!isValidName(name) || type == null || content == null) {
-            System.out.println("\033[31m" + "Error: Invalid Argument." + "\033[0m");
-            return null;
+            throw new IllegalArgumentException("Error: Invalid Argument.");
         }
         if (this.getCatalog().get(name) != null) {
-            System.out.println("\033[31m" + "A file with the same name already exists" + "\033[0m");
-            return null;
+            throw new IllegalArgumentException("A document with the same name already exists");
         }
         this.getCatalog().put(name, new Document(name, this, type, content));
         updateSizeBy(this.getCatalog().get(name).getSize());
@@ -131,11 +140,10 @@ public class Directory extends Unit {
      * @param name The name of the file to be deleted.
      */
     public void delete(String name) {
-        updateSizeBy(-this.getCatalog().get(name).getSize());
         if (this.getCatalog().get(name) == null) {
-            System.out.println("\033[31m" + "Error: No such document/directory exit." + "\033[0m");
-            return;
+            throw new IllegalArgumentException("Error: Can't find "+name+" in this directory.");
         }
+        updateSizeBy(-this.getCatalog().get(name).getSize());
         this.getCatalog().remove(name);
     }
 
@@ -144,17 +152,15 @@ public class Directory extends Unit {
      *
      * @param other Another directory.
      * @param name The moving document/directory.
-     * @
+     * @param delete If move set ture, if copy set false.
      */
     public void move(Directory other, String name, boolean delete) {
         if (this.getCatalog().get(name) == null) {
-            System.out.println("\033[31m" + "Error: No such document/directory exist." + "\033[0m");
-            return;
+            throw new IllegalArgumentException("Error: Can't find "+name+" in this directory.");
         }
 
         if (other.getCatalog().get(name) != null) {
-            System.out.println("\033[31m" + "Error: The target directory contains a file with the same name, please rename the file you want to move or delete the file with the same name in the target directory." + "\033[0m");
-            return;
+            throw new IllegalArgumentException("A file with the same name already exists in the destination directory");
         }
 
         if (this.getCatalog().get(name) instanceof Directory) {
@@ -166,10 +172,8 @@ public class Directory extends Unit {
             other.getCatalog().put(name, tempDoc);
         }
         updateSizeBy(this.getCatalog().get(name).getSize());
-        if (delete) {
-            updateSizeBy(-this.getCatalog().get(name).getSize());
-            this.getCatalog().remove(name);
-        }
+        if(delete)
+            this.delete(name);
     }
 
     /**
@@ -183,12 +187,13 @@ public class Directory extends Unit {
      */
     public void rename(String oldName, String newName) {
         if (this.getCatalog().get(oldName) == null) {
-            System.out.println("\033[31m" + "Error: No such document/directory exist." + "\033[0m");
-            return;
+            throw new IllegalArgumentException("Error: Can't find "+oldName+" in this directory.");
+        }
+        if (!isValidName(newName)) {
+            throw new IllegalArgumentException("Error: Invalid Argument.");
         }
         if (this.getCatalog().get(newName) != null ) {
-            System.out.println("\033[31m" + "Error: The document/directory whose same is same with the new name has exist." + "\033[0m");
-            return;
+            throw new IllegalArgumentException("A file with the same new name already exists in this directory");
         }
         Unit renamedItem;
         renamedItem = this.getCatalog().get(oldName);
@@ -208,13 +213,9 @@ public class Directory extends Unit {
             System.out.println("\033[31m" + "There is no files/directories in current directory!" + "\033[0m");
             return;
         }
-        System.out.print("\033[45m" + "Total size: ");
-        System.out.println(this.getSize() + "\033[0m");
-        for (String name : this.getCatalog().keySet()) {
-            if (this.getCatalog().get(name) instanceof Directory)
-                System.out.println("\033[32m" + "├" + name + " " + this.getCatalog().get(name).getSize() + "\033[0m");
-            if (this.getCatalog().get(name) instanceof Document)
-                System.out.println("\033[30m" + "├" + name + " " + ((Document) this.getCatalog().get(name)).getType() + " " + this.getCatalog().get(name).getSize() + "\033[0m");
+        System.out.println("\033[4m" + this);
+        for (Unit unit : getCatalog().values()) {
+            System.out.println(" ╞═ " + unit);
         }
     }
 
@@ -228,19 +229,25 @@ public class Directory extends Unit {
             System.out.println("\033[31m" + "There is no files/directories in current directory!" + "\033[0m");
             return;
         }
+        System.out.println("\033[4m" + this);
         down_rList(this, 0);
     }
+
+    /**
+     * Recursively list the files in the directory.
+     * Use indentation to indicate the level of each line.
+     * Report the total number and size of files listed.
+     *
+     * @param currDir The currDir of each recursive level.
+     * @param level The level of each recursive.
+     */
     public void down_rList(Directory currDir, int level) {
-        for (String name : currDir.getCatalog().keySet()) {
-            for (int i = 0; i < level; i++) {
+        for (Unit unit : currDir.getCatalog().values()) {
+            for (int i = 0; i < level; i++)
                 System.out.print("\t");
-            }
-            if (currDir.getCatalog().get(name) instanceof Document)
-                System.out.println("\033[30m" + "├" + name + " " + ((Document) currDir.getCatalog().get(name)).getType() + " " + currDir.getCatalog().get(name).getSize() + "\033[0m");
-            if (currDir.getCatalog().get(name) instanceof Directory) {
-                System.out.println("\033[32m" + "├" + name + " " + currDir.getCatalog().get(name).getSize() + "\033[0m");
-                down_rList((Directory) currDir.getCatalog().get(name), level + 1);
-            }
+            System.out.println(" ╞═ " + unit);
+            if (unit instanceof Directory)
+                down_rList((Directory) unit, level + 1);
         }
     }
 
@@ -251,29 +258,34 @@ public class Directory extends Unit {
      */
     public void up_rList() {
         if (this.getParent() == null) {
-            System.out.println("You are already in the root directory！");
+            System.out.println("\033[31m" + "You are already in the root directory！" + "\033[0m");
             return;
         }
         up_rList(this);
     }
+
+    /**
+     * Recursively list the files from disk(root) to this directory.
+     * Use indentation to indicate the level of each line.
+     * Report the total number and size of files listed.
+     *
+     * @param currDir The current Directory of each recursive level.
+     */
     public void up_rList(Directory currDir) {
         if (currDir.getParent() == null) {
             System.out.println("\033[32m" + currDir.getName() + "\033[0m");
             return;
         }
 
-        up_rList((Directory) currDir.getParent());
+        up_rList(currDir.getParent());
 
-        Directory parent = ((Directory) currDir.getParent());
+        Directory parent = currDir.getParent();
         for (String name : parent.getCatalog().keySet()) {
             if (!name.equals(currDir.getName())) {
                 for (int i = 0; i < currDir.getLevel(); i++) {
                     System.out.print("\t");
                 }
-                if (parent.getCatalog().get(name) instanceof Directory)
-                    System.out.println("\033[32m" + "├" + name + " " + parent.getCatalog().get(name).getSize() + "\033[0m");
-                if (parent.getCatalog().get(name) instanceof Document)
-                    System.out.println("\033[30m" + "├" + name + " " + ((Document)parent.getCatalog().get(name)).getType() + " " + parent.getCatalog().get(name).getSize() + "\033[0m");
+                System.out.println(parent.getCatalog().get(name));
             }
         }
         for (int i = 0; i < currDir.getLevel(); i++) {
@@ -286,10 +298,7 @@ public class Directory extends Unit {
                 for (int i = 0; i < currDir.getLevel() + 1; i++) {
                     System.out.print("\t");
                 }
-                if (this.getCatalog().get(name) instanceof Directory)
-                    System.out.println("\033[32m" + name + " " + this.getCatalog().get(name).getSize() + "\033[0m");
-                if (this.getCatalog().get(name) instanceof Document)
-                    System.out.println("\033[30m" + name + " " + ((Document) this.getCatalog().get(name)).getType() + " " + this.getCatalog().get(name).getSize() + "\033[0m");
+                System.out.println(this.getCatalog().get(name));
             }
 
         } else
@@ -302,16 +311,13 @@ public class Directory extends Unit {
      * @param criName The filter.
      */
     public void search(Criterion criName) {
-        if (this.getCatalog().isEmpty()) {
-            System.out.println("\033[31m" + "There is no files in current directory!" + "\033[0m");
+        if (getCatalog().isEmpty()) {
+            System.out.println("\033[31m" + "There are no files in current directory!" + "\033[0m");
             return;
         }
-        for (String name : this.getCatalog().keySet()) {
-            if (criName.check(this.getCatalog().get(name))) {
-                if (this.getCatalog().get(name) instanceof Directory)
-                    System.out.println("\033[32m" + name + " " + this.getCatalog().get(name).getSize() + "\033[0m");
-                if (this.getCatalog().get(name) instanceof Document)
-                    System.out.println("\033[30m" + name + " " + ((Document) this.getCatalog().get(name)).getType() + " " + this.getCatalog().get(name).getSize() + "\033[0m");
+        for (Unit unit : getCatalog().values()) {
+            if (criName.check(unit)) {
+                System.out.println(unit);
             }
         }
     }
@@ -323,29 +329,38 @@ public class Directory extends Unit {
      */
     public void rSearch(Criterion criName) {
         if (this.getCatalog().isEmpty()) {
-            System.out.println("\033[31m" + "There is no files/directories in current directory!" + "\033[0m");
+            System.out.println("\033[31m" + "There are no files/directories in current directory!" + "\033[0m");
             return;
         }
-        rSearch(this,0,criName);
+        rSearch(this, 0, criName);
     }
-    public void rSearch(Directory currDir, int level, Criterion criName) {
-        for (String name : currDir.getCatalog().keySet()) {
-            if (criName.check(this.getCatalog().get(name))) {
-                for (int i = 0; i < level; i++) {
-                    System.out.print("\t");
-                }
-                if (currDir.getCatalog().get(name) instanceof Document)
-                    System.out.println("\033[30m" + "├" + name + " " + ((Document) currDir.getCatalog().get(name)).getType() + " " + currDir.getCatalog().get(name).getSize() + "\033[0m");
-                if (currDir.getCatalog().get(name) instanceof Directory) {
-                    System.out.println("\033[32m" + "├" + name + " " + currDir.getCatalog().get(name).getSize() + "\033[0m");
-                    rSearch((Directory) currDir.getCatalog().get(name), level + 1, criName);
+
+    /**
+     * A rList with a filter.
+     *
+     * @param criName The filter.
+     * @param currDir The current Directory of each recursive level.
+     * @param level The level of each recursive.
+     */
+    public static void rSearch(Directory currDir, int level, Criterion criName) {
+        for (Unit unit : currDir.getCatalog().values()) {
+            if (criName.check(unit)) {
+                for (int i = 0; i < level; i++) System.out.print("\t");
+                System.out.println(unit);
+                if (unit instanceof Directory) {
+                    rSearch((Directory) unit, level + 1, criName);
                 }
             }
         }
     }
 
+    /**
+     *
+     * @param args blah~blah~
+     */
     public static void main(String[] args) {
-        Disk root = new Disk(999999);
+        final int CAPACITY =  999999;
+        Directory root = new Disk(CAPACITY);
         Directory desktop = root.newDir("Desktop");
         Directory documents = root.newDir("Documents");
         Directory downloads = root.newDir("Downloads");
@@ -382,8 +397,8 @@ public class Directory extends Unit {
      * @param offset Positive if the size increases, vice versa.
      */
     public void updateSizeBy(int offset) {
+        setSize(getSize() + offset);
         getParent().updateSizeBy(offset);
-        setSize(getSize()+offset);
     }
 
     /**
@@ -400,52 +415,3 @@ public class Directory extends Unit {
         return level;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

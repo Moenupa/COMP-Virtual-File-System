@@ -229,9 +229,8 @@ public class CVFS {
      */
     public void printAllCriteria() {
         System.out.println("╓ printing all the criteria");
-        criteria.forEach((key, value)->
-                        System.out.println("╟── " + value)
-                );
+        for (Criterion criterion : criteria.values())
+            System.out.println("╟── " + criterion);
         System.out.println("╙ " + criteria.size() + " criteria(criterion) in total");
     }
 

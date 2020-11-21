@@ -20,7 +20,7 @@ public class Disk extends Directory {
             System.out.println("Error: No Enough Space Left.");
             return;
         }
-        return;
+        setSize(getSize() + offset);
     }
 
     /**
