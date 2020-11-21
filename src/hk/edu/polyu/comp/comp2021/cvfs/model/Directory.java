@@ -311,13 +311,13 @@ public class Directory extends Unit {
      * @param criName The filter.
      */
     public void search(Criterion criName) {
-        if (this.getCatalog().isEmpty()) {
-            System.out.println("\033[31m" + "There is no files in current directory!" + "\033[0m");
+        if (getCatalog().isEmpty()) {
+            System.out.println("\033[31m" + "There are no files in current directory!" + "\033[0m");
             return;
         }
-        for (String name : this.getCatalog().keySet()) {
-            if (criName.check(this.getCatalog().get(name))) {
-                System.out.println(this.getCatalog().get(name));
+        for (Unit unit : getCatalog().values()) {
+            if (criName.check(unit)) {
+                System.out.println(unit);
             }
         }
     }
@@ -343,22 +343,12 @@ public class Directory extends Unit {
      * @param level The level of each recursive.
      */
     public static void rSearch(Directory currDir, int level, Criterion criName) {
-        currDir.getCatalog().forEach((name, unit) ->
-                {
-                    if (criName.check(unit)) {
-                        for (int i = 0; i < level; i++) System.out.print("\t");
-                        System.out.println(unit.toString());
-                    }
-                }
-        );
-//        for (String name : currDir.getCatalog().keySet()) {
-//            if (criName.check(this.getCatalog().get(name))) {
-//                for (int i = 0; i < level; i++) {
-//                    System.out.print("\t");
-//                }
-//                System.out.println(currDir.getCatalog().get(name));
-//            }
-//        }
+        for (Unit unit : currDir.getCatalog().values()) {
+            if (criName.check(unit)) {
+                for (int i = 0; i < level; i++) System.out.print("\t");
+                System.out.println(unit.toString());
+            }
+        }
     }
 
     /**
