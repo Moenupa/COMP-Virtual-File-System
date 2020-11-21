@@ -4,10 +4,7 @@ package hk.edu.polyu.comp.comp2021.cvfs.controller;
 import hk.edu.polyu.comp.comp2021.cvfs.model.*;
 import hk.edu.polyu.comp.comp2021.cvfs.view.CVFSView;
 
-import javax.security.auth.login.CredentialException;
-import java.util.Arrays;
 import java.util.Scanner;
-import java.util.HashMap;
 
 /**
  * the control element of the CVFS
@@ -16,10 +13,7 @@ public class CVFSController {
     private CVFS cvfs;
     private CVFSView view;
 
-    /**
-     * Stores the reference to the current working directory.
-     */
-    private Directory cur;
+
 
     /**
      * Initialize the CVFS Controller.
@@ -32,31 +26,11 @@ public class CVFSController {
         this.view = view;
     }
 
-    /**
-     * return the current working directory
-     * @return get current working directory
-     */
-    public Directory getCur(){
-        return cur;
-    }
 
     /**
      * To deal with the user input.
      */
     private final Scanner scanner=new Scanner(System.in);
-
-    /**
-     * Change the current working directory to the desired one.
-     * Print a warning and return if the desired directory does not exist.
-     *
-     * @param name The new working directory.
-     */
-    public void changeDir(String name) {
-        view.updateDir(getCur());
-        return;
-    }
-
-
 
 
     /**
@@ -84,15 +58,15 @@ public class CVFSController {
 
         switch (type){
             case newDisk:
-                cur= cvfs.newDisk(Integer.parseInt(elements[0]));
+                cvfs.newDisk(Integer.parseInt(elements[0]));
                 //
 
             case newDoc:
-                cur.newDoc(elements[1],DocType.parse(elements[2]),elements[3]);
+                cvfs.getCwd().newDoc(elements[1],DocType.parse(elements[2]),elements[3]);
                 //
 
             case newDir:
-                cur.newDir(elements[1]);
+                cvfs.getCwd().newDir(elements[1]);
                 //
 
             case list:

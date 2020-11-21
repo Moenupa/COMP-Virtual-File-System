@@ -9,6 +9,7 @@ import java.util.Arrays;
  * The class to check whether commands are valid and get types of commands
  */
 public class CommandSwitch {
+    //TODO 如果一定要检查的话就把语句转移到processCommand的对应区块里去，并且对照model里的实现保证所有条件相同，而且要按照Directory里的样例修改错误输出格式，或者可以把这里的条件判断删了。
 
     /**
      *
