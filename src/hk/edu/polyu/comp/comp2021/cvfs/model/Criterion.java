@@ -201,7 +201,7 @@ public class Criterion implements Cloneable {
 
         if (expression.contains("type")) {
             // only if x is a document can x be checked by type
-            if (!getIsDocument().check(unit))
+            if (!(unit instanceof Document))
                 return false;
 
             engine.put("type", ((Document) unit).getType().toString());

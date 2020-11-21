@@ -315,11 +315,10 @@ public class Directory extends Unit {
             System.out.println("\033[31m" + "There are no files in current directory!" + "\033[0m");
             return;
         }
-        for (Unit unit : getCatalog().values()) {
-            if (criName.check(unit)) {
+        System.out.println("\033[4m" + this);
+        for (Unit unit : getCatalog().values())
+            if (criName.check(unit))
                 System.out.println(unit);
-            }
-        }
     }
 
     /**
@@ -332,7 +331,8 @@ public class Directory extends Unit {
             System.out.println("\033[31m" + "There are no files/directories in current directory!" + "\033[0m");
             return;
         }
-        rSearch(this, 0, criName);
+        System.out.println("\033[4m" + this);
+        rSearch(this, criName);
     }
 
     /**
@@ -342,52 +342,13 @@ public class Directory extends Unit {
      * @param currDir The current Directory of each recursive level.
      * @param level The level of each recursive.
      */
-    public static void rSearch(Directory currDir, int level, Criterion criName) {
+    public static void rSearch(Directory currDir, Criterion criName) {
         for (Unit unit : currDir.getCatalog().values()) {
-            if (criName.check(unit)) {
-                for (int i = 0; i < level; i++) System.out.print("\t");
+            if (criName.check(unit))
                 System.out.println(unit);
-                if (unit instanceof Directory) {
-                    rSearch((Directory) unit, level + 1, criName);
-                }
-            }
+            if (unit instanceof Directory)
+                rSearch((Directory) unit, criName);
         }
-    }
-
-    /**
-     *
-     * @param args blah~blah~
-     */
-    public static void main(String[] args) {
-        final int CAPACITY =  999999;
-        Directory root = new Disk(CAPACITY);
-        Directory desktop = root.newDir("Desktop");
-        Directory documents = root.newDir("Documents");
-        Directory downloads = root.newDir("Downloads");
-
-        Directory oop = desktop.newDir("OOP");
-        Directory nlp = desktop.newDir("NLP");
-        Directory cv = desktop.newDir("CV");
-        Document notes = desktop.newDoc("notes", DocType.TXT, "This is the papers.css in /Desktop/NLP");
-
-        Directory gpProj = oop.newDir("gpProj");
-        Document requirements = gpProj.newDoc("requirements", DocType.TXT, "This is the assignment.txt in /Desktop/OOP/gpProj/");
-        Document example = gpProj.newDoc("example", DocType.JAVA, "This is the example.java in /Desktop/OOP/gpProj/");
-        Document outline = oop.newDoc("outline", DocType.HTML, "This is the outline.html in /Desktop/OOP/");
-
-        Directory data = nlp.newDir("data");
-        Document embedding = data.newDoc("embedding", DocType.TXT, "This is the embedding.txt in /Desktop/NLP/data/");
-        Document train = data.newDoc("train", DocType.TXT, "This is the train.txt in /Desktop/NLP/data/");
-        Document test = data.newDoc("test", DocType.TXT, "This is the test.txt in /Desktop/NLP/data/");
-        Document paper = data.newDoc("papers", DocType.CSS, "This is the papers.css in /Desktop/NLP");
-
-        Document ToAplus = documents.newDoc("ToAplus", DocType.TXT, "This is the notes.txt in /Documents/");
-
-        Directory download1 = downloads.newDir("download1");
-        Directory download2 = downloads.newDir("download2");
-
-        root.down_rList();
-
     }
 
     /**
@@ -399,19 +360,5 @@ public class Directory extends Unit {
     public void updateSizeBy(int offset) {
         setSize(getSize() + offset);
         getParent().updateSizeBy(offset);
-    }
-
-    /**
-     * get the level index of this unit;
-     */
-    @Override
-    public int getLevel() {
-        Unit temp = this;
-        int level = 0;
-        while (temp.getParent() != null) {
-            temp = temp.getParent();
-            level++;
-        }
-        return level;
     }
 }
