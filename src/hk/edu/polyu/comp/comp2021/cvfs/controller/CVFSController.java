@@ -9,6 +9,9 @@ import java.util.Arrays;
 import java.util.Scanner;
 import java.util.HashMap;
 
+/**
+ * the control element of the CVFS
+ */
 public class CVFSController {
     private CVFS cvfs;
     private CVFSView view;
@@ -31,6 +34,7 @@ public class CVFSController {
 
     /**
      * return the current working directory
+     * @return get current working directory
      */
     public Directory getCur(){
         return cur;
@@ -40,25 +44,38 @@ public class CVFSController {
      * Change the current working directory to the desired one.
      * Print a warning and return if the desired directory does not exist.
      *
-     * @param name The new directory.
+     * @param name The new working directory.
      */
     public void changeDir(String name) {
+
+        if (name.equals("\"..\"")){
+            cur=(Directory)cur.getParent();
+            return;
+        }
+
+
+
+
+
         return;
     }
 
 
-
+    /**
+     * @return command input from the keyboard or the system
+     */
     public String getCommand(){
 
         Scanner scanner=new Scanner(System.in);
 
-        String command = scanner.nextLine();
-
-        return command;
+        return scanner.nextLine();
     }
 
 
-
+    /**
+     * @param type type of command input
+     * @param command command input
+     */
     public void processCommand(CommandType type, String command){
 
         String[] elements=new String[]{"","","","",""};
