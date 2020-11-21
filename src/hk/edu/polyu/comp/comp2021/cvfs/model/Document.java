@@ -84,7 +84,7 @@ public class Document extends Unit {
      */
     @Override
     public String toString() {
-        return "\033[30m" + "├" + this.getName() + " " + this.getType() + " " + this.getSize() + "\033[0m";
+        return String.format("%-14s \033[33m%s\033[0m", this.getName() + "." + this.getType(), this.getSize());
     }
 
 }

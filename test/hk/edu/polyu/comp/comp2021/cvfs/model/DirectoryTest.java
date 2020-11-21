@@ -29,7 +29,7 @@ class DirectoryTest {
     static final int CAPACITY = 999999;
     Disk root;
     Directory desktop, documents, downloads, oop, nlp, cv, gpProj, data, download1, download2;
-    Document notes, requirements, example, outline, embedding, train, test, paper, ToAplus;
+    Document notes, projReq, example, outline, embedding, train, test, paper, ToAplus;
 
     @BeforeEach
     void setUp() {
@@ -51,7 +51,7 @@ class DirectoryTest {
 
             notes = desktop.newDoc("notes", DocType.TXT, "This is the papers.css in /Desktop/NLP");
 
-            requirements = gpProj.newDoc("requirements", DocType.TXT, "This is the assignment.txt in /Desktop/OOP/gpProj/");
+            projReq = gpProj.newDoc("projReq", DocType.TXT, "This is the assignment.txt in /Desktop/OOP/gpProj/");
             example = gpProj.newDoc("example", DocType.JAVA, "This is the example.java in /Desktop/OOP/gpProj/");
             outline = oop.newDoc("outline", DocType.HTML, "This is the outline.html in /Desktop/OOP/");
 
@@ -67,8 +67,19 @@ class DirectoryTest {
     }
 
     @Test
-    void toStringTest() {
+    void listTest() {
+        root.list();
+        System.out.println();
+        data.list();
+    }
+
+    @Test
+    void rlistTest() {
         root.down_rList();
+    }
+
+    @Test
+    void toStringTest() {
         System.out.println(root.toString());
     }
 

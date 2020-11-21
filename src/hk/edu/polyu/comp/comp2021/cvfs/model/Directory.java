@@ -61,7 +61,7 @@ public class Directory extends Unit {
      */
     @Override
     public String toString() {
-        return String.format("\033[32m%-10s \033[33m%s\033[0m", getName(), getSize());
+        return String.format("\033[32m%-14s \033[33m%s\033[0m", getName(), getSize());
     }
 
     /**
@@ -213,10 +213,9 @@ public class Directory extends Unit {
             System.out.println("\033[31m" + "There is no files/directories in current directory!" + "\033[0m");
             return;
         }
-        System.out.print("\033[45m" + "Total size: ");
-        System.out.println(this.getSize() + "\033[0m");
-        for (String name : this.getCatalog().keySet()) {
-            System.out.println(this.getCatalog().get(name));
+        System.out.println("\033[4m" + this);
+        for (Unit unit : getCatalog().values()) {
+            System.out.println(" ╞═ " + unit);
         }
     }
 
@@ -230,6 +229,7 @@ public class Directory extends Unit {
             System.out.println("\033[31m" + "There is no files/directories in current directory!" + "\033[0m");
             return;
         }
+        System.out.println("\033[4m" + this);
         down_rList(this, 0);
     }
 
@@ -245,7 +245,7 @@ public class Directory extends Unit {
         for (Unit unit : currDir.getCatalog().values()) {
             for (int i = 0; i < level; i++)
                 System.out.print("\t");
-            System.out.println(unit);
+            System.out.println(" ╞═ " + unit);
             if (unit instanceof Directory)
                 down_rList((Directory) unit, level + 1);
         }
