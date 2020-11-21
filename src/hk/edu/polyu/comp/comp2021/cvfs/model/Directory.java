@@ -247,6 +247,9 @@ public class Directory extends Unit {
                 System.out.print("\t");
             }
             System.out.println(currDir.getCatalog().get(name));
+            if (currDir.getCatalog().get(name) instanceof Directory) {
+                down_rList((Directory) currDir.getCatalog().get(name), level + 1);
+            }
         }
     }
 
@@ -346,7 +349,9 @@ public class Directory extends Unit {
             if (criName.check(unit)) {
                 for (int i = 0; i < level; i++) System.out.print("\t");
                 System.out.println(unit);
-                if (unit instanceof Directory) rSearch((Directory) unit, ++level, criName);
+                if (currDir.getCatalog().get(name) instanceof Directory) {
+                rSearch((Directory) currDir.getCatalog().get(name), level + 1);
+              }
             }
         }
     }
