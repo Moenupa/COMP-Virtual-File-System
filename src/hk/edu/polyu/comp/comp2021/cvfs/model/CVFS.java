@@ -219,4 +219,26 @@ public class CVFS {
         System.out.println("╙ " + criteria.size() + " criteria(criterion) in total");
     }
 
+    /**
+     * Change the current working directory to the desired one.
+     * Print a warning and return if the desired directory does not exist.
+     *
+     * @param name The new directory.
+     * @throws Exception If No such directory exists.
+     */
+    public void changeDir(String name) throws Exception{
+        if(name.equals("..")){
+            if (cwd.getParent()==null)
+                throw new Exception("This is the root directory.");
+            setCwd(cwd.getParent());
+            return;
+        }
+        Map<String,Unit> cat = getCwd().getCatalog();
+        if(!cat.containsKey(name))
+            throw new Exception("No such directory.");
+        Unit newDir = cat.get(name);
+        if(!(newDir instanceof Directory))
+            throw new Exception("This is not a directory.");
+        setCwd((Directory) newDir);
+    }
 }
