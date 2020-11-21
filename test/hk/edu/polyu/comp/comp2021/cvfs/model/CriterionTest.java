@@ -139,6 +139,7 @@ class CriterionTest {
     void toStringTest() {
         System.out.println(Criterion.getIsDocument().toString());
         System.out.println(txtCri.toString());
+        System.out.println(txtCri.getNegCri("ng").toString());
     }
 
     @Test

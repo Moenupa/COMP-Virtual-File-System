@@ -97,10 +97,15 @@ public abstract class Unit implements Serializable {
     }
 
     /**
-     * get
+     * get level index of this
      * @return The level index of this unit;
      */
-    public abstract int  getLevel();
+    public int getLevel() {
+        int level = 0;
+        for (Unit temp = this; temp.getParent() != null; temp = temp.getParent())
+            level++;
+        return level;
+    };
 
     /**
      * Mark the unit as deleted;

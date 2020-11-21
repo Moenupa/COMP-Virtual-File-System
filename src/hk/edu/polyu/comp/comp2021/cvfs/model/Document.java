@@ -64,20 +64,6 @@ public class Document extends Unit {
     }
 
     /**
-     * get the level index of this unit;
-     */
-    @Override
-    public int getLevel() {
-        Unit temp = this;
-        int level = 0;
-        while (temp.getParent() != null) {
-            temp = temp.getParent();
-            level++;
-        }
-        return level;
-    }
-
-    /**
      * Format the output
      *
      * @return the formatted output in white.
