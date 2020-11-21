@@ -5,6 +5,7 @@ import hk.edu.polyu.comp.comp2021.cvfs.model.*;
 import hk.edu.polyu.comp.comp2021.cvfs.view.CVFSView;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 /**
@@ -171,14 +172,35 @@ public class CVFSController {
          * Add an object.
          */
         private Ops add = args -> {
-            Unit unit = (Unit) args[0];
+            Object obj =  args[0];
+            if(obj instanceof Unit){
+                Unit unit = (Unit)obj;
+                Directory parent =(Directory)args[1];
+                parent.getCatalog().put(unit.getName(),unit);
+                parent.updateSizeBy(unit.getSize());
+            }
+            else{
+                Criterion cri = (Criterion)obj;
+                CVFS cvfs = (CVFS) args[1];
+                cvfs.getCriteria().put(cri.getName(),cri);
+            }
         };
 
         /**
          * Delete an Object.
          */
         private Ops del = args -> {
-            Unit unit = (Unit) args[0];
+            Object obj =  args[0];
+            if (obj instanceof Unit){
+                Unit unit = (Unit) obj;
+                Directory parent = (Directory) args[1];
+                parent.delete(unit.getName());
+            }
+            else {
+                Criterion cri = (Criterion)obj;
+                CVFS cvfs = (CVFS) args[1];
+                cvfs.getCriteria().remove(cri.getName());
+            }
         };
 
         /**
@@ -188,7 +210,10 @@ public class CVFSController {
             Unit unit = (Unit) args[0];
             String newName = (String)args[1];
             String oldName = (String)args[2];
-
+            unit.setName(newName);
+            Directory parent = (Directory) unit.getParent();
+            parent.getCatalog().remove(oldName);
+            parent.getCatalog().put(newName,unit);
         };
         /**
          * Change directory.
@@ -196,7 +221,8 @@ public class CVFSController {
         private Ops cd = args -> {
             Directory newDir = (Directory) args[0];
             Directory oldDir = (Directory) args[1];
-
+            CVFS cvfs = (CVFS) args[2];
+            cvfs.setCwd(newDir);
         };
         /**
          * Switch to another disk.
@@ -204,13 +230,16 @@ public class CVFSController {
         private  Ops sd = args -> {
             Disk newDisk = (Disk) args[0];
             Disk oldDisk = (Disk) args[1];
-
+            CVFS cvfs = (CVFS) args[2];
+            cvfs.setDisk(newDisk);
         };
         /**
          * Delete a disk.
          */
         private Ops dd = args -> {
             String name = (String)args[0];
+            CVFS cvfs = (CVFS) args[2];
+            cvfs.delDisk(name);
 
         };
         /**
@@ -218,6 +247,8 @@ public class CVFSController {
          */
         private Ops ld = args -> {
             String name = (String)args[0];
+            CVFS cvfs = (CVFS) args[2];
+            cvfs.store(name);
 
         };
 

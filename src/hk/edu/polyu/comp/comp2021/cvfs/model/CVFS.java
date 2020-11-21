@@ -23,11 +23,19 @@ public class CVFS {
     /**
      * A hashmap storing all criteria.
      */
-    private Map<String, Criterion> criteria = new HashMap<>();
+    private final Map<String, Criterion> criteria = new HashMap<>();
 
     {
         criteria.put("IsDocument",Criterion.getIsDocument());
     }
+
+    /**
+     * @return The sets of criteria.
+     */
+    public Map<String, Criterion> getCriteria() {
+        return criteria;
+    }
+
     /**
      * Create a new disk and return its reference.
      *
