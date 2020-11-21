@@ -5,6 +5,9 @@ import java.nio.file.FileAlreadyExistsException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The Vitrual File System.
+ */
 public class CVFS {
     // the implementation of the CVFS system.
     /**
@@ -13,9 +16,14 @@ public class CVFS {
     private Disk disk;
 
     /**
+     * Stores the reference to the current working directory.
+     */
+    private Directory cwd;
+
+    /**
      * A hashmap storing all criteria.
      */
-    Map<String, Criterion> criteria = new HashMap<>();
+    private Map<String, Criterion> criteria = new HashMap<>();
 
     {
         criteria.put("IsDocument",Criterion.getIsDocument());
@@ -28,7 +36,32 @@ public class CVFS {
      */
     public Disk newDisk(int diskSize) {
         disk = new Disk(diskSize);
+        cwd = disk;
         return disk;
+    }
+
+    /**
+     * Set the current disk to another one.
+     * @param disk The disk to be switched to.
+     */
+    public void setDisk(Disk disk) {
+        this.disk = disk;
+        cwd=disk;
+    }
+
+    /**
+     * @return The reference to the current working directory.
+     */
+    public Directory getCwd() {
+        return cwd;
+    }
+
+    /**
+     * Set the current working directory to a new place.
+     * @param cwd New location of the current working directory.
+     */
+    public void setCwd(Directory cwd) {
+        this.cwd = cwd;
     }
 
     /**
@@ -64,6 +97,20 @@ public class CVFS {
         }
     }
 
+    /**
+     * Delete a local copy of the disk.
+     * @param name The name of the file to be deleted.
+     */
+    public void delDisk(String name){
+        File file = new File(System.getProperty("user.dir")+"/disks/"+name+".ser");
+        file.delete();
+    }
+
+    /**
+     * Load a disk from local storage
+     * @param name the name of the disk to be loaded.
+     * @return The reference to the disk.
+     */
     public Disk load(String name){
         try{
             String path =System.getProperty("user.dir")+"/disks/"+name+".ser";
