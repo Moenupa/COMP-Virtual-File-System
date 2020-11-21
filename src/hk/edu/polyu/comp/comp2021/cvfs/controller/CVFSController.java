@@ -150,11 +150,16 @@ public class CVFSController {
         CommandType type = commandSwitch.getType(command);
 
         while (type == CommandType.invalid) {
-            System.out.println("Error: Invalid argument(s). Please try again.");
+            System.out.println("\033[31m" +"Error: Invalid argument(s). Please try again."+"\033[0m");
             command = getCommand();
             type = commandSwitch.getType(command);
         }
-        processCommand(type, command);
+        try{
+            processCommand(type, command);
+        }
+        catch (Exception e){
+            System.out.println("\033[31m" + "Error: "+e.getLocalizedMessage()+"\033[0m");
+        }
     }
 
     /**

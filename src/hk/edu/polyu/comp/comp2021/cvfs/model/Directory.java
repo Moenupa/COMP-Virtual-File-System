@@ -73,7 +73,6 @@ public class Directory extends Unit {
 
     /**
      * Make a new directory in the current directory.
-     * Print a warning and return if the argument is invalid.
      * First update the size of the current directory, then create the file.
      *
      * @param name The name of the new directory.
@@ -82,19 +81,20 @@ public class Directory extends Unit {
     public Directory newDir(String name) {
         if (!isValidName(name)) {
             //TODO: Change Error message into exception throws. No need to add the "Error:" prefix and color change. No return statement needed.
-            throw new IllegalArgumentException("Error: Invalid Argument.");
+            throw new IllegalArgumentException("Invalid Argument.");
         }
         if (this.getCatalog().get(name) != null) {
             throw new IllegalArgumentException("A directory with the same name already exists");
         }
-        this.getCatalog().put(name, new Directory(name, this));
-        updateSizeBy(this.getCatalog().get(name).getSize());
-        return (Directory) this.getCatalog().get(name);
+        Directory tmp = new Directory(name, this);
+        this.getCatalog().put(name,tmp);
+        TraceLogger.getInstance().newLog(TraceLogger.OpType.DEL,tmp,this);
+        updateSizeBy(tmp.getSize());
+        return tmp;
     }
 
     /**
      * Make a new document in the directory.
-     * Print a warning and return if one of the arguments is invalid.
      * First update the size of the current directory, then create the file.
      *
      * @param name    The name of the document.
@@ -104,14 +104,16 @@ public class Directory extends Unit {
      */
     public Document newDoc(String name, DocType type, String content) {
         if (!isValidName(name) || type == null || content == null) {
-            throw new IllegalArgumentException("Error: Invalid Argument.");
+            throw new IllegalArgumentException("Invalid Argument.");
         }
         if (this.getCatalog().get(name) != null) {
-            throw new IllegalArgumentException("A document with the same name already exists");
+            throw new IllegalArgumentException("A document with the same name already exists.");
         }
-        this.getCatalog().put(name, new Document(name, this, type, content));
-        updateSizeBy(this.getCatalog().get(name).getSize());
-        return (Document) this.getCatalog().get(name);
+        Document tmp =new Document(name, this, type, content);
+        this.getCatalog().put(name, tmp);
+        TraceLogger.getInstance().newLog(TraceLogger.OpType.DEL,tmp,this);
+        updateSizeBy(tmp.getSize());
+        return tmp;
     }
 
     /**
@@ -124,7 +126,7 @@ public class Directory extends Unit {
     public void mv2bin(String name) {
         //TODO need modify!!!!
         if (this.getCatalog().get(name) == null) {
-            System.out.println("\033[31m" + "Error: No such document/directory exit." + "\033[0m");
+            System.out.println("No such document/directory exit.");
             return;
         }
         move((Directory) currDisk.getCatalog().get("Bin"), name,false);
@@ -144,6 +146,7 @@ public class Directory extends Unit {
             throw new IllegalArgumentException("Error: Can't find "+name+" in this directory.");
         }
         updateSizeBy(-this.getCatalog().get(name).getSize());
+        TraceLogger.getInstance().newLog(TraceLogger.OpType.ADD,getCatalog().get(name),this);
         this.getCatalog().remove(name);
     }
 
@@ -197,7 +200,8 @@ public class Directory extends Unit {
         }
         Unit renamedItem;
         renamedItem = this.getCatalog().get(oldName);
-        this.getCatalog().get(oldName).setName(newName);
+        renamedItem.setName(newName);
+        TraceLogger.getInstance().newLog(TraceLogger.OpType.REN,oldName,newName);
         this.getCatalog().remove(oldName);
         this.getCatalog().put(newName, renamedItem);
 

@@ -82,11 +82,11 @@ public class CVFS {
     public void store(String name){
         try{
             if(!Unit.isValidName(name))
-                throw new IllegalArgumentException("Error: Invalid name.");
+                throw new IllegalArgumentException("Invalid name.");
             String path =System.getProperty("user.dir")+"/disks/"+name+".ser";
             File file = new File(path);
             if(file.exists())
-                throw new FileAlreadyExistsException("Error: File Already Exists.");
+                throw new FileAlreadyExistsException("File Already Exists.");
             file.createNewFile();
             FileOutputStream buffer = new FileOutputStream(path);
             ObjectOutputStream out = new ObjectOutputStream(buffer);
@@ -124,7 +124,7 @@ public class CVFS {
         try{
             String path =System.getProperty("user.dir")+"/disks/"+name+".ser";
             if(!new File(path).exists())
-                throw new FileNotFoundException("Error: File Not Found.");
+                throw new FileNotFoundException("File Not Found.");
             FileInputStream buffer = new FileInputStream(path);
             ObjectInputStream in = new ObjectInputStream(buffer);
             Disk tmp = (Disk) in.readObject();
@@ -154,12 +154,12 @@ public class CVFS {
      */
     public void newSimpleCri(String name, String attr, String op, String val) {
         if (criteria.containsKey(name)) {
-            System.out.println("Error: Invalid Arguments. Details: Already exists Criterion " + name);
+            System.out.println("Invalid Arguments. Details: Already exists Criterion " + name);
             return;
         }
 
         if (!Criterion.isValidCri(name, attr, op, val)) {
-            System.out.println("Error: Invalid Arguments. Details: Illegal Criterion " + name);
+            System.out.println("Invalid Arguments. Details: Illegal Criterion " + name);
             return;
         }
 
@@ -178,11 +178,11 @@ public class CVFS {
      */
     public void newNegation(String name1, String name2) {
         if (criteria.containsKey(name1)) {
-            System.out.println("Error: Invalid Arguments. Details: Already exists Criterion " + name1);
+            System.out.println("Invalid Arguments. Details: Already exists Criterion " + name1);
             return;
         }
         if (!Criterion.isValidCriName(name1)) {
-            System.out.println("Error: Invalid Criterion Name " + name1);
+            System.out.println("Invalid Criterion Name " + name1);
             return;
         }
 
@@ -205,15 +205,15 @@ public class CVFS {
     public void newBinaryCri(String name1, String name3, String op, String name4) {
         try{
             if(criteria.containsKey(name1))
-                throw new Exception("Error: Invalid Arguments. Details: Already exists Criterion " + name1);
+                throw new Exception("Invalid Arguments. Details: Already exists Criterion " + name1);
             if (!Criterion.isValidCriName(name1))
-                throw new Exception("Error: Invalid Criterion Name " + name1);
+                throw new Exception("Invalid Criterion Name " + name1);
             if (!BinCri.isValidOperator(op))
-                throw new Exception("Error: Invalid Argument op " + op);
+                throw new Exception("Invalid Argument op " + op);
             if (!criteria.containsKey(name3) || name3 == null)
-                throw new Exception("Error: Cannot find argument " + name3);
+                throw new Exception("Cannot find argument " + name3);
             if (!criteria.containsKey(name4) || name4 == null)
-                throw new Exception("Error: Cannot find argument " + name4);
+                throw new Exception("Cannot find argument " + name4);
         }
         catch (Exception e){
             System.out.println(e.getMessage());
@@ -254,6 +254,7 @@ public class CVFS {
         Unit newDir = cat.get(name);
         if(!(newDir instanceof Directory))
             throw new Exception("This is not a directory.");
+        TraceLogger.getInstance().newLog(TraceLogger.OpType.CD,getCwd(),newDir);
         setCwd((Directory) newDir);
     }
 }
