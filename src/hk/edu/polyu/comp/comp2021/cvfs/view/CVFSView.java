@@ -27,7 +27,10 @@ public class CVFSView {
      * @param cur The current working directory.
      */
     public void updateDir(Directory cur) {
-        if (cur == null) return;
+        if (cur == null) {
+            curDirPath = ":$ ";
+            return;
+        }
         StringBuilder str = cur.getPath();
         str.append(":$ ");
         curDirPath = str.toString();

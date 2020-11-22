@@ -40,8 +40,9 @@ public class CVFS {
      * @param diskSize The capacity of the disk.
      */
     public void newDisk(int diskSize) {
+        Disk tmp = disk;
         disk = new Disk(diskSize);
-        TraceLogger.getInstance().newLog(TraceLogger.OpType.SD, this.disk, disk, this);
+        TraceLogger.getInstance().newLog(TraceLogger.OpType.SD, tmp, disk, this);
         cwd = disk;
     }
 
