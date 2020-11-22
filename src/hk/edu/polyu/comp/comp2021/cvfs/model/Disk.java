@@ -1,11 +1,13 @@
 package hk.edu.polyu.comp.comp2021.cvfs.model;
 
+@SuppressWarnings("ALL")
 public class Disk extends Directory {
     private final int capacity;
 
     public Disk(int capacity) {
-        super("Disk",null);
+        super("Disk", null);
         this.capacity = capacity;
+        setSize(0);
     }
 
     /**
@@ -20,7 +22,7 @@ public class Disk extends Directory {
             System.out.println("Error: No Enough Space Left.");
             return;
         }
-        return;
+        setSize(getSize() + offset);
     }
 
     /**
@@ -30,5 +32,13 @@ public class Disk extends Directory {
      */
     public int getCapacity() {
         return capacity;
+    }
+
+    @SuppressWarnings("unused")
+    @Override
+    public StringBuilder getPath() {
+        StringBuilder str = new StringBuilder();
+        str.append("Disk");
+        return str;
     }
 }

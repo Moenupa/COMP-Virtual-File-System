@@ -6,21 +6,21 @@ package hk.edu.polyu.comp.comp2021.cvfs.model;
  * Uses s constructor, several getter/setter methods, and
  * a <code>toString</code> method to fully implement a document.
  */
+@SuppressWarnings("FieldCanBeLocal")
 public class Document extends Unit {
     /**
      * The type of the document.
      */
-    private DocType type;
-
+    private final DocType type;
+    /**
+     * The content of the document.
+     */
+    @SuppressWarnings("unused")
+    private final String content;
     /**
      * A reference to the parent directory. Not null except for the disk.
      */
     private Directory parent;
-
-    /**
-     * The content of the document.
-     */
-    private String content;
 
     /**
      * Construct a new document file.
@@ -64,32 +64,13 @@ public class Document extends Unit {
     }
 
     /**
-     * get the level index of this unit;
-     */
-    @Override
-    public int getLevel() {
-        Unit temp = this;
-        int level = 0;
-        while (temp.getParent() != null) {
-            temp = temp.getParent();
-            level++;
-        }
-        return level;
-    }
-
-    /**
      * Format the output
      *
-     * @return the formatted output.
+     * @return the formatted output in white.
      */
     @Override
     public String toString() {
-        String str = "Document " + getName() + '.' + getType() + ", size = " + getSize() + "\n";
-        if (content.isEmpty() || content == null)
-            str = str + "\033[31m[No Content]\033[0m";
-        else
-            str = str + "\033[32m" + content + "\033[0m";
-        return str;
+        return String.format("%-14s \033[33m%d\033[0m", this.getName() + "." + this.getType(), this.getSize());
     }
 
 }
