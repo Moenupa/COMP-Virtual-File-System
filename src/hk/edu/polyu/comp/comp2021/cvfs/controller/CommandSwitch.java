@@ -34,7 +34,7 @@ public class CommandSwitch {
             case "list":
                 return CommandType.list;
 
-            case "rlist":
+            case "rList":
                 return CommandType.rList;
 
             case "search":
