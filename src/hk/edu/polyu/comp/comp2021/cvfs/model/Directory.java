@@ -360,8 +360,8 @@ public class Directory extends Unit {
      * @param offset Positive if the size increases, vice versa.
      */
     public void updateSizeBy(int offset) {
-        setSize(getSize() + offset);
         getParent().updateSizeBy(offset);
+        setSize(getSize() + offset);
     }
 
     /**
