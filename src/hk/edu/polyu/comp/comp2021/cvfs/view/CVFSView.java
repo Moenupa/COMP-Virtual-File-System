@@ -15,18 +15,16 @@ public class CVFSView {
     /**
      * The string storing the current path of the working directory.
      */
-    private String curDirPath;
+    private String curDirPath = ":$ ";
 
-    /**
-     * The working directory
-     */
-    private Directory curDir;
 
     /**
      * Print the welcome message.
      */
     public void welcome() {
-        return;
+        System.out.println("Welcome to the Comp VFS developed by group 30");
+        System.out.println("===============================================================");
+
     }
 
     /**
@@ -35,22 +33,17 @@ public class CVFSView {
      * @param cur The current working directory.
      */
     public void updateDir(Directory cur) {
-        this.curDir=cur;
-        return;
+        StringBuilder str = cur.getPath();
+        str.append(":$ ");
+        curDirPath=str.toString();
     }
 
-    /**
-     * show the status of the working directory
-     */
-    public void view(){
-        curDir.list();
-        return;
-    }
+
 
     /**
      * Print a prompt including the current working directory.
      */
     public void printPrompt(){
-        return;
+        System.out.print(curDirPath);
     }
 }

@@ -48,80 +48,202 @@ public class CVFSController {
     /**
      * @param type type of command input
      * @param command command input
+     * @throws Exception if no file or criterion of input name exists or the command is invalid in format
      */
-    public void processCommand(CommandType type, String command){
+    public void processCommand(CommandType type, String command) throws Exception {
 
-        String[] elements=new String[]{"","","","",""};
-        String[] rawElements=command.split(" ");
-        for (int i=0;i<rawElements.length;i++){
-            elements[i]=rawElements[i];
-        }
-
+        String[] elements=command.split(" ");
 
         switch (type){
             case newDisk:
+                if(elements.length>2){
+                    throw new IllegalArgumentException("Command input too long");
+                }
+                if (elements.length<2){
+                    throw new IllegalArgumentException("Size of new disk not found");
+                }
+                if (!elements[1].matches("\\d+")){
+                    throw new IllegalArgumentException("Invalid size of new disk: "+elements[1]);
+                }
+
                 cvfs.newDisk(Integer.parseInt(elements[0]));
-                //
 
             case newDoc:
+                if (elements.length<4){
+                    throw new IllegalArgumentException("Name, type or content of new document not found");
+                }
+                if (!Unit.isValidName(elements[1])){
+                    throw new IllegalArgumentException("Invalid document name: "+elements[1]);
+                }
+                if(!DocType.isValidDocType(elements[2])){
+                    throw new IllegalArgumentException("Invalid document type: "+elements[2]);
+                }
+
                 cvfs.getCwd().newDoc(elements[1],DocType.parse(elements[2]),elements[3]);
-                //
 
             case newDir:
+                if(elements.length>2){
+                    throw new IllegalArgumentException("Command input too long");
+                }
+                if (elements.length<2){
+                    throw new IllegalArgumentException("Name of new directory not found");
+                }
+                if (!Unit.isValidName(elements[1])){
+                    throw new IllegalArgumentException("Invalid directory name: "+elements[1]);
+                }
+
                 cvfs.getCwd().newDir(elements[1]);
-                //
 
             case list:
-                //TODO Mathch the command with the method provided in other classes(Directory, Criterion,CVFS).
+                if(elements.length>1){
+                    throw new IllegalArgumentException("Command input too long");
+                }
 
+                cvfs.getCwd().list();
 
             case rList:
-                //
+                if(elements.length>1){
+                    throw new IllegalArgumentException("Command input too long");
+                }
+
+                cvfs.getCwd().down_rList();
 
             case search:
-                String criName=elements[1];
-                //
+                if(elements.length>2){
+                    throw new IllegalArgumentException("Command input too long");
+                }
+                if (elements.length<2){
+                    throw new IllegalArgumentException("Name of file to be deleted not found");
+                }
+                if (!Unit.isValidName(elements[1])){
+                    throw new IllegalArgumentException("Invalid file name: "+elements[1]);
+                }
+
+                cvfs.getCwd().search(cvfs.getCri(elements[1]));
+
             case rsearch:
-                criName=elements[1];
-                //
+                if(elements.length>2){
+                    throw new IllegalArgumentException("Command input too long");
+                }
+                if (elements.length<2){
+                    throw new IllegalArgumentException("Name of file to be deleted not found");
+                }
+                if (!Unit.isValidName(elements[1])){
+                    throw new IllegalArgumentException("Invalid file name: "+elements[1]);
+                }
+
+                cvfs.getCwd().rSearch(cvfs.getCri(elements[1]));
 
             case rename:
-                String oldName=elements[1];
-                String newName=elements[2];
+                if(elements.length>3){
+                    throw new IllegalArgumentException("Command inout too long");
+                }
+                if (elements.length<3){
+                    throw new IllegalArgumentException("Old name or new name not found");
+                }
+                if (!Unit.isValidName(elements[1])){
+                    throw new IllegalArgumentException("Invalid old name: "+elements[1]);
+                }
+                if (!Unit.isValidName(elements[2])){
+                    throw new IllegalArgumentException("Invalid new name: "+elements[2]);
+                }
+
+                cvfs.getCwd().rename(elements[1],elements[2]);
 
             case delete:
-                String unitName=elements[1];
-                //
+                if(elements.length>2){
+                    throw new IllegalArgumentException("Command input too long");
+                }
+                if (elements.length<2){
+                    throw new IllegalArgumentException("Name of file to be deleted not found");
+                }
+                if (!Unit.isValidName(elements[1])){
+                    throw new IllegalArgumentException("Invalid file name: "+elements[1]);
+                }
 
-//            case IsDocument:
+                cvfs.getCwd().delete(elements[1]);
 
             case changeDir:
-                String DirName=elements[1];
-                //
+                if(elements.length>2){
+                    throw new IllegalArgumentException("Command input too long");
+                }
+                if (elements.length<2){
+                    throw new IllegalArgumentException("Directory name not found");
+                }
+                if (!Unit.isValidName(elements[1])){
+                    throw new IllegalArgumentException("Invalid directory name: "+elements[1]);
+                }
+
+                cvfs.changeDir(elements[1]);
 
             case newNegation:
-                String criName1=elements[1];
-                String criName2=elements[2];
+                if(elements.length>3){
+                    throw new IllegalArgumentException("Command input too long");
+                }
+                if (elements.length<3){
+                    throw new IllegalArgumentException("Number of criterion name is less than 2");
+                }
+                if (!Criterion.isValidCriName(elements[1])){
+                    throw new IllegalArgumentException("Invalid criterion name: "+elements[1]);
+                }
+                if (!Criterion.isValidCriName(elements[2])){
+                    throw new IllegalArgumentException("Invalid criterion name: "+elements[2]);
+                }
+
+                cvfs.newNegation(elements[1],elements[2]);
 
             case newBinaryCri:
-                criName1=elements[1];
-                criName2=elements[2];
-                String logicOP=elements[3];
-                String criName3=elements[4];
-                //
+                if(elements.length>5){
+                    throw new IllegalArgumentException("Command input too long");
+                }
+                if (elements.length<5){
+                    throw new IllegalArgumentException("Number of criterion name is less than 3, or operation not found");
+                }
+                if (!Criterion.isValidCriName(elements[1])){
+                    throw new IllegalArgumentException("Invalid criterion name: "+elements[1]);
+                }
+                if (!Criterion.isValidCriName(elements[2])){
+                    throw new IllegalArgumentException("Invalid criterion name: "+elements[2]);
+                }
+                if (!Criterion.isValidCriName(elements[4])){
+                    throw new IllegalArgumentException("Invalid criterion name: "+elements[4]);
+                }
+                if(!(elements[3].equals("&&")||elements[3].equals("||"))){
+                    throw new IllegalArgumentException("The logic operation must be && or ||");
+                }
+
+                cvfs.newBinaryCri(elements[1],elements[2],elements[3],elements[4]);
 
             case newSimpleCri:
-                criName=elements[1];
-                String attrName=elements[2];
-                String op=elements[3];
-                String val=elements[4];
+                if(elements.length>5){
+                    throw new IllegalArgumentException("Command input too long");
+                }
+                if (elements.length<5){
+                    throw new IllegalArgumentException("Criterion name, attribute name, operation or value not found");
+                }
+                if (!Criterion.isValidCriName(elements[1])){
+                    throw new IllegalArgumentException("Invalid critertion name: "+elements[1]);
+                }
+
+                cvfs.newSimpleCri(elements[1],elements[2],elements[3],elements[4]);
 
             case printAllCriteria:
+                if(elements.length>1){
+                    throw new IllegalArgumentException("Command input too long");
+                }
+
+                cvfs.printAllCriteria();
 
 
             case undo:// Those 4 can be saved for later
+                if(elements.length>1){
+                    throw new IllegalArgumentException("Command input too long");
+                }
 
             case redo:
+                if(elements.length>1){
+                    throw new IllegalArgumentException("Command input too long");
+                }
 
             case load:
 
@@ -136,23 +258,21 @@ public class CVFSController {
 
     /**
      * The user-interface, receiving and handling user requests.
+     * @throws Exception if no file or criterion of input name exists when processing commands
      */
-    public void terminal() {
+    public void terminal() throws Exception {
 
         String command;
-        //TODO better implemented with static methods
-        CommandSwitch commandSwitch = new CommandSwitch();
-
 
         view.printPrompt();
         command = getCommand();
 
-        CommandType type = commandSwitch.getType(command);
+        CommandType type = CommandSwitch.getType(command);
 
         while (type == CommandType.invalid) {
             System.out.println("\033[31m" +"Error: Invalid argument(s). Please try again."+"\033[0m");
             command = getCommand();
-            type = commandSwitch.getType(command);
+            type = CommandSwitch.getType(command);
         }
         try{
             processCommand(type, command);

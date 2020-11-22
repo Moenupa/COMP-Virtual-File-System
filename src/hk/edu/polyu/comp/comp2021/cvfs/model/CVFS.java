@@ -144,6 +144,10 @@ public class CVFS {
         return disk;
     }
 
+    public Criterion getCri(String criName){
+        return criteria.get(criName);
+    }
+
     /**
      * Create a new criterion. Print a warning and return if one of the arguments is invalid.
      *
