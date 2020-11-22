@@ -26,6 +26,9 @@ public class CVFSView {
      * Print the welcome message.
      */
     public void welcome() {
+        System.out.println("Welcome to the Comp VFS developed by group 30");
+        System.out.println("===============================================================");
+
         return;
     }
 
@@ -52,6 +55,7 @@ public class CVFSView {
      * Print a prompt including the current working directory.
      */
     public void printPrompt(){
+        System.out.println(curDir.getPath());
         return;
     }
 }
