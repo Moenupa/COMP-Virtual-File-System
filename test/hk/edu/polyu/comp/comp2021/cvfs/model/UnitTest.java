@@ -1,7 +1,19 @@
 package hk.edu.polyu.comp.comp2021.cvfs.model;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.Before;
+import org.junit.Test;
 
-class UnitTest {
 
+public class UnitTest {
+
+
+    @Before
+    public void setUp() {
+
+    }
+
+    @Test
+    public void toStringTest() {
+
+    }
 }

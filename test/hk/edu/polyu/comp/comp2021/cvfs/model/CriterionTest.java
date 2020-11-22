@@ -1,17 +1,17 @@
 package hk.edu.polyu.comp.comp2021.cvfs.model;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
 
-class CriterionTest {
+public class CriterionTest {
 
     Criterion txtCri, cloneCri, sizeCri, nameCri;
 
     Document sizeDoc, txtDoc, cssDoc;
 
-    @BeforeEach
+    @Before
     public void setUp() {
         txtCri = new Criterion("sa", "type", "equals", "\"txt\"");
         cloneCri = (Criterion) txtCri.clone();
@@ -38,14 +38,14 @@ class CriterionTest {
     }
 
     @Test
-    void CriterionTest() {
+    public void CriterionTest() {
         Criterion constructorTest = new Criterion("ct");
         assertEquals("ct", constructorTest.getName());
         assertNull(constructorTest.getAttr());
     }
 
     @Test
-    void getNameTest() {
+    public void getNameTest() {
         assertEquals("sa", txtCri.getName());
         assertEquals("sa", cloneCri.getName());
         assertEquals("sz", sizeCri.getName());
@@ -53,7 +53,7 @@ class CriterionTest {
     }
 
     @Test
-    void getAttrTest() {
+    public void getAttrTest() {
         assertEquals("type", txtCri.getAttr());
         assertEquals("type", cloneCri.getAttr());
         assertEquals("size", sizeCri.getAttr());
@@ -61,7 +61,7 @@ class CriterionTest {
     }
 
     @Test
-    void getOpTest() {
+    public void getOpTest() {
         assertEquals("equals", txtCri.getOp());
         assertEquals("equals", cloneCri.getOp());
         assertEquals(">=", sizeCri.getOp());
@@ -69,7 +69,7 @@ class CriterionTest {
     }
 
     @Test
-    void getValTest() {
+    public void getValTest() {
         assertEquals("\"txt\"", txtCri.getVal());
         assertEquals("\"txt\"", cloneCri.getVal());
         assertEquals("300", sizeCri.getVal());
@@ -77,7 +77,7 @@ class CriterionTest {
     }
 
     @Test
-    void isNegTest() {
+    public void isNegTest() {
         assertFalse(txtCri.isNeg());
         txtCri.setNeg();
         assertTrue(txtCri.isNeg());
@@ -85,34 +85,34 @@ class CriterionTest {
     }
 
     @Test
-    void cloneTest() {
+    public void cloneTest() {
         assertEquals(txtCri.clone(), txtCri);
     }
 
     @Test
-    void hashCodeTest() {
+    public void hashCodeTest() {
         assertEquals(txtCri.clone().hashCode(), txtCri.hashCode());
     }
 
     @Test
-    void getIsDocumentTest() {
+    public void getIsDocumentTest() {
         assertTrue(Criterion.getIsDocument().check(sizeDoc));
         assertFalse(Criterion.getIsDocument().check(new Directory("Downloads", null)));
     }
 
     @Test
-    void cloneTest1() {
+    public void cloneTest1() {
         assertEquals(new Criterion("sa", "type", "equals", "\"txt\""), txtCri);
         assertEquals(new Criterion("sa", "type", "equals", "\"txt\""), cloneCri);
     }
 
     @Test
-    void cloneTest2() {
+    public void cloneTest2() {
         assertEquals(txtCri, cloneCri);
     }
 
     @Test
-    void isValidCriTest() {
+    public void isValidCriTest() {
         assertFalse(Criterion.isValidCri("tb", "nothing", "==", "\"txt'"));
 
         assertFalse(Criterion.isValidCri("ta", "type", "other", "\"txt\""));
@@ -126,7 +126,7 @@ class CriterionTest {
     }
 
     @Test
-    void checkTest() {
+    public void checkTest() {
         int sizeLimit = Integer.parseInt(sizeCri.getVal());
         assertEquals(sizeDoc.getSize() >= sizeLimit, sizeCri.check(sizeDoc));
         assertEquals(cssDoc.getSize() >= sizeLimit, sizeCri.check(cssDoc));
@@ -136,14 +136,14 @@ class CriterionTest {
     }
 
     @Test
-    void toStringTest() {
+    public void toStringTest() {
         System.out.println(Criterion.getIsDocument().toString());
         System.out.println(txtCri.toString());
         System.out.println(txtCri.getNegCri("ng").toString());
     }
 
     @Test
-    void getNegCriTest() {
+    public void getNegCriTest() {
         assertTrue(txtCri.getNegCri("gx").isNeg());
         assertFalse(txtCri.getNegCri("gx").getNegCri("gy").isNeg());
         int sizeLimit = Integer.parseInt(sizeCri.getVal());
@@ -153,7 +153,7 @@ class CriterionTest {
     }
 
     @Test
-    void isValidCriNameTest() {
+    public void isValidCriNameTest() {
         assertTrue(Criterion.isValidCriName("Gd"));
         assertTrue(Criterion.isValidCriName("SV"));
         assertTrue(Criterion.isValidCriName("MC"));

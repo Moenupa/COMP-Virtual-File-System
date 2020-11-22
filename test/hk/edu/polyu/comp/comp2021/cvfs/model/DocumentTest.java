@@ -1,14 +1,22 @@
 package hk.edu.polyu.comp.comp2021.cvfs.model;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
-class DocumentTest {
+import static org.junit.Assert.*;
 
-    Document newDoc = new Document("newDoc", null, DocType.TXT, "some content here...");
-    Document emptyDoc = new Document("newDoc", null, DocType.TXT, "");
+public class DocumentTest {
+
+    Directory newDir = new Disk(999);
+    Document newDoc = newDir.newDoc("newDoc", DocType.TXT, "some content here...");
+    Document emptyDoc = newDir.newDoc("emptyDoc", DocType.TXT, "");
 
     @Test
-    void toStringTest() {
+    public void toStringTest() {
+        String newDocString = newDoc.toString();
+        assertTrue(newDocString.contains("txt")
+                && newDocString.contains("newDoc")
+        );
+        assertEquals(newDir.toString(), newDoc.getParent().toString());
         System.out.println(newDoc);
         System.out.println(emptyDoc);
     }

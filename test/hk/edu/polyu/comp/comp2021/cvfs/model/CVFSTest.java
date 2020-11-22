@@ -1,34 +1,37 @@
 package hk.edu.polyu.comp.comp2021.cvfs.model;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 
-class CVFSTest {
+import static org.junit.Assert.*;
+
+public class CVFSTest {
 
     CVFS cvfs;
 
-    @BeforeEach
-    void setUp() {
+    @Before
+    public void setUp() {
         cvfs = new CVFS();
+        assertTrue(true);
     }
 
     @Test
-    void newDisk() {
+    public void newDisk() {
     }
 
     @Test
-    void newSimpleCri() {
+    public void newSimpleCri() {
     }
 
     @Test
-    void newNegation() {
+    public void newNegation() {
     }
 
     @Test
-    void newBinaryCri() {
+    public void newBinaryCri() {
     }
 
     @Test
-    void printAllCriteria() {
+    public void printAllCriteria() {
     }
 }
