@@ -12,6 +12,7 @@ public class CVFSTest {
     @Before
     public void setUp() {
         cvfs = new CVFS();
+        cvfs.newSimpleCri("aa", "type", "equals", "\"txt\"");
         assertTrue(true);
     }
 
@@ -33,5 +34,6 @@ public class CVFSTest {
 
     @Test
     public void printAllCriteria() {
+        cvfs.printAllCriteria();
     }
 }
