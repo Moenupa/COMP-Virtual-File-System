@@ -261,7 +261,7 @@ public class CVFS {
             throw new IllegalArgumentException("Invalid path.");
         if (!(newDir instanceof Directory))
             throw new IllegalArgumentException("This is not a directory.");
-        TraceLogger.getInstance().newLog(TraceLogger.OpType.CD, getCwd(), newDir);
+        TraceLogger.getInstance().newLog(TraceLogger.OpType.CD, getCwd(), newDir, this);
         setCwd((Directory) newDir);
     }
 
