@@ -31,4 +31,11 @@ public class Disk extends Directory {
     public int getCapacity() {
         return capacity;
     }
+
+    @Override
+    public StringBuilder getPath() {
+        StringBuilder str = new StringBuilder();
+        str.append("Disk");
+        return str;
+    }
 }

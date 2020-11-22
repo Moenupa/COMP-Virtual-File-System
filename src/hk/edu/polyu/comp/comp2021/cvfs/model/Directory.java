@@ -399,6 +399,16 @@ public class Directory extends Unit {
         }
         return level;
     }
+
+    /**
+     * Get the full path of the current directory.
+     * @return The StringBuilder containing the full path
+     */
+    public StringBuilder getPath(){
+        StringBuilder str = getParent().getPath();
+        str.append(':').append(getName());
+        return str;
+    }
 }
 
 
