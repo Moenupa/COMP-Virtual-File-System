@@ -96,11 +96,10 @@ public class Directory extends Unit {
      */
     public Directory newDir(String name) {
         if (!isValidName(name)) {
-            //TODO: Change Error message into exception throws. No need to add the "Error:" prefix and color change. No return statement needed.
             throw new IllegalArgumentException("Invalid Argument.");
         }
         if (this.getCatalog().get(name) != null) {
-            throw new IllegalArgumentException("A directory with the same name already exists");
+            throw new IllegalArgumentException("A file with the same name already exists");
         }
         Directory tmp = new Directory(name, this);
         this.getCatalog().put(name, tmp);
@@ -123,7 +122,7 @@ public class Directory extends Unit {
             throw new IllegalArgumentException("Invalid Argument.");
         }
         if (this.getCatalog().get(name) != null) {
-            throw new IllegalArgumentException("A document with the same name already exists.");
+            throw new IllegalArgumentException("A file with the same name already exists.");
         }
         Document tmp = new Document(name, this, type, content);
         this.getCatalog().put(name, tmp);

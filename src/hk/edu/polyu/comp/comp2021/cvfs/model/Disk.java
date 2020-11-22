@@ -19,8 +19,7 @@ public class Disk extends Directory {
     @Override
     public void updateSizeBy(int offset) {
         if (getSize() + offset > getCapacity()) {
-            System.out.println("Error: No Enough Space Left.");
-            return;
+            throw new IllegalStateException("No Enough Space Left.");
         }
         setSize(getSize() + offset);
     }

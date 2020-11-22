@@ -58,10 +58,6 @@ public class CVFSController {
                 if (elements.length < 2) {
                     throw new IllegalArgumentException("Size of new disk not found");
                 }
-                if (!elements[1].matches("\\d+")) {
-                    throw new IllegalArgumentException("Invalid size of new disk: " + elements[1]);
-                }
-
                 cvfs.newDisk(Integer.parseInt(elements[1]));
                 return;
 
