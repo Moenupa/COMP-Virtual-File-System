@@ -6,11 +6,12 @@ package hk.edu.polyu.comp.comp2021.cvfs.model;
  * Uses s constructor, several getter/setter methods, and
  * a <code>toString</code> method to fully implement a document.
  */
+@SuppressWarnings("FieldCanBeLocal")
 public class Document extends Unit {
     /**
      * The type of the document.
      */
-    private DocType type;
+    private final DocType type;
 
     /**
      * A reference to the parent directory. Not null except for the disk.
@@ -20,7 +21,8 @@ public class Document extends Unit {
     /**
      * The content of the document.
      */
-    private String content;
+    @SuppressWarnings("unused")
+    private final String content;
 
     /**
      * Construct a new document file.

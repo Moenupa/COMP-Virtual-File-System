@@ -8,6 +8,7 @@ import java.util.Map;
  *  to form a file system's storage tree with disk as root.
  *  This class also provids methods for revision, move, copy, delete, list, search and so on.
  */
+@SuppressWarnings("unused")
 public class Directory extends Unit {
     /**
      * The contents in the directory.
@@ -344,7 +345,6 @@ public class Directory extends Unit {
      *
      * @param criName The filter.
      * @param currDir The current Directory of each recursive level.
-     * @param level The level of each recursive.
      */
     public static void rSearch(Directory currDir, Criterion criName) {
         for (Unit unit : currDir.getCatalog().values()) {

@@ -79,5 +79,5 @@ public enum  CommandType {
     /**
      *redo if the command is to redo
      */
-    redo;
+    redo
 }

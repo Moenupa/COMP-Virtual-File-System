@@ -11,17 +11,17 @@ public class BinCri extends Criterion {
     /**
      * Two distinct criteria to be linked; the first
      */
-    private Criterion cri1;
+    private final Criterion cri1;
 
     /**
      * Two distinct criteria to be linked; the second
      */
-    private Criterion cri2;
+    private final Criterion cri2;
 
     /**
      * Stores the logical operation between the criteria
      */
-    private String operator;
+    private final String operator;
 
     /**
      * Build a binary criteria

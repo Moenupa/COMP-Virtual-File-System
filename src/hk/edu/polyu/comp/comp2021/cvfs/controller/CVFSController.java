@@ -5,15 +5,15 @@ import hk.edu.polyu.comp.comp2021.cvfs.model.*;
 import hk.edu.polyu.comp.comp2021.cvfs.view.CVFSView;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 
 /**
  * the control element of the CVFS
  */
 public class CVFSController {
-    private CVFS cvfs;
-    private CVFSView view;
+    private final CVFS cvfs;
+    private final CVFSView view;
+    private final loggerParser logger = new loggerParser();
 
 
 
@@ -39,8 +39,6 @@ public class CVFSController {
      * @return command input from the keyboard or the system
      */
     public String getCommand(){
-
-
         return scanner.nextLine();
     }
 
@@ -48,11 +46,13 @@ public class CVFSController {
     /**
      * @param type type of command input
      * @param command command input
-     * @throws Exception if no file or criterion of input name exists or the command is invalid in format
      */
-    public void processCommand(CommandType type, String command) throws Exception {
+    public void processCommand(CommandType type, String command) {
 
         String[] elements=command.split(" ");
+        Directory twd;
+        String tname;
+        Object[] tres;
 
         switch (type){
             case newDisk:
@@ -66,9 +66,12 @@ public class CVFSController {
                     throw new IllegalArgumentException("Invalid size of new disk: "+elements[1]);
                 }
 
-                cvfs.newDisk(Integer.parseInt(elements[0]));
+                cvfs.newDisk(Integer.parseInt(elements[1]));
+                return;
 
             case newDoc:
+                if(cvfs.getCwd()==null)
+                    throw new IllegalStateException("Please first create a disk.");
                 if (elements.length<4){
                     throw new IllegalArgumentException("Name, type or content of new document not found");
                 }
@@ -78,10 +81,15 @@ public class CVFSController {
                 if(!DocType.isValidDocType(elements[2])){
                     throw new IllegalArgumentException("Invalid document type: "+elements[2]);
                 }
-
-                cvfs.getCwd().newDoc(elements[1],DocType.parse(elements[2]),elements[3]);
+                tres = cvfs.parsePath(elements[1]);
+                twd = (Directory) tres[0];
+                tname = (String) tres[1];
+                twd.newDoc(tname,DocType.parse(elements[2]),elements[3]);
+                return;
 
             case newDir:
+                if(cvfs.getCwd()==null)
+                    throw new IllegalStateException("Please first create a disk.");
                 if(elements.length>2){
                     throw new IllegalArgumentException("Command input too long");
                 }
@@ -91,24 +99,35 @@ public class CVFSController {
                 if (!Unit.isValidName(elements[1])){
                     throw new IllegalArgumentException("Invalid directory name: "+elements[1]);
                 }
-
-                cvfs.getCwd().newDir(elements[1]);
+                tres = cvfs.parsePath(elements[1]);
+                twd = (Directory) tres[0];
+                tname = (String) tres[1];
+                twd.newDir(tname);
+                return;
 
             case list:
+                if(cvfs.getCwd()==null)
+                    throw new IllegalStateException("Please first create a disk.");
                 if(elements.length>1){
                     throw new IllegalArgumentException("Command input too long");
                 }
 
                 cvfs.getCwd().list();
+                return;
 
             case rList:
+                if(cvfs.getCwd()==null)
+                    throw new IllegalStateException("Please first create a disk.");
                 if(elements.length>1){
                     throw new IllegalArgumentException("Command input too long");
                 }
 
                 cvfs.getCwd().down_rList();
+                return;
 
             case search:
+                if(cvfs.getCwd()==null)
+                    throw new IllegalStateException("Please first create a disk.");
                 if(elements.length>2){
                     throw new IllegalArgumentException("Command input too long");
                 }
@@ -120,8 +139,11 @@ public class CVFSController {
                 }
 
                 cvfs.getCwd().search(cvfs.getCri(elements[1]));
+                return;
 
             case rsearch:
+                if(cvfs.getCwd()==null)
+                    throw new IllegalStateException("Please first create a disk.");
                 if(elements.length>2){
                     throw new IllegalArgumentException("Command input too long");
                 }
@@ -133,8 +155,11 @@ public class CVFSController {
                 }
 
                 cvfs.getCwd().rSearch(cvfs.getCri(elements[1]));
+                return;
 
             case rename:
+                if(cvfs.getCwd()==null)
+                    throw new IllegalStateException("Please first create a disk.");
                 if(elements.length>3){
                     throw new IllegalArgumentException("Command inout too long");
                 }
@@ -147,10 +172,16 @@ public class CVFSController {
                 if (!Unit.isValidName(elements[2])){
                     throw new IllegalArgumentException("Invalid new name: "+elements[2]);
                 }
+                tres = cvfs.parsePath(elements[1]);
+                twd = (Directory) tres[0];
+                tname = (String) tres[1];
 
-                cvfs.getCwd().rename(elements[1],elements[2]);
+                twd.rename(tname,elements[2]);
+                return;
 
             case delete:
+                if(cvfs.getCwd()==null)
+                    throw new IllegalStateException("Please first create a disk.");
                 if(elements.length>2){
                     throw new IllegalArgumentException("Command input too long");
                 }
@@ -160,10 +191,16 @@ public class CVFSController {
                 if (!Unit.isValidName(elements[1])){
                     throw new IllegalArgumentException("Invalid file name: "+elements[1]);
                 }
+                tres = cvfs.parsePath(elements[1]);
+                twd = (Directory) tres[0];
+                tname = (String) tres[1];
 
-                cvfs.getCwd().delete(elements[1]);
+                twd.delete(tname);
+                return;
 
             case changeDir:
+                if(cvfs.getCwd()==null)
+                    throw new IllegalStateException("Please first create a disk.");
                 if(elements.length>2){
                     throw new IllegalArgumentException("Command input too long");
                 }
@@ -175,6 +212,7 @@ public class CVFSController {
                 }
 
                 cvfs.changeDir(elements[1]);
+                return;
 
             case newNegation:
                 if(elements.length>3){
@@ -191,6 +229,7 @@ public class CVFSController {
                 }
 
                 cvfs.newNegation(elements[1],elements[2]);
+                return;
 
             case newBinaryCri:
                 if(elements.length>5){
@@ -213,6 +252,7 @@ public class CVFSController {
                 }
 
                 cvfs.newBinaryCri(elements[1],elements[2],elements[3],elements[4]);
+                return;
 
             case newSimpleCri:
                 if(elements.length>5){
@@ -226,6 +266,7 @@ public class CVFSController {
                 }
 
                 cvfs.newSimpleCri(elements[1],elements[2],elements[3],elements[4]);
+                return;
 
             case printAllCriteria:
                 if(elements.length>1){
@@ -233,23 +274,35 @@ public class CVFSController {
                 }
 
                 cvfs.printAllCriteria();
+                return;
 
 
-            case undo:// Those 4 can be saved for later
+            case undo:
                 if(elements.length>1){
                     throw new IllegalArgumentException("Command input too long");
                 }
+                logger.undo();
+                return;
 
             case redo:
                 if(elements.length>1){
                     throw new IllegalArgumentException("Command input too long");
                 }
+                logger.redo();
+                return;
 
             case load:
+                if(elements.length>2){
+                    throw new IllegalArgumentException("Command input too long");
+                }
+                cvfs.load(elements[1]);
+                return;
 
             case store:
-
-
+                if(elements.length>2){
+                    throw new IllegalArgumentException("Command input too long");
+                }
+                cvfs.store(elements[1]);
                 TraceLogger.getInstance().newLog(TraceLogger.OpType.DD,elements[1],cvfs);
         }
 
@@ -258,9 +311,10 @@ public class CVFSController {
 
     /**
      * The user-interface, receiving and handling user requests.
-     * @throws Exception if no file or criterion of input name exists when processing commands
      */
-    public void terminal() throws Exception {
+    public void terminal() {
+
+        view.updateDir(cvfs.getCwd());
 
         String command;
 
@@ -270,7 +324,7 @@ public class CVFSController {
         CommandType type = CommandSwitch.getType(command);
 
         while (type == CommandType.invalid) {
-            System.out.println("\033[31m" +"Error: Invalid argument(s). Please try again."+"\033[0m");
+            view.printPrompt();
             command = getCommand();
             type = CommandSwitch.getType(command);
         }
@@ -299,7 +353,7 @@ public class CVFSController {
         /**
          * Add an object.
          */
-        private Ops add = args -> {
+        private final Ops add = args -> {
             Object obj =  args[0];
             if(obj instanceof Unit){
                 Unit unit = (Unit)obj;
@@ -317,7 +371,7 @@ public class CVFSController {
         /**
          * Delete an Object.
          */
-        private Ops del = args -> {
+        private final Ops del = args -> {
             Object obj =  args[0];
             if (obj instanceof Unit){
                 Unit unit = (Unit) obj;
@@ -334,7 +388,7 @@ public class CVFSController {
         /**
          * Rename an object.
          */
-        private Ops ren = args -> {
+        private final Ops ren = args -> {
             Unit unit = (Unit) args[0];
             String newName = (String)args[1];
             String oldName = (String)args[2];
@@ -346,7 +400,7 @@ public class CVFSController {
         /**
          * Change directory.
          * */
-        private Ops cd = args -> {
+        private final Ops cd = args -> {
             Directory newDir = (Directory) args[0];
             Directory oldDir = (Directory) args[1];
             CVFS cvfs = (CVFS) args[2];
@@ -355,7 +409,7 @@ public class CVFSController {
         /**
          * Switch to another disk.
          */
-        private  Ops sd = args -> {
+        private final Ops sd = args -> {
             Disk newDisk = (Disk) args[0];
             Disk oldDisk = (Disk) args[1];
             CVFS cvfs = (CVFS) args[2];
@@ -364,7 +418,7 @@ public class CVFSController {
         /**
          * Delete a disk.
          */
-        private Ops dd = args -> {
+        private final Ops dd = args -> {
             String name = (String)args[0];
             CVFS cvfs = (CVFS) args[1];
             cvfs.delDisk(name);
@@ -373,16 +427,16 @@ public class CVFSController {
         /**
          * Store a disk to local storage.
          */
-        private Ops ld = args -> {
+        private final Ops ld = args -> {
             String name = (String)args[0];
             CVFS cvfs = (CVFS) args[1];
             cvfs.store(name);
 
         };
 
-        private TraceLogger logger = TraceLogger.getInstance();
+        private final TraceLogger logger = TraceLogger.getInstance();
 
-        private HashMap<TraceLogger.OpType,Ops> typeMap = new HashMap<>();
+        private final HashMap<TraceLogger.OpType,Ops> typeMap = new HashMap<>();
         {
             typeMap.put(TraceLogger.OpType.ADD,add);
             typeMap.put(TraceLogger.OpType.DEL,del);

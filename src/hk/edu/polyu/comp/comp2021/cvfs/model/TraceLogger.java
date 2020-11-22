@@ -8,15 +8,6 @@ import java.util.Stack;
 public final class TraceLogger {
 
     private static TraceLogger traceLogger;
-    /**
-     * Stores al possible kinds of operations.
-     */
-    interface Operation{
-        /**
-         * @param args Arguments of the operation.
-         */
-        void operate(Object[] args);
-    }
 
     /**
      * Types of operations.
@@ -130,7 +121,6 @@ public final class TraceLogger {
         if(logger.isEmpty())
             throw new IllegalStateException("No more step can be undone.");
         Tracelog tmp = logger.pop();
-        OpType type = tmp.getType();
         rLogger.push(tmp.switchLog());
         return tmp;
     }

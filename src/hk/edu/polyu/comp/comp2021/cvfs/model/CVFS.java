@@ -40,13 +40,11 @@ public class CVFS {
      * Create a new disk and return its reference.
      *
      * @param diskSize The capacity of the disk.
-     * @return The reference of the disk.
      */
-    public Disk newDisk(int diskSize) {
+    public void newDisk(int diskSize) {
         disk = new Disk(diskSize);
         TraceLogger.getInstance().newLog(TraceLogger.OpType.SD,this.disk,disk,this);
         cwd = disk;
-        return disk;
     }
 
     /**
@@ -87,6 +85,7 @@ public class CVFS {
             File file = new File(path);
             if(file.exists())
                 throw new FileAlreadyExistsException("File Already Exists.");
+            //noinspection ResultOfMethodCallIgnored
             file.createNewFile();
             FileOutputStream buffer = new FileOutputStream(path);
             ObjectOutputStream out = new ObjectOutputStream(buffer);
@@ -110,6 +109,7 @@ public class CVFS {
      * Delete a local copy of the disk.
      * @param name The name of the file to be deleted.
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public void delDisk(String name){
         File file = new File(System.getProperty("user.dir")+"/disks/"+name+".ser");
         file.delete();
@@ -118,9 +118,8 @@ public class CVFS {
     /**
      * Load a disk from local storage
      * @param name the name of the disk to be loaded.
-     * @return The reference to the disk.
      */
-    public Disk load(String name){
+    public void load(String name){
         try{
             String path =System.getProperty("user.dir")+"/disks/"+name+".ser";
             if(!new File(path).exists())
@@ -141,9 +140,13 @@ public class CVFS {
         }
         catch (ClassNotFoundException ignored){}
         System.out.println("Disk "+name+" Loaded.");
-        return disk;
     }
 
+    /**
+     * Return a criterion by name.
+     * @param criName The name of the criterion
+     * @return The reference to the criterion.
+     */
     public Criterion getCri(String criName){
         return criteria.get(criName);
     }
@@ -251,13 +254,34 @@ public class CVFS {
             setCwd(cwd.getParent());
             return;
         }
-        Map<String,Unit> cat = getCwd().getCatalog();
-        if(!cat.containsKey(name))
-            throw new IllegalArgumentException("No such directory.");
-        Unit newDir = cat.get(name);
+        Object[] res = parsePath(name);
+        Directory tmpDir=(Directory) res[0];
+        String tname = (String) res[1];
+        Unit newDir=tmpDir.getCatalog().get(tname);
+        if(newDir == null)
+            throw new IllegalArgumentException("Invalid path.");
         if(!(newDir instanceof Directory))
             throw new IllegalArgumentException("This is not a directory.");
         TraceLogger.getInstance().newLog(TraceLogger.OpType.CD,getCwd(),newDir);
         setCwd((Directory) newDir);
+    }
+    /**
+     * Parse the path and return the directory of the target file and the name of the target file.
+     * @param path The string to be parsed.
+     * @return The parent of the target file and the name of the file..
+     */
+    public Object[] parsePath(String path){
+        String[] paths=path.split(":");
+        Directory cur = getCwd();
+        for(int i=0;i<paths.length-1;i++){
+            String s = paths[i];
+            if(s.equals("$"))continue;
+            cur=(Directory) cur.getCatalog().get(s);
+            if (cur==null) throw new IllegalArgumentException("Invalid Path.");
+        }
+        Object[] result = new Object[2];
+        result[0]=cur;
+        result[1]=paths[paths.length-1];
+        return result;
     }
 }

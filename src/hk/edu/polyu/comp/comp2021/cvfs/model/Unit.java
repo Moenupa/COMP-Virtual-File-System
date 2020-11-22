@@ -2,6 +2,9 @@ package hk.edu.polyu.comp.comp2021.cvfs.model;
 
 import java.io.Serializable;
 
+/**
+ * The basic properties of a file.
+ */
 public abstract class Unit implements Serializable {
     /**
      * A non-null string. Only numbers and English letters are allowed. No more than 10 chars. Can't be empty except for the disk.
@@ -13,10 +16,12 @@ public abstract class Unit implements Serializable {
      */
     private int size;
 
-    /**
-     * Changing this to false marks the unit as deleted.
-     */
-    private boolean existent = true;
+// --Commented out by Inspection START (2020/11/22 17:54):
+//    /**
+//     * Changing this to false marks the unit as deleted.
+//     */
+//    private boolean existent = true;
+// --Commented out by Inspection STOP (2020/11/22 17:54)
 
     /**
      * A constant size that a Unit takes:
@@ -29,7 +34,6 @@ public abstract class Unit implements Serializable {
      * Construct a new unit.
      *
      * @param name   The name of the unit.
-     * @param parent The parent of the unit.
      */
     public Unit(String name) {
         this.name = name;
@@ -41,6 +45,7 @@ public abstract class Unit implements Serializable {
      * @param name The string to be checked.
      * @return true if it is valid.
      */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean isValidName(String name) {
         return name.matches("^[a-zA-Z0-9]{1,10}$");
     }
@@ -75,6 +80,7 @@ public abstract class Unit implements Serializable {
      *
      * @param newParent The new parent of the unit.
      */
+    @SuppressWarnings("unused")
     public abstract void setParent(Unit newParent);
 
     /**
@@ -104,20 +110,24 @@ public abstract class Unit implements Serializable {
         for (Unit temp = this; temp.getParent() != null; temp = temp.getParent())
             level++;
         return level;
-    };
-
-    /**
-     * Mark the unit as deleted;
-     */
-    public void delete() {
-        existent = false;
     }
 
-    /**
-     * Mark the deleted unit as recovered.
-     */
-    public void recover() {
-        existent = true;
-    }
+// --Commented out by Inspection START (2020/11/22 17:55):
+//    /**
+//     * Mark the unit as deleted;
+//     */
+//    public void delete() {
+//        existent = false;
+//    }
+// --Commented out by Inspection STOP (2020/11/22 17:55)
+
+// --Commented out by Inspection START (2020/11/22 17:54):
+//    /**
+//     * Mark the deleted unit as recovered.
+//     */
+//    public void recover() {
+//        existent = true;
+//    }
+// --Commented out by Inspection STOP (2020/11/22 17:54)
 
 }

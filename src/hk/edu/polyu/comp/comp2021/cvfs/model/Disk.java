@@ -1,11 +1,13 @@
 package hk.edu.polyu.comp.comp2021.cvfs.model;
 
+@SuppressWarnings("ALL")
 public class Disk extends Directory {
     private final int capacity;
 
     public Disk(int capacity) {
         super("Disk",null);
         this.capacity = capacity;
+        setSize(0);
     }
 
     /**
@@ -32,6 +34,7 @@ public class Disk extends Directory {
         return capacity;
     }
 
+    @SuppressWarnings("unused")
     @Override
     public StringBuilder getPath() {
         StringBuilder str = new StringBuilder();

@@ -69,8 +69,8 @@ public class CommandSwitch {
                 return CommandType.load;
         }
 
-        if (command.equals(""))System.out.println("Please input command");
-        else System.out.println("unknown command: "+elements[0]);
+        if (command.equals(""))System.out.println("\033[31m" +"Please Input Command"+"\033[0m");
+        else System.out.println("\033[31m" + "Unknown Command: "+elements[0]+"\033[0m");
         return CommandType.invalid;
     }
 }

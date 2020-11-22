@@ -89,6 +89,7 @@ public class Criterion implements Cloneable {
     /**
      * A clone constructor
      */
+    @SuppressWarnings("CopyConstructorMissesField")
     private Criterion(Criterion x) {
         name = x.getName();
         attr = x.getAttr();
@@ -109,6 +110,7 @@ public class Criterion implements Cloneable {
      * clone method
      * @return a new cloned Criterion object
      */
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
     @Override
     public Object clone() {
         return new Criterion(this);
