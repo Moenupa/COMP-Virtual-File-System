@@ -1,18 +1,18 @@
 package hk.edu.polyu.comp.comp2021.cvfs.model;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
 
-class BinCriTest {
+public class BinCriTest {
 
     Criterion sizeUpBound, sizeLowBound, txtBound;
     Document txtSizeDoc, txtDoc, cssDoc;
     BinCri sizeLowAndUp, negSize, compositeCri;
 
-    @BeforeEach
-    void setUp() {
+    @Before
+    public void setUp() {
         sizeUpBound = new Criterion("sa", "size","<=", "300");
         sizeLowBound = new Criterion("sb", "size",">=", "50");
         txtBound = new Criterion("ta", "type", "equals", "\"txt\"");
@@ -39,13 +39,13 @@ class BinCriTest {
     }
 
     @Test
-    void isValidOperatorTest() {
+    public void isValidOperatorTest() {
         assertTrue(BinCri.isValidOperator("&&") && BinCri.isValidOperator("||"));
         assertFalse(BinCri.isValidOperator("&|"));
     }
 
     @Test
-    void checkTest() {
+    public void checkTest() {
         assertTrue(sizeLowAndUp.check(txtDoc));
         assertFalse(sizeLowAndUp.check(txtSizeDoc));
         assertFalse(sizeLowAndUp.check(cssDoc));
@@ -56,24 +56,24 @@ class BinCriTest {
     }
 
     @Test
-    void getNegCriTest() {
+    public void getNegCriTest() {
         assertFalse(negSize.check(txtDoc));
         assertTrue(negSize.check(txtSizeDoc));
         assertTrue(negSize.check(cssDoc));
     }
 
     @Test
-    void toStringTest() {
+    public void toStringTest() {
         System.out.println(sizeLowAndUp.toString());
     }
 
     @Test
-    void hashCodeTest() {
+    public void hashCodeTest() {
         assertEquals(sizeLowAndUp.hashCode(), sizeLowAndUp.clone().hashCode());
     }
 
     @Test
-    void equalsTest() {
+    public void equalsTest() {
         assertEquals(sizeLowAndUp, sizeLowAndUp.clone());
     }
 }

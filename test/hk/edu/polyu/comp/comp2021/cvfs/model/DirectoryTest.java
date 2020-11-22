@@ -1,9 +1,11 @@
 package hk.edu.polyu.comp.comp2021.cvfs.model;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 
-class DirectoryTest {
+import static org.junit.Assert.*;
+
+public class DirectoryTest {
     /**
      *  root
      *      desktop
@@ -31,8 +33,8 @@ class DirectoryTest {
     Directory desktop, documents, downloads, oop, nlp, cv, gpProj, data, download1, download2;
     Document notes, projReq, example, outline, embedding, train, test, paper, ToAplus;
 
-    @BeforeEach
-    void setUp() {
+    @Before
+    public void setUp() {
         try {
             root = new Disk(CAPACITY);
             desktop = root.newDir("Desktop");
@@ -67,19 +69,20 @@ class DirectoryTest {
     }
 
     @Test
-    void listTest() {
+    public void listTest() {
         root.list();
         System.out.println();
         data.list();
+        assertTrue(true);
     }
 
     @Test
-    void rlistTest() {
+    public void rlistTest() {
         root.down_rList();
     }
 
     @Test
-    void toStringTest() {
+    public void toStringTest() {
         System.out.println(root.toString());
     }
 
