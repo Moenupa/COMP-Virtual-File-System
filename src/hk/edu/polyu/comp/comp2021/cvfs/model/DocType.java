@@ -35,6 +35,7 @@ public enum DocType {
 
     /**
      * Check whether type is valid or not
+     *
      * @param type The string to be checked.
      * @return True if the type is valid.
      */
@@ -44,19 +45,26 @@ public enum DocType {
 
     /**
      * Parse the string and return a DocType. Return null if the string is invalid
+     *
      * @param s The string to be parsed
      * @return The DocType of the string.
      */
-    public static DocType parse(String s){
-        switch (s){
-            case "txt":return TXT;
-            case "java":return JAVA;
-            case "css":return CSS;
-            case "html":return HTML;
-            default: return null;
+    public static DocType parse(String s) {
+        switch (s) {
+            case "txt":
+                return TXT;
+            case "java":
+                return JAVA;
+            case "css":
+                return CSS;
+            case "html":
+                return HTML;
+            default:
+                return null;
 
         }
     }
+
     /**
      * Return the text form of the enum
      *

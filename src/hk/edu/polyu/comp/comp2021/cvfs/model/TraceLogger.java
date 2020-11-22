@@ -8,11 +8,68 @@ import java.util.Stack;
 public final class TraceLogger {
 
     private static TraceLogger traceLogger;
+    private final Stack<Tracelog> logger = new Stack<>();
+    private final Stack<Tracelog> rLogger = new Stack<>();
+
+    /**
+     * Empty constructor.
+     */
+    private TraceLogger() {
+    }
+
+    /**
+     * @return the traceLogger with singleton guaranteed.
+     */
+    public static TraceLogger getInstance() {
+        if (traceLogger == null) {
+            synchronized (TraceLogger.class) {
+                if (traceLogger == null) {
+                    traceLogger = new TraceLogger();
+                }
+            }
+        }
+        return traceLogger;
+    }
+
+    /**
+     * Generate a new log and clear the redo logger
+     *
+     * @param type The type of the log.
+     * @param args The arguments of the log.
+     */
+    public void newLog(OpType type, Object... args) {
+        rLogger.clear();
+        logger.push(new Tracelog(type, args));
+    }
+
+    /**
+     * Return the latest log and push it into redo logger.
+     *
+     * @return The latest piece of log
+     */
+    public Tracelog getlog() {
+        if (logger.isEmpty())
+            throw new IllegalStateException("No more step can be undone.");
+        Tracelog tmp = logger.pop();
+        rLogger.push(tmp.switchLog());
+        return tmp;
+    }
+
+    /**
+     * @return The latest piece of redo log and push it into the logger.
+     */
+    public Tracelog getRlog() {
+        if (rLogger.isEmpty())
+            throw new IllegalStateException("No more step can be redone");
+        Tracelog tmp = rLogger.pop();
+        logger.push(tmp.switchLog());
+        return tmp;
+    }
 
     /**
      * Types of operations.
      */
-    public enum OpType{
+    public enum OpType {
         /**
          * Delete an Object.
          */
@@ -27,7 +84,7 @@ public final class TraceLogger {
         REN,
         /**
          * Change directory.
-         * */
+         */
         CD,
         /**
          * Switch to another disk.
@@ -46,18 +103,19 @@ public final class TraceLogger {
     /**
      * Records a single log.
      */
-    public static class Tracelog{
+    public static class Tracelog {
         private final OpType type;
         private final Object[] args;
 
         /**
          * Generate a single trace log
+         *
          * @param type The type of the operation
          * @param args The arguments of the operation
          */
-        public Tracelog(OpType type, Object... args){
-            this.type=type;
-            this.args=args;
+        public Tracelog(OpType type, Object... args) {
+            this.type = type;
+            this.args = args;
         }
 
         /**
@@ -77,81 +135,25 @@ public final class TraceLogger {
         /**
          * @return Switch the log between redo and undo.
          */
-        public Tracelog switchLog(){
-            switch (type){
+        public Tracelog switchLog() {
+            switch (type) {
                 case ADD:
                     return new Tracelog(OpType.DEL, args);
                 case DEL:
                     return new Tracelog(OpType.ADD, args);
                 case REN:
-                    return new Tracelog(OpType.REN,args[0],args[2],args[1]);
+                    return new Tracelog(OpType.REN, args[0], args[2], args[1]);
                 case CD:
-                    return new Tracelog(OpType.CD,args[1],args[0]);
+                    return new Tracelog(OpType.CD, args[1], args[0]);
                 case SD:
-                    return new Tracelog(OpType.SD,args[1],args[0]);
+                    return new Tracelog(OpType.SD, args[1], args[0]);
                 case DD:
-                    return new Tracelog(OpType.LD,args);
+                    return new Tracelog(OpType.LD, args);
                 case LD:
-                    return new Tracelog(OpType.DD,args);
+                    return new Tracelog(OpType.DD, args);
                 default:
                     return null;
             }
         }
-    }
-
-    private final Stack<Tracelog> logger = new Stack<>();
-
-    private final Stack<Tracelog> rLogger = new Stack<>();
-
-    /**
-     * Generate a new log and clear the redo logger
-     * @param type The type of the log.
-     * @param args The arguments of the log.
-     */
-    public void newLog(OpType type, Object... args){
-        rLogger.clear();
-        logger.push(new Tracelog(type, args));
-    }
-
-    /**
-     * Return the latest log and push it into redo logger.
-     * @return The latest piece of log
-     */
-    public Tracelog getlog(){
-        if(logger.isEmpty())
-            throw new IllegalStateException("No more step can be undone.");
-        Tracelog tmp = logger.pop();
-        rLogger.push(tmp.switchLog());
-        return tmp;
-    }
-
-    /**
-     * @return The latest piece of redo log and push it into the logger.
-     */
-    public Tracelog getRlog(){
-        if(rLogger.isEmpty())
-            throw new IllegalStateException("No more step can be redone");
-         Tracelog tmp = rLogger.pop();
-         logger.push(tmp.switchLog());
-         return tmp;
-    }
-
-    /**
-     * Empty constructor.
-     */
-    private TraceLogger(){}
-
-    /**
-     * @return the traceLogger with singleton guaranteed.
-     */
-    public static TraceLogger getInstance() {
-        if(traceLogger==null){
-            synchronized (TraceLogger.class){
-                if(traceLogger==null){
-                    traceLogger = new TraceLogger();
-                }
-            }
-        }
-        return traceLogger;
     }
 }

@@ -3,7 +3,7 @@ package hk.edu.polyu.comp.comp2021.cvfs.controller;
 /**
  * all possible type of command input
  */
-public enum  CommandType {
+public enum CommandType {
     /**
      * invalid if the command is invalid
      */
@@ -41,7 +41,7 @@ public enum  CommandType {
      */
     rList,
     /**
-     *newSimpleCri if the command is to create simple criterion
+     * newSimpleCri if the command is to create simple criterion
      */
     newSimpleCri,
     /**
@@ -77,7 +77,7 @@ public enum  CommandType {
      */
     undo,
     /**
-     *redo if the command is to redo
+     * redo if the command is to redo
      */
     redo
 }

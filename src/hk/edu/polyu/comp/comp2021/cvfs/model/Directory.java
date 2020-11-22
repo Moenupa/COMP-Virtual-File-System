@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *  This class implement directory that can stored documents or other directory
- *  to form a file system's storage tree with disk as root.
- *  This class also provids methods for revision, move, copy, delete, list, search and so on.
+ * This class implement directory that can stored documents or other directory
+ * to form a file system's storage tree with disk as root.
+ * This class also provids methods for revision, move, copy, delete, list, search and so on.
  */
 @SuppressWarnings("unused")
 public class Directory extends Unit {
@@ -35,6 +35,21 @@ public class Directory extends Unit {
         super(name);
         setParent(parent);
         this.setSize(SIZE_CONSTANT);
+    }
+
+    /**
+     * A rList with a filter.
+     *
+     * @param criName The filter.
+     * @param currDir The current Directory of each recursive level.
+     */
+    public static void rSearch(Directory currDir, Criterion criName) {
+        for (Unit unit : currDir.getCatalog().values()) {
+            if (criName.check(unit))
+                System.out.println(unit);
+            if (unit instanceof Directory)
+                rSearch((Directory) unit, criName);
+        }
     }
 
     /**
@@ -88,8 +103,8 @@ public class Directory extends Unit {
             throw new IllegalArgumentException("A directory with the same name already exists");
         }
         Directory tmp = new Directory(name, this);
-        this.getCatalog().put(name,tmp);
-        TraceLogger.getInstance().newLog(TraceLogger.OpType.DEL,tmp,this);
+        this.getCatalog().put(name, tmp);
+        TraceLogger.getInstance().newLog(TraceLogger.OpType.DEL, tmp, this);
         updateSizeBy(tmp.getSize());
         return tmp;
     }
@@ -110,9 +125,9 @@ public class Directory extends Unit {
         if (this.getCatalog().get(name) != null) {
             throw new IllegalArgumentException("A document with the same name already exists.");
         }
-        Document tmp =new Document(name, this, type, content);
+        Document tmp = new Document(name, this, type, content);
         this.getCatalog().put(name, tmp);
-        TraceLogger.getInstance().newLog(TraceLogger.OpType.DEL,tmp,this);
+        TraceLogger.getInstance().newLog(TraceLogger.OpType.DEL, tmp, this);
         updateSizeBy(tmp.getSize());
         return tmp;
     }
@@ -130,7 +145,7 @@ public class Directory extends Unit {
             System.out.println("No such document/directory exit.");
             return;
         }
-        move((Directory) currDisk.getCatalog().get("Bin"), name,false);
+        move((Directory) currDisk.getCatalog().get("Bin"), name, false);
         updateSizeBy(-this.getCatalog().get(name).getSize());
         this.getCatalog().remove(name);
     }
@@ -144,23 +159,23 @@ public class Directory extends Unit {
      */
     public void delete(String name) {
         if (this.getCatalog().get(name) == null) {
-            throw new IllegalArgumentException("Error: Can't find "+name+" in this directory.");
+            throw new IllegalArgumentException("Error: Can't find " + name + " in this directory.");
         }
         updateSizeBy(-this.getCatalog().get(name).getSize());
-        TraceLogger.getInstance().newLog(TraceLogger.OpType.ADD,getCatalog().get(name),this);
+        TraceLogger.getInstance().newLog(TraceLogger.OpType.ADD, getCatalog().get(name), this);
         this.getCatalog().remove(name);
     }
 
     /**
      * Move a document/directory to another directory.
      *
-     * @param other Another directory.
-     * @param name The moving document/directory.
+     * @param other  Another directory.
+     * @param name   The moving document/directory.
      * @param delete If move set ture, if copy set false.
      */
     public void move(Directory other, String name, boolean delete) {
         if (this.getCatalog().get(name) == null) {
-            throw new IllegalArgumentException("Error: Can't find "+name+" in this directory.");
+            throw new IllegalArgumentException("Error: Can't find " + name + " in this directory.");
         }
 
         if (other.getCatalog().get(name) != null) {
@@ -170,13 +185,12 @@ public class Directory extends Unit {
         if (this.getCatalog().get(name) instanceof Directory) {
             Directory tempDir = (Directory) this.getCatalog().get(name);
             other.getCatalog().put(name, tempDir);
-        }
-        else {
+        } else {
             Document tempDoc = (Document) this.getCatalog().get(name);
             other.getCatalog().put(name, tempDoc);
         }
         updateSizeBy(this.getCatalog().get(name).getSize());
-        if(delete)
+        if (delete)
             this.delete(name);
     }
 
@@ -191,18 +205,18 @@ public class Directory extends Unit {
      */
     public void rename(String oldName, String newName) {
         if (this.getCatalog().get(oldName) == null) {
-            throw new IllegalArgumentException("Error: Can't find "+oldName+" in this directory.");
+            throw new IllegalArgumentException("Error: Can't find " + oldName + " in this directory.");
         }
         if (!isValidName(newName)) {
             throw new IllegalArgumentException("Error: Invalid Argument.");
         }
-        if (this.getCatalog().get(newName) != null ) {
+        if (this.getCatalog().get(newName) != null) {
             throw new IllegalArgumentException("A file with the same new name already exists in this directory");
         }
         Unit renamedItem;
         renamedItem = this.getCatalog().get(oldName);
         renamedItem.setName(newName);
-        TraceLogger.getInstance().newLog(TraceLogger.OpType.REN,oldName,newName);
+        TraceLogger.getInstance().newLog(TraceLogger.OpType.REN, oldName, newName);
         this.getCatalog().remove(oldName);
         this.getCatalog().put(newName, renamedItem);
 
@@ -244,7 +258,7 @@ public class Directory extends Unit {
      * Report the total number and size of files listed.
      *
      * @param currDir The currDir of each recursive level.
-     * @param level The level of each recursive.
+     * @param level   The level of each recursive.
      */
     public void down_rList(Directory currDir, int level) {
         for (Unit unit : currDir.getCatalog().values()) {
@@ -341,21 +355,6 @@ public class Directory extends Unit {
     }
 
     /**
-     * A rList with a filter.
-     *
-     * @param criName The filter.
-     * @param currDir The current Directory of each recursive level.
-     */
-    public static void rSearch(Directory currDir, Criterion criName) {
-        for (Unit unit : currDir.getCatalog().values()) {
-            if (criName.check(unit))
-                System.out.println(unit);
-            if (unit instanceof Directory)
-                rSearch((Directory) unit, criName);
-        }
-    }
-
-    /**
      * Recursively update the size of the directory by a certain number.
      * First update the size of parent, then the current directory.
      *
@@ -368,9 +367,10 @@ public class Directory extends Unit {
 
     /**
      * Get the full path of the current directory.
+     *
      * @return The StringBuilder containing the full path
      */
-    public StringBuilder getPath(){
+    public StringBuilder getPath() {
         StringBuilder str = getParent().getPath();
         str.append(':').append(getName());
         return str;

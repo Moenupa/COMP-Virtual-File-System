@@ -12,17 +12,15 @@ public class Document extends Unit {
      * The type of the document.
      */
     private final DocType type;
-
-    /**
-     * A reference to the parent directory. Not null except for the disk.
-     */
-    private Directory parent;
-
     /**
      * The content of the document.
      */
     @SuppressWarnings("unused")
     private final String content;
+    /**
+     * A reference to the parent directory. Not null except for the disk.
+     */
+    private Directory parent;
 
     /**
      * Construct a new document file.

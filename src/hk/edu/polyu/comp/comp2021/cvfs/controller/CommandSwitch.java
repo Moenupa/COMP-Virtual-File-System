@@ -6,13 +6,12 @@ package hk.edu.polyu.comp.comp2021.cvfs.controller;
 public class CommandSwitch {
 
     /**
-     *
      * @param command command input
      * @return CommandType.invalid if the command, else return the type of the giving command
      */
-    public static CommandType getType(String command){
-        String[] elements=command.split(" ");
-        switch (elements[0]){
+    public static CommandType getType(String command) {
+        String[] elements = command.split(" ");
+        switch (elements[0]) {
 
             case "newDir":
                 return CommandType.newDir;
@@ -69,8 +68,8 @@ public class CommandSwitch {
                 return CommandType.load;
         }
 
-        if (command.equals(""))System.out.println("\033[31m" +"Please Input Command"+"\033[0m");
-        else System.out.println("\033[31m" + "Unknown Command: "+elements[0]+"\033[0m");
+        if (command.equals("")) System.out.println("\033[31m" + "Please Input Command" + "\033[0m");
+        else System.out.println("\033[31m" + "Unknown Command: " + elements[0] + "\033[0m");
         return CommandType.invalid;
     }
 }

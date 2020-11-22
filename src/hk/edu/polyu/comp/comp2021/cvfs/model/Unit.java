@@ -7,14 +7,15 @@ import java.io.Serializable;
  */
 public abstract class Unit implements Serializable {
     /**
+     * A constant size that a Unit takes:
+     * DocSize = CONSTANT + content.length() *2
+     * DirSize = CONSTANT + sub-DocSize + sub-DirSize
+     */
+    protected static final int SIZE_CONSTANT = 40;
+    /**
      * A non-null string. Only numbers and English letters are allowed. No more than 10 chars. Can't be empty except for the disk.
      */
     private String name;
-
-    /**
-     * The size of the file. Variable when the unit is a directory.
-     */
-    private int size;
 
 // --Commented out by Inspection START (2020/11/22 17:54):
 //    /**
@@ -22,18 +23,15 @@ public abstract class Unit implements Serializable {
 //     */
 //    private boolean existent = true;
 // --Commented out by Inspection STOP (2020/11/22 17:54)
-
     /**
-     * A constant size that a Unit takes:
-     * DocSize = CONSTANT + content.length() *2
-     * DirSize = CONSTANT + sub-DocSize + sub-DirSize
+     * The size of the file. Variable when the unit is a directory.
      */
-    protected static final int SIZE_CONSTANT = 40;
+    private int size;
 
     /**
      * Construct a new unit.
      *
-     * @param name   The name of the unit.
+     * @param name The name of the unit.
      */
     public Unit(String name) {
         this.name = name;
@@ -103,6 +101,7 @@ public abstract class Unit implements Serializable {
 
     /**
      * get level index of this
+     *
      * @return The level index of this unit;
      */
     public int getLevel() {

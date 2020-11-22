@@ -11,22 +11,20 @@ import java.util.Map;
 public class CVFS {
     // the implementation of the CVFS system.
     /**
+     * A hashmap storing all criteria.
+     */
+    private final Map<String, Criterion> criteria = new HashMap<>();
+    /**
      * Stores the current disk in use.
      */
     private Disk disk;
-
     /**
      * Stores the reference to the current working directory.
      */
     private Directory cwd;
 
-    /**
-     * A hashmap storing all criteria.
-     */
-    private final Map<String, Criterion> criteria = new HashMap<>();
-
     {
-        criteria.put("IsDocument",Criterion.getIsDocument());
+        criteria.put("IsDocument", Criterion.getIsDocument());
     }
 
     /**
@@ -43,17 +41,18 @@ public class CVFS {
      */
     public void newDisk(int diskSize) {
         disk = new Disk(diskSize);
-        TraceLogger.getInstance().newLog(TraceLogger.OpType.SD,this.disk,disk,this);
+        TraceLogger.getInstance().newLog(TraceLogger.OpType.SD, this.disk, disk, this);
         cwd = disk;
     }
 
     /**
      * Set the current disk to another one.
+     *
      * @param disk The disk to be switched to.
      */
     public void setDisk(Disk disk) {
         this.disk = disk;
-        cwd=disk;
+        cwd = disk;
     }
 
     /**
@@ -65,6 +64,7 @@ public class CVFS {
 
     /**
      * Set the current working directory to a new place.
+     *
      * @param cwd New location of the current working directory.
      */
     public void setCwd(Directory cwd) {
@@ -75,15 +75,16 @@ public class CVFS {
      * Stores the current disk in local storage.
      * Throw an exception if the name is invalid OR
      * such file already exists.
+     *
      * @param name The name of the file.
      */
-    public void store(String name){
-        try{
-            if(!Unit.isValidName(name))
+    public void store(String name) {
+        try {
+            if (!Unit.isValidName(name))
                 throw new IllegalArgumentException("Invalid name.");
-            String path =System.getProperty("user.dir")+"/disks/"+name+".ser";
+            String path = System.getProperty("user.dir") + "/disks/" + name + ".ser";
             File file = new File(path);
-            if(file.exists())
+            if (file.exists())
                 throw new FileAlreadyExistsException("File Already Exists.");
             //noinspection ResultOfMethodCallIgnored
             file.createNewFile();
@@ -92,62 +93,60 @@ public class CVFS {
             out.writeObject(disk);
             out.close();
             buffer.close();
-            System.out.println("Current disk stored in "+path);
-        }
-        catch (IllegalArgumentException e){
+            System.out.println("Current disk stored in " + path);
+        } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
-        }
-        catch (FileAlreadyExistsException e){
+        } catch (FileAlreadyExistsException e) {
             System.out.println(e.getLocalizedMessage());
-        }
-        catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     /**
      * Delete a local copy of the disk.
+     *
      * @param name The name of the file to be deleted.
      */
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    public void delDisk(String name){
-        File file = new File(System.getProperty("user.dir")+"/disks/"+name+".ser");
+    public void delDisk(String name) {
+        File file = new File(System.getProperty("user.dir") + "/disks/" + name + ".ser");
         file.delete();
     }
 
     /**
      * Load a disk from local storage
+     *
      * @param name the name of the disk to be loaded.
      */
-    public void load(String name){
-        try{
-            String path =System.getProperty("user.dir")+"/disks/"+name+".ser";
-            if(!new File(path).exists())
+    public void load(String name) {
+        try {
+            String path = System.getProperty("user.dir") + "/disks/" + name + ".ser";
+            if (!new File(path).exists())
                 throw new FileNotFoundException("File Not Found.");
             FileInputStream buffer = new FileInputStream(path);
             ObjectInputStream in = new ObjectInputStream(buffer);
             Disk tmp = (Disk) in.readObject();
-            TraceLogger.getInstance().newLog(TraceLogger.OpType.SD,disk,tmp,this);
+            TraceLogger.getInstance().newLog(TraceLogger.OpType.SD, disk, tmp, this);
             setDisk(tmp);
             in.close();
             buffer.close();
-        }
-        catch (FileNotFoundException e){
+        } catch (FileNotFoundException e) {
             System.out.println(e.getLocalizedMessage());
-        }
-        catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
+        } catch (ClassNotFoundException ignored) {
         }
-        catch (ClassNotFoundException ignored){}
-        System.out.println("Disk "+name+" Loaded.");
+        System.out.println("Disk " + name + " Loaded.");
     }
 
     /**
      * Return a criterion by name.
+     *
      * @param criName The name of the criterion
      * @return The reference to the criterion.
      */
-    public Criterion getCri(String criName){
+    public Criterion getCri(String criName) {
         return criteria.get(criName);
     }
 
@@ -172,7 +171,7 @@ public class CVFS {
 
         Criterion newCri = new Criterion(name, attr, op, val);
         criteria.put(name, newCri);
-        TraceLogger.getInstance().newLog(TraceLogger.OpType.DEL,newCri,this);
+        TraceLogger.getInstance().newLog(TraceLogger.OpType.DEL, newCri, this);
     }
 
     /**
@@ -193,8 +192,8 @@ public class CVFS {
             return;
         }
 
-        Criterion newCri =criteria.get(name2).getNegCri(name1);
-        TraceLogger.getInstance().newLog(TraceLogger.OpType.DEL,newCri,this);
+        Criterion newCri = criteria.get(name2).getNegCri(name1);
+        TraceLogger.getInstance().newLog(TraceLogger.OpType.DEL, newCri, this);
         criteria.put(name1, newCri);
     }
 
@@ -210,8 +209,8 @@ public class CVFS {
      * @param name4 The name of the second criterion to be combined.
      */
     public void newBinaryCri(String name1, String name3, String op, String name4) {
-        try{
-            if(criteria.containsKey(name1))
+        try {
+            if (criteria.containsKey(name1))
                 throw new Exception("Invalid Arguments. Details: Already exists Criterion " + name1);
             if (!Criterion.isValidCriName(name1))
                 throw new Exception("Invalid Criterion Name " + name1);
@@ -221,13 +220,12 @@ public class CVFS {
                 throw new Exception("Cannot find argument " + name3);
             if (!criteria.containsKey(name4) || name4 == null)
                 throw new Exception("Cannot find argument " + name4);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             return;
         }
         BinCri newCri = new BinCri(name1, criteria.get(name3), op, criteria.get(name4));
-        TraceLogger.getInstance().newLog(TraceLogger.OpType.DEL,newCri,this);
+        TraceLogger.getInstance().newLog(TraceLogger.OpType.DEL, newCri, this);
         criteria.put(name1, newCri);
     }
 
@@ -248,40 +246,42 @@ public class CVFS {
      * @param name The new directory.
      */
     public void changeDir(String name) {
-        if(name.equals("..")){
-            if (cwd.getParent()==null)
+        if (name.equals("..")) {
+            if (cwd.getParent() == null)
                 throw new IllegalArgumentException("This is the root directory.");
             setCwd(cwd.getParent());
             return;
         }
         Object[] res = parsePath(name);
-        Directory tmpDir=(Directory) res[0];
+        Directory tmpDir = (Directory) res[0];
         String tname = (String) res[1];
-        Unit newDir=tmpDir.getCatalog().get(tname);
-        if(newDir == null)
+        Unit newDir = tmpDir.getCatalog().get(tname);
+        if (newDir == null)
             throw new IllegalArgumentException("Invalid path.");
-        if(!(newDir instanceof Directory))
+        if (!(newDir instanceof Directory))
             throw new IllegalArgumentException("This is not a directory.");
-        TraceLogger.getInstance().newLog(TraceLogger.OpType.CD,getCwd(),newDir);
+        TraceLogger.getInstance().newLog(TraceLogger.OpType.CD, getCwd(), newDir);
         setCwd((Directory) newDir);
     }
+
     /**
      * Parse the path and return the directory of the target file and the name of the target file.
+     *
      * @param path The string to be parsed.
      * @return The parent of the target file and the name of the file..
      */
-    public Object[] parsePath(String path){
-        String[] paths=path.split(":");
+    public Object[] parsePath(String path) {
+        String[] paths = path.split(":");
         Directory cur = getCwd();
-        for(int i=0;i<paths.length-1;i++){
+        for (int i = 0; i < paths.length - 1; i++) {
             String s = paths[i];
-            if(s.equals("$"))continue;
-            cur=(Directory) cur.getCatalog().get(s);
-            if (cur==null) throw new IllegalArgumentException("Invalid Path.");
+            if (s.equals("$")) continue;
+            cur = (Directory) cur.getCatalog().get(s);
+            if (cur == null) throw new IllegalArgumentException("Invalid Path.");
         }
         Object[] result = new Object[2];
-        result[0]=cur;
-        result[1]=paths[paths.length-1];
+        result[0] = cur;
+        result[1] = paths[paths.length - 1];
         return result;
     }
 }
