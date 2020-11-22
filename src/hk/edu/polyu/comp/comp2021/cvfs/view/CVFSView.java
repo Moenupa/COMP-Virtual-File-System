@@ -9,7 +9,7 @@ public class CVFSView {
     /**
      * The string storing the current path of the working directory.
      */
-    private String curDirPath = ":$ ";
+    private String curDirPath;
 
 
     /**
@@ -28,11 +28,11 @@ public class CVFSView {
      */
     public void updateDir(Directory cur) {
         if (cur == null) {
-            curDirPath = ":$ ";
+            curDirPath = "> ";
             return;
         }
         StringBuilder str = cur.getPath();
-        str.append(":$ ");
+        str.append("> ");
         curDirPath = str.toString();
     }
 
