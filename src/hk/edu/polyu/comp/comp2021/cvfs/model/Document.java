@@ -70,7 +70,7 @@ public class Document extends Unit {
      */
     @Override
     public String toString() {
-        return String.format("%-14s \033[33m%s\033[0m", this.getName() + "." + this.getType(), this.getSize());
+        return String.format("%-14s \033[33m%d\033[0m", this.getName() + "." + this.getType(), this.getSize());
     }
 
 }

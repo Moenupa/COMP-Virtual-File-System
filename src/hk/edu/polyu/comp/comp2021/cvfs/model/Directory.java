@@ -61,7 +61,7 @@ public class Directory extends Unit {
      */
     @Override
     public String toString() {
-        return String.format("\033[32m%-14s \033[33m%s\033[0m", getName(), getSize());
+        return String.format("\033[32m%-14s \033[33m%d\033[0m", getName(), getSize());
     }
 
     /**
