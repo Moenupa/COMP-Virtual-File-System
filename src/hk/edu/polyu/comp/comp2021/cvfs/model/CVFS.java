@@ -234,10 +234,10 @@ public class CVFS {
      * Print all criteria in the memory in a formatted form.
      */
     public void printAllCriteria() {
-        System.out.println("╓ printing all the criteria");
+        System.out.println("\033[32mCriteria: \033[33m" + criteria.size() + " in total.\033[34m");
         for (Criterion criterion : criteria.values())
-            System.out.println("╟── " + criterion);
-        System.out.println("╙ " + criteria.size() + " criteria(criterion) in total");
+            System.out.println("  ╟ " + criterion);
+        System.out.print("\033[0m");
     }
 
     /**
