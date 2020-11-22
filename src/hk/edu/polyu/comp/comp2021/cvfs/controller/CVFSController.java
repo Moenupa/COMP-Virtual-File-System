@@ -46,7 +46,7 @@ public class CVFSController {
     /**
      * @param type type of command input
      * @param command command input
-     * @throws Exception if no file or criterion of input name exists
+     * @throws Exception if no file or criterion of input name exists or the command is invalid in format
      */
     public void processCommand(CommandType type, String command) throws Exception {
 
