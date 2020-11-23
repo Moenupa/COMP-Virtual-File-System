@@ -310,7 +310,7 @@ public class Directory extends Unit {
                         System.out.println(unit);
                     }
                 }
-            );
+        );
 
         for (int i = 0; i < currDir.getLevel(); i++) {
             System.out.print("\t");

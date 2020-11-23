@@ -79,11 +79,15 @@ public class CVFS {
      *
      * @param name The name of the file.
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public void store(String name) {
         try {
             if (!Unit.isValidName(name))
                 throw new IllegalArgumentException("Invalid name.");
-            String path = System.getProperty("user.dir") + "/disks/" + name + ".ser";
+            String path = System.getProperty("user.dir") + "\\disks\\";
+            File dir = new File(path);
+            dir.mkdirs();
+            path += name + ".ser";
             File file = new File(path);
             if (file.exists())
                 throw new FileAlreadyExistsException("File Already Exists.");
@@ -111,7 +115,7 @@ public class CVFS {
      */
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public void delDisk(String name) {
-        File file = new File(System.getProperty("user.dir") + "/disks/" + name + ".ser");
+        File file = new File(System.getProperty("user.dir") + "\\disks\\" + name + ".ser");
         file.delete();
     }
 
@@ -122,7 +126,7 @@ public class CVFS {
      */
     public void load(String name) {
         try {
-            String path = System.getProperty("user.dir") + "/disks/" + name + ".ser";
+            String path = System.getProperty("user.dir") + "\\disks\\" + name + ".ser";
             if (!new File(path).exists())
                 throw new FileNotFoundException("File Not Found.");
             FileInputStream buffer = new FileInputStream(path);
