@@ -33,6 +33,8 @@ public class DirectoryTest {
     Directory desktop, documents, downloads, oop, nlp, cv, gpProj, data, download1, download2;
     Document notes, projReq, example, outline, embedding, train, test, paper, ToAplus;
 
+    Criterion cri1 = new Criterion("aa", "size" , ">=", "40");
+
     @Before
     public void setUp() {
         try {
@@ -79,6 +81,16 @@ public class DirectoryTest {
     @Test
     public void rlistTest() {
         root.down_rList();
+    }
+
+    @Test
+    public void searchTest() {
+        root.search(cri1);
+    }
+
+    @Test
+    public void rSearchTest() {
+        root.rSearch(cri1);
     }
 
     @Test
