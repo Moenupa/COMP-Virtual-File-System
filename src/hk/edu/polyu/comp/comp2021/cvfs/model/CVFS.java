@@ -188,6 +188,10 @@ public class CVFS {
             System.out.println("Invalid Arguments. Details: Already exists Criterion " + name1);
             return;
         }
+        if (!criteria.containsKey(name2)) {
+            System.out.println("Invalid Arguments. Details: No matching Criterion " + name2);
+            return;
+        }
         if (!Criterion.isValidCriName(name1)) {
             System.out.println("Invalid Criterion Name " + name1);
             return;
