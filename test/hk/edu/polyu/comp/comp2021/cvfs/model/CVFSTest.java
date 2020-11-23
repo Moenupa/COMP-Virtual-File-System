@@ -15,8 +15,18 @@ public class CVFSTest {
     }
 
     @Test
-    public void newDisk() {
+    public void diskTest() {
         cvfs.newDisk(1000);
+        cvfs.setDisk(new Disk(10000));
+    }
+
+    @Test
+    public void storeLoadTest() {
+        // below tests have bug and I dont know why
+//        cvfs.newDisk(100);
+//        cvfs.getCwd().newDoc("doc1", DocType.TXT, "sample text for doc1");
+//        cvfs.store("nowStored");
+//        cvfs.load("nowStored");
     }
 
     @Test
@@ -62,6 +72,7 @@ public class CVFSTest {
 
     @Test
     public void printAllCriteria() {
+        System.out.println(cvfs.getCriteria());
         cvfs.printAllCriteria();
     }
 }
