@@ -174,7 +174,7 @@ public class Directory extends Unit {
      */
     public void move(Directory other, String name, boolean delete) {
         if (this.getCatalog().get(name) == null) {
-            throw new IllegalArgumentException("Error: Can't find " + name + " in this directory.");
+            throw new IllegalArgumentException("Can't find " + name + " in this directory.");
         }
 
         if (other.getCatalog().get(name) != null) {
@@ -204,10 +204,10 @@ public class Directory extends Unit {
      */
     public void rename(String oldName, String newName) {
         if (this.getCatalog().get(oldName) == null) {
-            throw new IllegalArgumentException("Error: Can't find " + oldName + " in this directory.");
+            throw new IllegalArgumentException("Can't find " + oldName + " in this directory.");
         }
         if (!isValidName(newName)) {
-            throw new IllegalArgumentException("Error: Invalid Argument.");
+            throw new IllegalArgumentException("Invalid new name " + newName);
         }
         if (this.getCatalog().get(newName) != null) {
             throw new IllegalArgumentException("A file with the same new name already exists in this directory");
