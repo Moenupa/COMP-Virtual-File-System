@@ -74,7 +74,7 @@ public class CVFSController {
                     throw new IllegalArgumentException("Invalid document type: " + elements[2]);
                 }
                 StringBuilder str = new StringBuilder(elements[3]);
-                for(int i=3;i<elements.length;i++)
+                for (int i = 3; i < elements.length; i++)
                     str.append(' ').append(elements[i]);
                 tres = cvfs.parsePath(elements[1]);
                 twd = (Directory) tres[0];
@@ -202,10 +202,6 @@ public class CVFSController {
                 if (elements.length < 2) {
                     throw new IllegalArgumentException("Directory name not found");
                 }
-                if (!Unit.isValidName(elements[1])) {
-                    throw new IllegalArgumentException("Invalid directory name: " + elements[1]);
-                }
-
                 cvfs.changeDir(elements[1]);
                 return;
 
