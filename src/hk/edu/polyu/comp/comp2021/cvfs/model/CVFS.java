@@ -252,6 +252,7 @@ public class CVFS {
         if (name.equals("..")) {
             if (cwd.getParent() == null)
                 throw new IllegalArgumentException("This is the root directory.");
+            TraceLogger.getInstance().newLog(TraceLogger.OpType.CD, getCwd(), getCwd().getParent(), this);
             setCwd(cwd.getParent());
             return;
         }
