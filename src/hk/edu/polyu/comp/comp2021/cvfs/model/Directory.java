@@ -158,7 +158,7 @@ public class Directory extends Unit {
      */
     public void delete(String name) {
         if (this.getCatalog().get(name) == null) {
-            throw new IllegalArgumentException("Error: Can't find " + name + " in this directory.");
+            throw new IllegalArgumentException("Can't find " + name + " in this directory.");
         }
         updateSizeBy(-this.getCatalog().get(name).getSize());
         TraceLogger.getInstance().newLog(TraceLogger.OpType.ADD, getCatalog().get(name), this);
