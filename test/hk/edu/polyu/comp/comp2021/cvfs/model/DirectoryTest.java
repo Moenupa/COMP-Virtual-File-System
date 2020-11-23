@@ -71,6 +71,11 @@ public class DirectoryTest {
     }
 
     @Test
+    public void getPathTest() {
+        downloads.getPath();
+    }
+
+    @Test
     public void listTest() {
         root.list();
         System.out.println();
