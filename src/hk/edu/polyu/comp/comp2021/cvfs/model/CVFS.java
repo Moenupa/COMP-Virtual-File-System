@@ -160,16 +160,15 @@ public class CVFS {
      * @param val  The value of the operation.
      */
     public void newSimpleCri(String name, String attr, String op, String val) {
-        if (criteria.containsKey(name)) {
-            System.out.println("Invalid Arguments. Details: Already exists Criterion " + name);
+        try {
+            if (criteria.containsKey(name))
+                throw new IllegalArgumentException("Already exists Criterion " + name);
+            if (!Criterion.isValidCri(name, attr, op, val))
+                throw new IllegalArgumentException("Illegal Criterion name " + name);
+        } catch (Exception e) {
+            System.out.println("\033[31mError: " + e.getMessage() + "\033[0m");
             return;
         }
-
-        if (!Criterion.isValidCri(name, attr, op, val)) {
-            System.out.println("Invalid Arguments. Details: Illegal Criterion " + name);
-            return;
-        }
-
         Criterion newCri = new Criterion(name, attr, op, val);
         criteria.put(name, newCri);
         TraceLogger.getInstance().newLog(TraceLogger.OpType.DEL, newCri, this);
@@ -184,16 +183,15 @@ public class CVFS {
      * @param name2 The name of the criterion to be negated.
      */
     public void newNegation(String name1, String name2) {
-        if (criteria.containsKey(name1)) {
-            System.out.println("Invalid Arguments. Details: Already exists Criterion " + name1);
-            return;
-        }
-        if (!criteria.containsKey(name2)) {
-            System.out.println("Invalid Arguments. Details: No matching Criterion " + name2);
-            return;
-        }
-        if (!Criterion.isValidCriName(name1)) {
-            System.out.println("Invalid Criterion Name " + name1);
+        try {
+            if (criteria.containsKey(name1))
+                throw new IllegalArgumentException("Already exists Criterion " + name1);
+            if (!criteria.containsKey(name2))
+                throw new IllegalArgumentException("No matching Criterion " + name2);
+            if (!Criterion.isValidCriName(name1))
+                throw new IllegalArgumentException("Invalid Criterion Name " + name1);
+        } catch (Exception e) {
+            System.out.println("\033[31mError: " + e.getMessage() + "\033[0m");
             return;
         }
 
@@ -216,17 +214,17 @@ public class CVFS {
     public void newBinaryCri(String name1, String name3, String op, String name4) {
         try {
             if (criteria.containsKey(name1))
-                throw new Exception("Invalid Arguments. Details: Already exists Criterion " + name1);
+                throw new IllegalArgumentException("Already exists Criterion " + name1);
             if (!Criterion.isValidCriName(name1))
-                throw new Exception("Invalid Criterion Name " + name1);
+                throw new IllegalArgumentException("Invalid Criterion name " + name1);
             if (!BinCri.isValidOperator(op))
-                throw new Exception("Invalid Argument op " + op);
+                throw new IllegalArgumentException("Invalid operator " + op);
             if (!criteria.containsKey(name3) || name3 == null)
-                throw new Exception("Cannot find argument " + name3);
+                throw new IllegalArgumentException("Cannot find Criterion " + name3);
             if (!criteria.containsKey(name4) || name4 == null)
-                throw new Exception("Cannot find argument " + name4);
+                throw new IllegalArgumentException("Cannot find Criterion " + name4);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("\033[31mError: " + e.getMessage() + "\033[0m");
             return;
         }
         BinCri newCri = new BinCri(name1, criteria.get(name3), op, criteria.get(name4));

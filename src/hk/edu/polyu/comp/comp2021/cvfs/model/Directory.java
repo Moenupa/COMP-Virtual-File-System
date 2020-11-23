@@ -141,7 +141,7 @@ public class Directory extends Unit {
     public void mv2bin(String name) {
         //TODO need modify!!!!
         if (this.getCatalog().get(name) == null) {
-            System.out.println("No such document/directory exit.");
+            System.out.println("\033[31mWarning: No such file/folder.");
             return;
         }
         move((Directory) currDisk.getCatalog().get("Bin"), name, false);
@@ -228,7 +228,7 @@ public class Directory extends Unit {
      */
     public void list() {
         if (this.getCatalog().isEmpty()) {
-            System.out.println("\033[31m" + "There is no files/directories in current directory!" + "\033[0m");
+            System.out.println("\033[31m" + "Warning: No files/folders in the current direcotry" + "\033[0m");
             return;
         }
         System.out.println("\033[4m" + this);
@@ -244,7 +244,7 @@ public class Directory extends Unit {
      */
     public void down_rList() {
         if (this.getCatalog().isEmpty()) {
-            System.out.println("\033[31m" + "There is no files/directories in current directory!" + "\033[0m");
+            System.out.println("\033[31m" + "Warning: No files/folders in the current direcotry" + "\033[0m");
             return;
         }
         System.out.println("\033[4m" + this);
@@ -276,7 +276,7 @@ public class Directory extends Unit {
      */
     public void up_rList() {
         if (this.getParent() == null) {
-            System.out.println("\033[31m" + "You are already in the root directory！" + "\033[0m");
+            System.out.println("\033[31m" + "Warning: Already in the root directory！" + "\033[0m");
             return;
         }
         up_rList(this);
@@ -298,29 +298,30 @@ public class Directory extends Unit {
         up_rList(currDir.getParent());
 
         Directory parent = currDir.getParent();
-        for (String name : parent.getCatalog().keySet()) {
-            if (!name.equals(currDir.getName())) {
-                for (int i = 0; i < currDir.getLevel(); i++) {
-                    System.out.print("\t");
+        parent.getCatalog().forEach((name, unit) ->
+                {
+                    if (!name.equals(currDir.getName())) {
+                        for (int i = 0; i < currDir.getLevel(); i++)
+                            System.out.print("\t");
+                        System.out.println(unit);
+                    }
                 }
-                System.out.println(parent.getCatalog().get(name));
-            }
-        }
+            );
+
         for (int i = 0; i < currDir.getLevel(); i++) {
             System.out.print("\t");
         }
 
         if (currDir.getLevel() == this.getLevel()) {
-            System.out.println("├" + currDir.getName() + " " + currDir.getSize() + "(Current Directory)");
-            for (String name : this.getCatalog().keySet()) {
-                for (int i = 0; i < currDir.getLevel() + 1; i++) {
+            System.out.println(currDir.toString() + "(Current Directory)");
+            for (Unit unit : getCatalog().values()) {
+                for (int i = 0; i < currDir.getLevel() + 1; i++)
                     System.out.print("\t");
-                }
-                System.out.println(this.getCatalog().get(name));
+                System.out.println(unit);
             }
-
-        } else
-            System.out.println("\033[32m" + "├" + currDir.getName() + " " + currDir.getSize() + "\033[0m");
+        } else {
+            System.out.println(currDir.toString());
+        }
     }
 
     /**

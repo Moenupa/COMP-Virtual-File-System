@@ -148,7 +148,7 @@ public class Criterion implements Cloneable {
             case "type":
                 if (op.equals("equals") && val.matches("^\"\\S+\"$")) {
                     if (!val.matches("^\"(txt|html|css|java)\"$"))
-                        System.out.println("Warning: Unsupported file type " + val + ".");
+                        System.out.println("\033[31;mWarning: Unsupported file type " + val + ".\033[0m");
                     // Intended warning, not error
                     // if type not valid show *warning*, then return.
                     return true;
