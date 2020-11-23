@@ -8,17 +8,18 @@ import java.util.Map;
  * to form a file system's storage tree with disk as root.
  * This class also provids methods for revision, move, copy, delete, list, search and so on.
  */
-@SuppressWarnings("unused")
 public class Directory extends Unit {
     /**
      * The contents in the directory.
      */
     private final Map<String, Unit> catalog = new HashMap<>();
 
-    /**
-     * Stores the reference to the current disk.
-     */
-    private Directory currDisk;
+// --Commented out by Inspection START (2020/11/23 22:55):
+//    /**
+//     * Stores the reference to the current disk.
+//     */
+//    private Directory currDisk;
+// --Commented out by Inspection STOP (2020/11/23 22:55)
 
     /**
      * A reference to the parent directory. Not null except for the disk.
@@ -131,23 +132,24 @@ public class Directory extends Unit {
         return tmp;
     }
 
-    /**
-     * Delete a file in the current directory and move it to bin.
-     * Print a warning and return if there is no such file.
-     * Then update the size of current directory
-     *
-     * @param name The name of the file to be deleted.
-     */
-    public void mv2bin(String name) {
-        //TODO need modify!!!!
-        if (this.getCatalog().get(name) == null) {
-            System.out.println("No such document/directory exit.");
-            return;
-        }
-        move((Directory) currDisk.getCatalog().get("Bin"), name, false);
-        updateSizeBy(-this.getCatalog().get(name).getSize());
-        this.getCatalog().remove(name);
-    }
+// --Commented out by Inspection START (2020/11/23 22:55):
+//    /**
+//     * Delete a file in the current directory and move it to bin.
+//     * Print a warning and return if there is no such file.
+//     * Then update the size of current directory
+//     *
+//     * @param name The name of the file to be deleted.
+//     */
+//    public void mv2bin(String name) {
+//        if (this.getCatalog().get(name) == null) {
+//            System.out.println("No such document/directory exit.");
+//            return;
+//        }
+//        move((Directory) currDisk.getCatalog().get("Bin"), name, false);
+//        updateSizeBy(-this.getCatalog().get(name).getSize());
+//        this.getCatalog().remove(name);
+//    }
+// --Commented out by Inspection STOP (2020/11/23 22:55)
 
     /**
      * Delete a file in the current directory and move it to bin.
@@ -158,40 +160,42 @@ public class Directory extends Unit {
      */
     public void delete(String name) {
         if (this.getCatalog().get(name) == null) {
-            throw new IllegalArgumentException("Error: Can't find " + name + " in this directory.");
+            throw new IllegalArgumentException("Can't find " + name + " in this directory.");
         }
         updateSizeBy(-this.getCatalog().get(name).getSize());
         TraceLogger.getInstance().newLog(TraceLogger.OpType.ADD, getCatalog().get(name), this);
         this.getCatalog().remove(name);
     }
 
-    /**
-     * Move a document/directory to another directory.
-     *
-     * @param other  Another directory.
-     * @param name   The moving document/directory.
-     * @param delete If move set ture, if copy set false.
-     */
-    public void move(Directory other, String name, boolean delete) {
-        if (this.getCatalog().get(name) == null) {
-            throw new IllegalArgumentException("Error: Can't find " + name + " in this directory.");
-        }
-
-        if (other.getCatalog().get(name) != null) {
-            throw new IllegalArgumentException("A file with the same name already exists in the destination directory");
-        }
-
-        if (this.getCatalog().get(name) instanceof Directory) {
-            Directory tempDir = (Directory) this.getCatalog().get(name);
-            other.getCatalog().put(name, tempDir);
-        } else {
-            Document tempDoc = (Document) this.getCatalog().get(name);
-            other.getCatalog().put(name, tempDoc);
-        }
-        updateSizeBy(this.getCatalog().get(name).getSize());
-        if (delete)
-            this.delete(name);
-    }
+// --Commented out by Inspection START (2020/11/23 22:56):
+//    /**
+//     * Move a document/directory to another directory.
+//     *
+//     * @param other  Another directory.
+//     * @param name   The moving document/directory.
+//     * @param delete If move set ture, if copy set false.
+//     */
+//    public void move(Directory other, String name, boolean delete) {
+//        if (this.getCatalog().get(name) == null) {
+//            throw new IllegalArgumentException("Can't find " + name + " in this directory.");
+//        }
+//
+//        if (other.getCatalog().get(name) != null) {
+//            throw new IllegalArgumentException("A file with the same name already exists in the destination directory");
+//        }
+//
+//        if (this.getCatalog().get(name) instanceof Directory) {
+//            Directory tempDir = (Directory) this.getCatalog().get(name);
+//            other.getCatalog().put(name, tempDir);
+//        } else {
+//            Document tempDoc = (Document) this.getCatalog().get(name);
+//            other.getCatalog().put(name, tempDoc);
+//        }
+//        updateSizeBy(this.getCatalog().get(name).getSize());
+//        if (delete)
+//            this.delete(name);
+//    }
+// --Commented out by Inspection STOP (2020/11/23 22:56)
 
     /**
      * Rename a file in the current directory.
@@ -204,10 +208,10 @@ public class Directory extends Unit {
      */
     public void rename(String oldName, String newName) {
         if (this.getCatalog().get(oldName) == null) {
-            throw new IllegalArgumentException("Error: Can't find " + oldName + " in this directory.");
+            throw new IllegalArgumentException("Can't find " + oldName + " in this directory.");
         }
         if (!isValidName(newName)) {
-            throw new IllegalArgumentException("Error: Invalid Argument.");
+            throw new IllegalArgumentException("Invalid Argument.");
         }
         if (this.getCatalog().get(newName) != null) {
             throw new IllegalArgumentException("A file with the same new name already exists in this directory");
@@ -262,20 +266,22 @@ public class Directory extends Unit {
     public void down_rList(Directory currDir, int level) {
         for (Unit unit : currDir.getCatalog().values()) {
             for (int i = 0; i < level; i++)
-                System.out.print("\t");
-            System.out.println(" ╞═ " + unit);
-            if (unit instanceof Directory)
-                down_rList((Directory) unit, level + 1);
-        }
-    }
-
-    /**
-     * Recursively list the files from disk(root) to this directory.
-     * Use indentation to indicate the level of each line.
-     * Report the total number and size of files listed.
-     */
-    public void up_rList() {
-        if (this.getParent() == null) {
+// --Commented out by Inspection START (2020/11/23 22:56):
+//                System.out.print("\t");
+//            System.out.println(" ╞═ " + unit);
+//            if (unit instanceof Directory)
+//                down_rList((Directory) unit, level + 1);
+//        }
+//    }
+//
+//    /**
+//     * Recursively list the files from disk(root) to this directory.
+//     * Use indentation to indicate the level of each line.
+//     * Report the total number and size of files listed.
+//     */
+//    public void up_rList() {
+//        if (this.getParent() == null) {
+// --Commented out by Inspection STOP (2020/11/23 22:56)
             System.out.println("\033[31m" + "You are already in the root directory！" + "\033[0m");
             return;
         }
