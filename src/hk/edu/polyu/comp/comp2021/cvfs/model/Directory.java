@@ -293,6 +293,7 @@ public class Directory extends Unit {
      *
      * @param currDir The current Directory of each recursive level.
      */
+    /*
     public void up_rList(Directory currDir) {
         if (currDir.getParent() == null) {
             System.out.println("\033[32m" + currDir.getName() + "\033[0m");
@@ -327,7 +328,7 @@ public class Directory extends Unit {
             System.out.println(currDir.toString());
         }
     }
-
+*/
     /**
      * A list with a filter.
      *
