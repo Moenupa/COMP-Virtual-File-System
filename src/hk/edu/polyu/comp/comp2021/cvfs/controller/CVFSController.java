@@ -18,7 +18,7 @@ public class CVFSController {
      * To deal with the user input.
      */
     private final Scanner scanner = new Scanner(System.in);
-    final static String numParamError = "Wrong number of parameter(s), please follow command template: \033[4m";
+    private final static String numParamError = "Wrong number of parameter(s), please follow command template: \033[4m";
 
 
     /**

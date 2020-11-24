@@ -13,6 +13,7 @@ public class Directory extends Unit {
      * The contents in the directory.
      */
     private final Map<String, Unit> catalog = new HashMap<>();
+    private final String noFileWarningMessage = "\033[31mWarning: No files/folders in the current direcotry\033[0m";
 
 // --Commented out by Inspection START (2020/11/23 22:55):
 //    /**
@@ -232,7 +233,7 @@ public class Directory extends Unit {
      */
     public void list() {
         if (this.getCatalog().isEmpty()) {
-            System.out.println("\033[31m" + "Warning: No files/folders in the current direcotry" + "\033[0m");
+            System.out.println(noFileWarningMessage);
             return;
         }
         System.out.println("\033[4m" + this);
@@ -248,7 +249,7 @@ public class Directory extends Unit {
      */
     public void down_rList() {
         if (this.getCatalog().isEmpty()) {
-            System.out.println("\033[31m" + "Warning: No files/folders in the current direcotry" + "\033[0m");
+            System.out.println(noFileWarningMessage);
             return;
         }
         System.out.println("\033[4m" + this);
@@ -336,7 +337,7 @@ public class Directory extends Unit {
      */
     public void search(Criterion criterion) {
         if (getCatalog().isEmpty()) {
-            System.out.println("\033[31m" + "Warning: No files/folders in the current direcotry" + "\033[0m");
+            System.out.println(noFileWarningMessage);
             return;
         }
         System.out.println("\033[4m" + this);
@@ -352,7 +353,7 @@ public class Directory extends Unit {
      */
     public void rSearch(Criterion criterion) {
         if (this.getCatalog().isEmpty()) {
-            System.out.println("\033[31m" + "Warning: No files/folders in the current direcotry" + "\033[0m");
+            System.out.println(noFileWarningMessage);
             return;
         }
         System.out.println("\033[4m" + this);
