@@ -13,6 +13,7 @@ public class Directory extends Unit {
      * The contents in the directory.
      */
     private final Map<String, Unit> catalog = new HashMap<>();
+    private final String noFileWarningMessage = "\033[31mWarning: No files/folders in the current direcotry\033[0m";
 
 // --Commented out by Inspection START (2020/11/23 22:55):
 //    /**
@@ -96,14 +97,12 @@ public class Directory extends Unit {
      * @return The reference to the new directory.
      */
     public Directory newDir(String name) {
-        if (!isValidName(name)) {
+        if (!isValidName(name))
             throw new IllegalArgumentException("Invalid Argument.");
-        }
-        if (this.getCatalog().get(name) != null) {
+        if (catalog.get(name) != null)
             throw new IllegalArgumentException("A file with the same name already exists");
-        }
         Directory tmp = new Directory(name, this);
-        this.getCatalog().put(name, tmp);
+        catalog.put(name, tmp);
         TraceLogger.getInstance().newLog(TraceLogger.OpType.DEL, tmp, this);
         updateSizeBy(tmp.getSize());
         return tmp;
@@ -122,11 +121,11 @@ public class Directory extends Unit {
         if (!isValidName(name) || type == null || content == null) {
             throw new IllegalArgumentException("Invalid Argument.");
         }
-        if (this.getCatalog().get(name) != null) {
+        if (catalog.get(name) != null) {
             throw new IllegalArgumentException("A file with the same name already exists.");
         }
         Document tmp = new Document(name, this, type, content);
-        this.getCatalog().put(name, tmp);
+        catalog.put(name, tmp);
         TraceLogger.getInstance().newLog(TraceLogger.OpType.DEL, tmp, this);
         updateSizeBy(tmp.getSize());
         return tmp;
@@ -160,11 +159,11 @@ public class Directory extends Unit {
      */
     public void delete(String name) {
         if (this.getCatalog().get(name) == null) {
-            throw new IllegalArgumentException("Error: Can't find " + name + " in this directory.");
+            throw new IllegalArgumentException("Can't find " + name + " in this directory.");
         }
         updateSizeBy(-this.getCatalog().get(name).getSize());
         TraceLogger.getInstance().newLog(TraceLogger.OpType.ADD, getCatalog().get(name), this);
-        this.getCatalog().remove(name);
+        catalog.remove(name);
     }
 
 // --Commented out by Inspection START (2020/11/23 22:56):
@@ -232,7 +231,7 @@ public class Directory extends Unit {
      */
     public void list() {
         if (this.getCatalog().isEmpty()) {
-            System.out.println("\033[31m" + "Warning: No files/folders in the current direcotry" + "\033[0m");
+            System.out.println(noFileWarningMessage);
             return;
         }
         System.out.println("\033[4m" + this);
@@ -248,7 +247,7 @@ public class Directory extends Unit {
      */
     public void down_rList() {
         if (this.getCatalog().isEmpty()) {
-            System.out.println("\033[31m" + "Warning: No files/folders in the current direcotry" + "\033[0m");
+            System.out.println(noFileWarningMessage);
             return;
         }
         System.out.println("\033[4m" + this);
@@ -286,13 +285,14 @@ public class Directory extends Unit {
 //        up_rList(this);
 //    }
 
-    /**
-     * Recursively list the files from disk(root) to this directory.
-     * Use indentation to indicate the level of each line.
-     * Report the total number and size of files listed.
-     *
-     * @param currDir The current Directory of each recursive level.
-     */
+//    /**
+//     * Recursively list the files from disk(root) to this directory.
+//     * Use indentation to indicate the level of each line.
+//     * Report the total number and size of files listed.
+//     *
+//     * @param currDir The current Directory of each recursive level.
+//     */
+    /*
     public void up_rList(Directory currDir) {
         if (currDir.getParent() == null) {
             System.out.println("\033[32m" + currDir.getName() + "\033[0m");
@@ -327,35 +327,35 @@ public class Directory extends Unit {
             System.out.println(currDir.toString());
         }
     }
-
+*/
     /**
      * A list with a filter.
      *
-     * @param criName The filter.
+     * @param criterion The filter.
      */
-    public void search(Criterion criName) {
-        if (getCatalog().isEmpty()) {
-            System.out.println("\033[31m" + "There are no files in current directory!" + "\033[0m");
+    public void search(Criterion criterion) {
+        if (catalog.isEmpty()) {
+            System.out.println(noFileWarningMessage);
             return;
         }
         System.out.println("\033[4m" + this);
         for (Unit unit : getCatalog().values())
-            if (criName.check(unit))
+            if (criterion.check(unit))
                 System.out.println(unit);
     }
 
     /**
      * A rList with a filter.
      *
-     * @param criName The filter.
+     * @param criterion The filter.
      */
-    public void rSearch(Criterion criName) {
-        if (this.getCatalog().isEmpty()) {
-            System.out.println("\033[31m" + "There are no files/directories in current directory!" + "\033[0m");
+    public void rSearch(Criterion criterion) {
+        if (catalog.isEmpty()) {
+            System.out.println(noFileWarningMessage);
             return;
         }
         System.out.println("\033[4m" + this);
-        rSearch(this, criName);
+        rSearch(this, criterion);
     }
 
     /**

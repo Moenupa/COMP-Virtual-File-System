@@ -18,6 +18,7 @@ public class CVFSController {
      * To deal with the user input.
      */
     private final Scanner scanner = new Scanner(System.in);
+    private final static String numParamError = "Wrong number of parameter(s), please follow command template: \033[4m";
 
 
     /**
@@ -52,27 +53,24 @@ public class CVFSController {
 
         switch (type) {
             case newDisk:
-                if (elements.length > 2) {
-                    throw new IllegalArgumentException("Command input too long");
-                }
-                if (elements.length < 2) {
-                    throw new IllegalArgumentException("Size of new disk not found");
-                }
+                if (elements.length != 2)
+                    throw new IllegalArgumentException(numParamError + "[newDisk diskSize]");
+
                 cvfs.newDisk(Integer.parseInt(elements[1]));
                 return;
 
             case newDoc:
                 if (cvfs.getCwd() == null)
                     throw new IllegalStateException("Please first create a disk.");
-                if (elements.length < 4) {
-                    throw new IllegalArgumentException("Name, type or content of new document not found");
-                }
+                if (elements.length < 4)
+                    throw new IllegalArgumentException(numParamError + "[newDoc docName docType docContent]");
                 if (!Unit.isValidName(elements[1])) {
                     throw new IllegalArgumentException("Invalid document name: " + elements[1]);
                 }
                 if (!DocType.isValidDocType(elements[2])) {
                     throw new IllegalArgumentException("Invalid document type: " + elements[2]);
                 }
+
                 StringBuilder str = new StringBuilder(elements[3]);
                 for (int i = 3; i < elements.length; i++)
                     str.append(' ').append(elements[i]);
@@ -85,15 +83,12 @@ public class CVFSController {
             case newDir:
                 if (cvfs.getCwd() == null)
                     throw new IllegalStateException("Please first create a disk.");
-                if (elements.length > 2) {
-                    throw new IllegalArgumentException("Command input too long");
-                }
-                if (elements.length < 2) {
-                    throw new IllegalArgumentException("Name of new directory not found");
-                }
+                if (elements.length != 2)
+                    throw new IllegalArgumentException(numParamError + "[newDir dirName]");
                 if (!Unit.isValidName(elements[1])) {
                     throw new IllegalArgumentException("Invalid directory name: " + elements[1]);
                 }
+
                 tres = cvfs.parsePath(elements[1]);
                 twd = (Directory) tres[0];
                 tname = (String) tres[1];
@@ -103,9 +98,8 @@ public class CVFSController {
             case list:
                 if (cvfs.getCwd() == null)
                     throw new IllegalStateException("Please first create a disk.");
-                if (elements.length > 1) {
-                    throw new IllegalArgumentException("Command input too long");
-                }
+                if (elements.length != 1)
+                    throw new IllegalArgumentException(numParamError + "[list]");
 
                 cvfs.getCwd().list();
                 return;
@@ -113,9 +107,8 @@ public class CVFSController {
             case rList:
                 if (cvfs.getCwd() == null)
                     throw new IllegalStateException("Please first create a disk.");
-                if (elements.length > 1) {
-                    throw new IllegalArgumentException("Command input too long");
-                }
+                if (elements.length != 1)
+                    throw new IllegalArgumentException(numParamError + "[rList]");
 
                 cvfs.getCwd().down_rList();
                 return;
@@ -123,15 +116,10 @@ public class CVFSController {
             case search:
                 if (cvfs.getCwd() == null)
                     throw new IllegalStateException("Please first create a disk.");
-                if (elements.length > 2) {
-                    throw new IllegalArgumentException("Command input too long");
-                }
-                if (elements.length < 2) {
-                    throw new IllegalArgumentException("Name of file to be deleted not found");
-                }
-                if (!Unit.isValidName(elements[1])) {
-                    throw new IllegalArgumentException("Invalid file name: " + elements[1]);
-                }
+                if (elements.length != 2)
+                    throw new IllegalArgumentException(numParamError + "[search criName]");
+                if (cvfs.getCri(elements[1]) != null)
+                    throw new IllegalArgumentException("Invalid criterion name: " + elements[1]);
 
                 cvfs.getCwd().search(cvfs.getCri(elements[1]));
                 return;
@@ -139,15 +127,10 @@ public class CVFSController {
             case rsearch:
                 if (cvfs.getCwd() == null)
                     throw new IllegalStateException("Please first create a disk.");
-                if (elements.length > 2) {
-                    throw new IllegalArgumentException("Command input too long");
-                }
-                if (elements.length < 2) {
-                    throw new IllegalArgumentException("Name of file to be deleted not found");
-                }
-                if (!Unit.isValidName(elements[1])) {
-                    throw new IllegalArgumentException("Invalid file name: " + elements[1]);
-                }
+                if (elements.length != 2)
+                    throw new IllegalArgumentException(numParamError + "[rSearch criName]");
+                if (cvfs.getCri(elements[1]) == null)
+                    throw new IllegalArgumentException("Invalid criterion name: " + elements[1]);
 
                 cvfs.getCwd().rSearch(cvfs.getCri(elements[1]));
                 return;
@@ -155,18 +138,15 @@ public class CVFSController {
             case rename:
                 if (cvfs.getCwd() == null)
                     throw new IllegalStateException("Please first create a disk.");
-                if (elements.length > 3) {
-                    throw new IllegalArgumentException("Command inout too long");
-                }
-                if (elements.length < 3) {
-                    throw new IllegalArgumentException("Old name or new name not found");
-                }
+                if (elements.length != 3)
+                    throw new IllegalArgumentException(numParamError + "[rename oldFileName newFileName]");
                 if (!Unit.isValidName(elements[1])) {
                     throw new IllegalArgumentException("Invalid old name: " + elements[1]);
                 }
                 if (!Unit.isValidName(elements[2])) {
                     throw new IllegalArgumentException("Invalid new name: " + elements[2]);
                 }
+
                 tres = cvfs.parsePath(elements[1]);
                 twd = (Directory) tres[0];
                 tname = (String) tres[1];
@@ -177,15 +157,12 @@ public class CVFSController {
             case delete:
                 if (cvfs.getCwd() == null)
                     throw new IllegalStateException("Please first create a disk.");
-                if (elements.length > 2) {
-                    throw new IllegalArgumentException("Command input too long");
-                }
-                if (elements.length < 2) {
-                    throw new IllegalArgumentException("Name of file to be deleted not found");
-                }
+                if (elements.length != 2)
+                    throw new IllegalArgumentException(numParamError + "[delete fileName]");
                 if (!Unit.isValidName(elements[1])) {
                     throw new IllegalArgumentException("Invalid file name: " + elements[1]);
                 }
+
                 tres = cvfs.parsePath(elements[1]);
                 twd = (Directory) tres[0];
                 tname = (String) tres[1];
@@ -196,103 +173,81 @@ public class CVFSController {
             case changeDir:
                 if (cvfs.getCwd() == null)
                     throw new IllegalStateException("Please first create a disk.");
-                if (elements.length > 2) {
-                    throw new IllegalArgumentException("Command input too long");
-                }
-                if (elements.length < 2) {
-                    throw new IllegalArgumentException("Directory name not found");
-                }
+                if (elements.length != 2)
+                    throw new IllegalArgumentException(numParamError + "[changeDir dirName]");
+
                 cvfs.changeDir(elements[1]);
                 return;
 
             case newNegation:
-                if (elements.length > 3) {
-                    throw new IllegalArgumentException("Command input too long");
-                }
-                if (elements.length < 3) {
-                    throw new IllegalArgumentException("Number of criterion name is less than 2");
-                }
-                if (!Criterion.isValidCriName(elements[1])) {
-                    throw new IllegalArgumentException("Invalid criterion name: " + elements[1]);
-                }
-                if (!Criterion.isValidCriName(elements[2])) {
-                    throw new IllegalArgumentException("Invalid criterion name: " + elements[2]);
-                }
+                if (elements.length != 3)
+                    throw new IllegalArgumentException(numParamError + "[newNegation criName1 criName2]");
+                for (int i = 1; i <= 2; i++)
+                    if (!Criterion.isValidCriName(elements[i]))
+                        throw new IllegalArgumentException("Invalid Criterion name: " + elements[i]);
 
                 cvfs.newNegation(elements[1], elements[2]);
                 return;
 
             case newBinaryCri:
-                if (elements.length > 5) {
-                    throw new IllegalArgumentException("Command input too long");
-                }
-                if (elements.length < 5) {
-                    throw new IllegalArgumentException("Number of criterion name is less than 3, or operation not found");
-                }
-                if (!Criterion.isValidCriName(elements[1])) {
-                    throw new IllegalArgumentException("Invalid criterion name: " + elements[1]);
-                }
-                if (!Criterion.isValidCriName(elements[2])) {
-                    throw new IllegalArgumentException("Invalid criterion name: " + elements[2]);
-                }
-                if (!Criterion.isValidCriName(elements[4])) {
-                    throw new IllegalArgumentException("Invalid criterion name: " + elements[4]);
-                }
-                if (!(elements[3].equals("&&") || elements[3].equals("||"))) {
-                    throw new IllegalArgumentException("The logic operation must be && or ||");
-                }
+                if (elements.length != 5)
+                    throw new IllegalArgumentException(numParamError +
+                            "[newBinaryCri criName1 criName3 logicOp criName4]");
+                // check 1, 2, 4 cri's name validality
+                for (int i = 1; i <= 4; i *= 2)
+                    if (!Criterion.isValidCriName(elements[i]))
+                        throw new IllegalArgumentException("Invalid Criterion name: " + elements[i]);
+                if (BinCri.isValidOperator(elements[3]))
+                    throw new IllegalArgumentException("Invalid logic operator, must be && or ||");
 
                 cvfs.newBinaryCri(elements[1], elements[2], elements[3], elements[4]);
                 return;
 
             case newSimpleCri:
-                if (elements.length > 5) {
-                    throw new IllegalArgumentException("Command input too long");
-                }
-                if (elements.length < 5) {
-                    throw new IllegalArgumentException("Criterion name, attribute name, operation or value not found");
-                }
-                if (!Criterion.isValidCriName(elements[1])) {
-                    throw new IllegalArgumentException("Invalid critertion name: " + elements[1]);
-                }
+                if (elements.length != 5)
+                    throw new IllegalArgumentException(numParamError + "[newSimpleCri criName attrName op val]");
+                if (!Criterion.isValidCriName(elements[1]))
+                    throw new IllegalArgumentException("Invalid Criterion name '" + elements[1] + "'");
+                if (!Criterion.isValidCri(elements[1], elements[2], elements[3], elements[4]))
+                    throw new IllegalArgumentException("Invalid Criterion argument " +
+                            "'" + elements[2] + " " + elements[3] + " " + elements[4] + "'");
 
                 cvfs.newSimpleCri(elements[1], elements[2], elements[3], elements[4]);
                 return;
 
             case printAllCriteria:
-                if (elements.length > 1) {
-                    throw new IllegalArgumentException("Command input too long");
-                }
+                if (elements.length != 1)
+                    throw new IllegalArgumentException(numParamError + "[printAllCriteria]");
 
                 cvfs.printAllCriteria();
                 return;
 
 
             case undo:
-                if (elements.length > 1) {
-                    throw new IllegalArgumentException("Command input too long");
-                }
+                if (elements.length != 1)
+                    throw new IllegalArgumentException(numParamError + "[undo]");
+
                 logger.undo();
                 return;
 
             case redo:
-                if (elements.length > 1) {
-                    throw new IllegalArgumentException("Command input too long");
-                }
+                if (elements.length != 1)
+                    throw new IllegalArgumentException(numParamError + "[redo]");
+
                 logger.redo();
                 return;
 
             case load:
-                if (elements.length > 2) {
-                    throw new IllegalArgumentException("Command input too long");
-                }
+                if (elements.length != 2)
+                    throw new IllegalArgumentException(numParamError + "[load diskStoreName]");
+
                 cvfs.load(elements[1]);
                 return;
 
             case store:
-                if (elements.length > 2) {
-                    throw new IllegalArgumentException("Command input too long");
-                }
+                if (elements.length != 2)
+                    throw new IllegalArgumentException(numParamError + "[store diskStoreName]");
+
                 cvfs.store(elements[1]);
                 TraceLogger.getInstance().newLog(TraceLogger.OpType.DD, elements[1], cvfs);
         }
