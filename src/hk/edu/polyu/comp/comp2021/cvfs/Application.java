@@ -5,7 +5,7 @@ import hk.edu.polyu.comp.comp2021.cvfs.model.CVFS;
 import hk.edu.polyu.comp.comp2021.cvfs.view.CVFSView;
 
 /**
- *
+ * CVFS run entry
  */
 @SuppressWarnings("InfiniteLoopStatement")
 public class Application {
