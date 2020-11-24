@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * The Vitrual File System.
+ * The Virtual File System.
  */
 public class CVFS {
     // the implementation of the CVFS system.
