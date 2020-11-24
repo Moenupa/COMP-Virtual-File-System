@@ -332,31 +332,31 @@ public class Directory extends Unit {
     /**
      * A list with a filter.
      *
-     * @param criName The filter.
+     * @param criterion The filter.
      */
-    public void search(Criterion criName) {
+    public void search(Criterion criterion) {
         if (getCatalog().isEmpty()) {
             System.out.println("\033[31m" + "There are no files in current directory!" + "\033[0m");
             return;
         }
         System.out.println("\033[4m" + this);
         for (Unit unit : getCatalog().values())
-            if (criName.check(unit))
+            if (criterion.check(unit))
                 System.out.println(unit);
     }
 
     /**
      * A rList with a filter.
      *
-     * @param criName The filter.
+     * @param criterion The filter.
      */
-    public void rSearch(Criterion criName) {
+    public void rSearch(Criterion criterion) {
         if (this.getCatalog().isEmpty()) {
             System.out.println("\033[31m" + "There are no files/directories in current directory!" + "\033[0m");
             return;
         }
         System.out.println("\033[4m" + this);
-        rSearch(this, criName);
+        rSearch(this, criterion);
     }
 
     /**

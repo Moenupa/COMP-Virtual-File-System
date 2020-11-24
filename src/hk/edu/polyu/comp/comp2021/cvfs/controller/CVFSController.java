@@ -123,10 +123,8 @@ public class CVFSController {
                 if (elements.length != 2)
                     throw new IllegalArgumentException("Wrong number of parameter(s), " +
                             "please follow command template: \033[4m[search criName]");
-                // FIXME: should not be Unit, but Cri
-                if (!Unit.isValidName(elements[1])) {
-                    throw new IllegalArgumentException("Invalid file name: " + elements[1]);
-                }
+                if (cvfs.getCri(elements[1]) != null)
+                    throw new IllegalArgumentException("Invalid criterion name: " + elements[1]);
 
                 cvfs.getCwd().search(cvfs.getCri(elements[1]));
                 return;
@@ -137,10 +135,8 @@ public class CVFSController {
                 if (elements.length != 2)
                     throw new IllegalArgumentException("Wrong number of parameter(s), " +
                             "please follow command template: \033[4m[rSearch criName]");
-                // FIXME: should not be Unit, but Cri
-                if (!Unit.isValidName(elements[1])) {
-                    throw new IllegalArgumentException("Invalid file name: " + elements[1]);
-                }
+                if (cvfs.getCri(elements[1]) == null)
+                    throw new IllegalArgumentException("Invalid criterion name: " + elements[1]);
 
                 cvfs.getCwd().rSearch(cvfs.getCri(elements[1]));
                 return;
@@ -207,11 +203,10 @@ public class CVFSController {
                 if (elements.length != 5)
                     throw new IllegalArgumentException("Wrong number of parameter(s), " +
                             "please follow command template: \033[4m[newBinaryCri criName1 criName3 logicOp criName4]");
-                for (int i = 1; i <= 4; i *= 2) {
-                    // check 1, 2, 4 cri's name validality
+                // check 1, 2, 4 cri's name validality
+                for (int i = 1; i <= 4; i *= 2)
                     if (!Criterion.isValidCriName(elements[i]))
                         throw new IllegalArgumentException("Invalid criterion name: " + elements[i]);
-                }
                 if (BinCri.isValidOperator(elements[3]))
                     throw new IllegalArgumentException("The logic operation must be && or ||");
 

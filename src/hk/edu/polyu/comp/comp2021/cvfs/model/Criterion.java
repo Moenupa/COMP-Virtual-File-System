@@ -127,8 +127,7 @@ public class Criterion implements Cloneable {
      */
     public static boolean isValidCriName(String name) {
         if (name == null) return false;
-
-        return (name.matches("^[a-zA-Z]{2}$"));
+        return (name.matches("^[a-zA-Z]{2}$") || name.equals("IsDocument"));
     }
 
     /**
