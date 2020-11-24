@@ -164,15 +164,9 @@ public class CVFS {
      * @param val  The value of the operation.
      */
     public void newSimpleCri(String name, String attr, String op, String val) {
-        try {
-            if (criteria.containsKey(name))
-                throw new IllegalArgumentException("Already exists Criterion " + name);
-            if (!Criterion.isValidCri(name, attr, op, val))
-                throw new IllegalArgumentException("Illegal Criterion name " + name);
-        } catch (Exception e) {
-            System.out.println("\033[31mError: " + e.getMessage() + "\033[0m");
-            return;
-        }
+        if (criteria.containsKey(name))
+            throw new IllegalArgumentException("Already exists Criterion " + name);
+
         Criterion newCri = new Criterion(name, attr, op, val);
         criteria.put(name, newCri);
         TraceLogger.getInstance().newLog(TraceLogger.OpType.DEL, newCri, this);
@@ -187,17 +181,10 @@ public class CVFS {
      * @param name2 The name of the criterion to be negated.
      */
     public void newNegation(String name1, String name2) {
-        try {
-            if (criteria.containsKey(name1))
-                throw new IllegalArgumentException("Already exists Criterion " + name1);
-            if (!criteria.containsKey(name2))
-                throw new IllegalArgumentException("No matching Criterion " + name2);
-            if (!Criterion.isValidCriName(name1))
-                throw new IllegalArgumentException("Invalid Criterion Name " + name1);
-        } catch (Exception e) {
-            System.out.println("\033[31mError: " + e.getMessage() + "\033[0m");
-            return;
-        }
+        if (criteria.containsKey(name1))
+            throw new IllegalArgumentException("Already exists Criterion " + name1);
+        if (!criteria.containsKey(name2))
+            throw new IllegalArgumentException("No matching Criterion " + name2);
 
         Criterion newCri = criteria.get(name2).getNegCri(name1);
         TraceLogger.getInstance().newLog(TraceLogger.OpType.DEL, newCri, this);
@@ -216,21 +203,13 @@ public class CVFS {
      * @param name4 The name of the second criterion to be combined.
      */
     public void newBinaryCri(String name1, String name3, String op, String name4) {
-        try {
-            if (criteria.containsKey(name1))
-                throw new IllegalArgumentException("Already exists Criterion " + name1);
-            if (!Criterion.isValidCriName(name1))
-                throw new IllegalArgumentException("Invalid Criterion name " + name1);
-            if (!BinCri.isValidOperator(op))
-                throw new IllegalArgumentException("Invalid operator " + op);
-            if (!criteria.containsKey(name3) || name3 == null)
-                throw new IllegalArgumentException("Cannot find Criterion " + name3);
-            if (!criteria.containsKey(name4) || name4 == null)
-                throw new IllegalArgumentException("Cannot find Criterion " + name4);
-        } catch (Exception e) {
-            System.out.println("\033[31mError: " + e.getMessage() + "\033[0m");
-            return;
-        }
+        if (criteria.containsKey(name1))
+            throw new IllegalArgumentException("Already exists Criterion " + name1);
+        if (!criteria.containsKey(name3) || name3 == null)
+            throw new IllegalArgumentException("Cannot find Criterion " + name3);
+        if (!criteria.containsKey(name4) || name4 == null)
+            throw new IllegalArgumentException("Cannot find Criterion " + name4);
+
         BinCri newCri = new BinCri(name1, criteria.get(name3), op, criteria.get(name4));
         TraceLogger.getInstance().newLog(TraceLogger.OpType.DEL, newCri, this);
         criteria.put(name1, newCri);

@@ -286,13 +286,13 @@ public class Directory extends Unit {
 //        up_rList(this);
 //    }
 
-    /**
-     * Recursively list the files from disk(root) to this directory.
-     * Use indentation to indicate the level of each line.
-     * Report the total number and size of files listed.
-     *
-     * @param currDir The current Directory of each recursive level.
-     */
+//    /**
+//     * Recursively list the files from disk(root) to this directory.
+//     * Use indentation to indicate the level of each line.
+//     * Report the total number and size of files listed.
+//     *
+//     * @param currDir The current Directory of each recursive level.
+//     */
     /*
     public void up_rList(Directory currDir) {
         if (currDir.getParent() == null) {
