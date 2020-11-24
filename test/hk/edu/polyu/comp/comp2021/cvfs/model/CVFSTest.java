@@ -3,6 +3,8 @@ package hk.edu.polyu.comp.comp2021.cvfs.model;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.*;
+
 public class CVFSTest {
 
     public CVFS cvfs;
@@ -46,6 +48,7 @@ public class CVFSTest {
         cvfs.newSimpleCri("bb", "type", "equals", "\"css\"");
         cvfs.newNegation("cc", "aa");
         cvfs.newBinaryCri("dd", "bb", "&&", "cc");
+        assertEquals(new Criterion("aa", "type", "equals", "\"txt\""), cvfs.getCri("aa"));
     }
 
     @Test
