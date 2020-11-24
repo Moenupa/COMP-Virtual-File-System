@@ -97,14 +97,12 @@ public class Directory extends Unit {
      * @return The reference to the new directory.
      */
     public Directory newDir(String name) {
-        if (!isValidName(name)) {
+        if (!isValidName(name))
             throw new IllegalArgumentException("Invalid Argument.");
-        }
-        if (this.getCatalog().get(name) != null) {
+        if (catalog.get(name) != null)
             throw new IllegalArgumentException("A file with the same name already exists");
-        }
         Directory tmp = new Directory(name, this);
-        this.getCatalog().put(name, tmp);
+        catalog.put(name, tmp);
         TraceLogger.getInstance().newLog(TraceLogger.OpType.DEL, tmp, this);
         updateSizeBy(tmp.getSize());
         return tmp;
@@ -123,11 +121,11 @@ public class Directory extends Unit {
         if (!isValidName(name) || type == null || content == null) {
             throw new IllegalArgumentException("Invalid Argument.");
         }
-        if (this.getCatalog().get(name) != null) {
+        if (catalog.get(name) != null) {
             throw new IllegalArgumentException("A file with the same name already exists.");
         }
         Document tmp = new Document(name, this, type, content);
-        this.getCatalog().put(name, tmp);
+        catalog.put(name, tmp);
         TraceLogger.getInstance().newLog(TraceLogger.OpType.DEL, tmp, this);
         updateSizeBy(tmp.getSize());
         return tmp;
@@ -161,11 +159,11 @@ public class Directory extends Unit {
      */
     public void delete(String name) {
         if (this.getCatalog().get(name) == null) {
-            throw new IllegalArgumentException("Error: Can't find " + name + " in this directory.");
+            throw new IllegalArgumentException("Can't find " + name + " in this directory.");
         }
         updateSizeBy(-this.getCatalog().get(name).getSize());
         TraceLogger.getInstance().newLog(TraceLogger.OpType.ADD, getCatalog().get(name), this);
-        this.getCatalog().remove(name);
+        catalog.remove(name);
     }
 
 // --Commented out by Inspection START (2020/11/23 22:56):
@@ -336,7 +334,7 @@ public class Directory extends Unit {
      * @param criterion The filter.
      */
     public void search(Criterion criterion) {
-        if (getCatalog().isEmpty()) {
+        if (catalog.isEmpty()) {
             System.out.println(noFileWarningMessage);
             return;
         }
@@ -352,7 +350,7 @@ public class Directory extends Unit {
      * @param criterion The filter.
      */
     public void rSearch(Criterion criterion) {
-        if (this.getCatalog().isEmpty()) {
+        if (catalog.isEmpty()) {
             System.out.println(noFileWarningMessage);
             return;
         }

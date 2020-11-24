@@ -2,8 +2,8 @@ package hk.edu.polyu.comp.comp2021.cvfs.model;
 
 import org.junit.Before;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
-import java.io.*;
 //import org.junit.jupiter.api.Test;
 
 /**
@@ -40,6 +40,7 @@ public class DirectoryTest {
     private Disk disk;
     private Directory desktop, documents, downloads, oop, nlp, cv, gpProj, instruct , codes, data, download1, download2;
     private Document projReq, example, embedding, train, test, paper, toAplus;
+    private final Criterion cri1 = new Criterion("aa", "size", ">=", "40");
 
     /**
      * Prepared some existed dorectory/document for test.
@@ -98,6 +99,7 @@ public class DirectoryTest {
             ╞═ toAplus.txt    112
         */
         oop.list();
+        download1.list(); // no file warning message
     }
 
     /**
@@ -108,6 +110,21 @@ public class DirectoryTest {
         oop.newDoc("outline",DocType.TXT,"This is the outline of OOP");
         oop.list();
         assertTrue(oop.getCatalog().containsKey("outline"));
+
+        boolean thrown1 = false, thrown2 = false;
+        try {
+            oop.newDoc("invalidDocNameHere", DocType.TXT, "some content here...");
+        } catch (Exception e) {
+            thrown1 = true;
+        }
+        try {
+            data.newDoc("train", DocType.CSS, "a css doc's content");
+        } catch (Exception e) {
+            thrown2 = true;
+        }
+        assertTrue(thrown1 && thrown2);
+
+        assertFalse(oop.getCatalog().containsKey("invalidDocNameHere"));
     }
 
     /**
@@ -118,6 +135,21 @@ public class DirectoryTest {
         cv.newDir("data");
         cv.list();
         assertTrue(cv.getCatalog().containsKey("data"));
+
+        boolean thrown1 = false, thrown2 = false;
+        try {
+            oop.newDir("invalidDirNameHere");
+        } catch (Exception e) {
+            thrown1 = true;
+        }
+        try {
+            oop.newDir("gpProj");
+        } catch (Exception e) {
+            thrown2 = true;
+        }
+        assertTrue(thrown1 && thrown2);
+
+        assertFalse(oop.getCatalog().containsKey("invalidDirNameHere"));
     }
 
     /**
@@ -180,6 +212,7 @@ public class DirectoryTest {
 	            ╞═ download1      40
          */
         disk.down_rList();
+        download1.down_rList(); // no file warning message
     }
 
     /**
@@ -195,7 +228,8 @@ public class DirectoryTest {
      */
     @Test
     public void searchTest() {
-
+        disk.search(cri1);      // same as what list shows
+        download1.search(cri1); // no file warning message
     }
 
     /**
@@ -203,6 +237,7 @@ public class DirectoryTest {
      */
     @Test
     public void rSearchTest() {
-
+        disk.rSearch(cri1);     // same as rList shows
+        download1.rSearch(cri1);// no file warning message
     }
 }
