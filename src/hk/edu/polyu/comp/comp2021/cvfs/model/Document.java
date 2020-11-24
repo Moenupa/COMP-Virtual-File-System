@@ -2,7 +2,7 @@ package hk.edu.polyu.comp.comp2021.cvfs.model;
 
 /**
  * This class implements document stored in the system,
- * and a <code>Docuemnt</code> is a Leaf on the system's storage tree.
+ * and a <code>Document</code> is a Leaf on the system's storage tree.
  * Uses s constructor, several getter/setter methods, and
  * a <code>toString</code> method to fully implement a document.
  */
