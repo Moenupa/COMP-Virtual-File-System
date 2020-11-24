@@ -108,8 +108,7 @@ public class CVFSController {
                 if (cvfs.getCwd() == null)
                     throw new IllegalStateException("Please first create a disk.");
                 if (elements.length != 1)
-                    throw new IllegalArgumentException(numParamError +
-                            "[rList]");
+                    throw new IllegalArgumentException(numParamError + "[rList]");
 
                 cvfs.getCwd().down_rList();
                 return;
@@ -185,7 +184,7 @@ public class CVFSController {
                     throw new IllegalArgumentException(numParamError + "[newNegation criName1 criName2]");
                 for (int i = 1; i <= 2; i++)
                     if (!Criterion.isValidCriName(elements[i]))
-                        throw new IllegalArgumentException("Invalid criterion name: " + elements[i]);
+                        throw new IllegalArgumentException("Invalid Criterion name: " + elements[i]);
 
                 cvfs.newNegation(elements[1], elements[2]);
                 return;
@@ -197,9 +196,9 @@ public class CVFSController {
                 // check 1, 2, 4 cri's name validality
                 for (int i = 1; i <= 4; i *= 2)
                     if (!Criterion.isValidCriName(elements[i]))
-                        throw new IllegalArgumentException("Invalid criterion name: " + elements[i]);
+                        throw new IllegalArgumentException("Invalid Criterion name: " + elements[i]);
                 if (BinCri.isValidOperator(elements[3]))
-                    throw new IllegalArgumentException("The logic operation must be && or ||");
+                    throw new IllegalArgumentException("Invalid logic operator, must be && or ||");
 
                 cvfs.newBinaryCri(elements[1], elements[2], elements[3], elements[4]);
                 return;
@@ -208,7 +207,7 @@ public class CVFSController {
                 if (elements.length != 5)
                     throw new IllegalArgumentException(numParamError + "[newSimpleCri criName attrName op val]");
                 if (!Criterion.isValidCriName(elements[1]))
-                    throw new IllegalArgumentException("Invalid critertion name '" + elements[1] + "'");
+                    throw new IllegalArgumentException("Invalid Criterion name '" + elements[1] + "'");
                 if (!Criterion.isValidCri(elements[1], elements[2], elements[3], elements[4]))
                     throw new IllegalArgumentException("Invalid Criterion argument " +
                             "'" + elements[2] + " " + elements[3] + " " + elements[4] + "'");
