@@ -1,6 +1,9 @@
 package hk.edu.polyu.comp.comp2021.cvfs.model;
 
-@SuppressWarnings("ALL")
+/**
+ * This class implements disk similar to <code>Directory</code>
+ * but without parent and have a given fixed capacity.
+ */
 public class Disk extends Directory {
     private final int capacity;
 
