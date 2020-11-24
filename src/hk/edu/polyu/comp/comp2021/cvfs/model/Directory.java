@@ -336,7 +336,7 @@ public class Directory extends Unit {
      */
     public void search(Criterion criterion) {
         if (getCatalog().isEmpty()) {
-            System.out.println("\033[31m" + "There are no files in current directory!" + "\033[0m");
+            System.out.println("\033[31m" + "Warning: No files/folders in the current direcotry" + "\033[0m");
             return;
         }
         System.out.println("\033[4m" + this);
@@ -352,7 +352,7 @@ public class Directory extends Unit {
      */
     public void rSearch(Criterion criterion) {
         if (this.getCatalog().isEmpty()) {
-            System.out.println("\033[31m" + "There are no files/directories in current directory!" + "\033[0m");
+            System.out.println("\033[31m" + "Warning: No files/folders in the current direcotry" + "\033[0m");
             return;
         }
         System.out.println("\033[4m" + this);

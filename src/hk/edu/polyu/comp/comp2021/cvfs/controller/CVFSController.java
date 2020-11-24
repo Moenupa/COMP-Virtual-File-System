@@ -18,6 +18,7 @@ public class CVFSController {
      * To deal with the user input.
      */
     private final Scanner scanner = new Scanner(System.in);
+    final static String numParamError = "Wrong number of parameter(s), please follow command template: \033[4m";
 
 
     /**
@@ -53,8 +54,7 @@ public class CVFSController {
         switch (type) {
             case newDisk:
                 if (elements.length != 2)
-                    throw new IllegalArgumentException("Wrong number of parameter(s), " +
-                            "please follow command template: \033[4m[newDisk diskSize]");
+                    throw new IllegalArgumentException(numParamError + "[newDisk diskSize]");
 
                 cvfs.newDisk(Integer.parseInt(elements[1]));
                 return;
@@ -63,8 +63,7 @@ public class CVFSController {
                 if (cvfs.getCwd() == null)
                     throw new IllegalStateException("Please first create a disk.");
                 if (elements.length < 4)
-                    throw new IllegalArgumentException("Wrong number of parameter(s), " +
-                            "please follow command template: \033[4m[newDoc docName docType docContent]");
+                    throw new IllegalArgumentException(numParamError + "[newDoc docName docType docContent]");
                 if (!Unit.isValidName(elements[1])) {
                     throw new IllegalArgumentException("Invalid document name: " + elements[1]);
                 }
@@ -85,8 +84,7 @@ public class CVFSController {
                 if (cvfs.getCwd() == null)
                     throw new IllegalStateException("Please first create a disk.");
                 if (elements.length != 2)
-                    throw new IllegalArgumentException("Wrong number of parameter(s), " +
-                            "please follow command template: \033[4m[newDir dirName]");
+                    throw new IllegalArgumentException(numParamError + "[newDir dirName]");
                 if (!Unit.isValidName(elements[1])) {
                     throw new IllegalArgumentException("Invalid directory name: " + elements[1]);
                 }
@@ -101,8 +99,7 @@ public class CVFSController {
                 if (cvfs.getCwd() == null)
                     throw new IllegalStateException("Please first create a disk.");
                 if (elements.length != 1)
-                    throw new IllegalArgumentException("Wrong number of parameter(s), " +
-                            "please follow command template: \033[4m[list]");
+                    throw new IllegalArgumentException(numParamError + "[list]");
 
                 cvfs.getCwd().list();
                 return;
@@ -111,8 +108,8 @@ public class CVFSController {
                 if (cvfs.getCwd() == null)
                     throw new IllegalStateException("Please first create a disk.");
                 if (elements.length != 1)
-                    throw new IllegalArgumentException("Wrong number of parameter(s), " +
-                            "please follow command template: \033[4m[rList]");
+                    throw new IllegalArgumentException(numParamError +
+                            "[rList]");
 
                 cvfs.getCwd().down_rList();
                 return;
@@ -121,8 +118,7 @@ public class CVFSController {
                 if (cvfs.getCwd() == null)
                     throw new IllegalStateException("Please first create a disk.");
                 if (elements.length != 2)
-                    throw new IllegalArgumentException("Wrong number of parameter(s), " +
-                            "please follow command template: \033[4m[search criName]");
+                    throw new IllegalArgumentException(numParamError + "[search criName]");
                 if (cvfs.getCri(elements[1]) != null)
                     throw new IllegalArgumentException("Invalid criterion name: " + elements[1]);
 
@@ -133,8 +129,7 @@ public class CVFSController {
                 if (cvfs.getCwd() == null)
                     throw new IllegalStateException("Please first create a disk.");
                 if (elements.length != 2)
-                    throw new IllegalArgumentException("Wrong number of parameter(s), " +
-                            "please follow command template: \033[4m[rSearch criName]");
+                    throw new IllegalArgumentException(numParamError + "[rSearch criName]");
                 if (cvfs.getCri(elements[1]) == null)
                     throw new IllegalArgumentException("Invalid criterion name: " + elements[1]);
 
@@ -145,8 +140,7 @@ public class CVFSController {
                 if (cvfs.getCwd() == null)
                     throw new IllegalStateException("Please first create a disk.");
                 if (elements.length != 3)
-                    throw new IllegalArgumentException("Wrong number of parameter(s), " +
-                            "please follow command template: \033[4m[rename oldFileName newFileName]");
+                    throw new IllegalArgumentException(numParamError + "[rename oldFileName newFileName]");
                 if (!Unit.isValidName(elements[1])) {
                     throw new IllegalArgumentException("Invalid old name: " + elements[1]);
                 }
@@ -165,8 +159,7 @@ public class CVFSController {
                 if (cvfs.getCwd() == null)
                     throw new IllegalStateException("Please first create a disk.");
                 if (elements.length != 2)
-                    throw new IllegalArgumentException("Wrong number of parameter(s), " +
-                            "please follow command template: \033[4m[delete fileName]");
+                    throw new IllegalArgumentException(numParamError + "[delete fileName]");
                 if (!Unit.isValidName(elements[1])) {
                     throw new IllegalArgumentException("Invalid file name: " + elements[1]);
                 }
@@ -182,16 +175,14 @@ public class CVFSController {
                 if (cvfs.getCwd() == null)
                     throw new IllegalStateException("Please first create a disk.");
                 if (elements.length != 2)
-                    throw new IllegalArgumentException("Wrong number of parameter(s), " +
-                            "please follow command template: \033[4m[changeDir dirName]");
+                    throw new IllegalArgumentException(numParamError + "[changeDir dirName]");
 
                 cvfs.changeDir(elements[1]);
                 return;
 
             case newNegation:
                 if (elements.length != 3)
-                    throw new IllegalArgumentException("Wrong number of parameter(s), " +
-                            "please follow command template: \033[4m[newNegation criName1 criName2]");
+                    throw new IllegalArgumentException(numParamError + "[newNegation criName1 criName2]");
                 for (int i = 1; i <= 2; i++)
                     if (!Criterion.isValidCriName(elements[i]))
                         throw new IllegalArgumentException("Invalid criterion name: " + elements[i]);
@@ -201,8 +192,8 @@ public class CVFSController {
 
             case newBinaryCri:
                 if (elements.length != 5)
-                    throw new IllegalArgumentException("Wrong number of parameter(s), " +
-                            "please follow command template: \033[4m[newBinaryCri criName1 criName3 logicOp criName4]");
+                    throw new IllegalArgumentException(numParamError +
+                            "[newBinaryCri criName1 criName3 logicOp criName4]");
                 // check 1, 2, 4 cri's name validality
                 for (int i = 1; i <= 4; i *= 2)
                     if (!Criterion.isValidCriName(elements[i]))
@@ -215,8 +206,7 @@ public class CVFSController {
 
             case newSimpleCri:
                 if (elements.length != 5)
-                    throw new IllegalArgumentException("Wrong number of parameter(s), " +
-                            "please follow command template: \033[4m[newSimpleCri criName attrName op val]");
+                    throw new IllegalArgumentException(numParamError + "[newSimpleCri criName attrName op val]");
                 if (!Criterion.isValidCriName(elements[1]))
                     throw new IllegalArgumentException("Invalid critertion name '" + elements[1] + "'");
                 if (!Criterion.isValidCri(elements[1], elements[2], elements[3], elements[4]))
@@ -228,8 +218,7 @@ public class CVFSController {
 
             case printAllCriteria:
                 if (elements.length != 1)
-                    throw new IllegalArgumentException("Wrong number of parameter(s), " +
-                            "please follow command template: \033[4m[printAllCriteria]");
+                    throw new IllegalArgumentException(numParamError + "[printAllCriteria]");
 
                 cvfs.printAllCriteria();
                 return;
@@ -237,32 +226,28 @@ public class CVFSController {
 
             case undo:
                 if (elements.length != 1)
-                    throw new IllegalArgumentException("Wrong number of parameter(s), " +
-                            "please follow command template: \033[4m[undo]");
+                    throw new IllegalArgumentException(numParamError + "[undo]");
 
                 logger.undo();
                 return;
 
             case redo:
                 if (elements.length != 1)
-                    throw new IllegalArgumentException("Wrong number of parameter(s), " +
-                            "please follow command template: \033[4m[redo]");
+                    throw new IllegalArgumentException(numParamError + "[redo]");
 
                 logger.redo();
                 return;
 
             case load:
                 if (elements.length != 2)
-                    throw new IllegalArgumentException("Wrong number of parameter(s), " +
-                            "please follow command template: \033[4m[load diskStoreName]");
+                    throw new IllegalArgumentException(numParamError + "[load diskStoreName]");
 
                 cvfs.load(elements[1]);
                 return;
 
             case store:
                 if (elements.length != 2)
-                    throw new IllegalArgumentException("Wrong number of parameter(s), " +
-                            "please follow command template: \033[4m[store diskStoreName]");
+                    throw new IllegalArgumentException(numParamError + "[store diskStoreName]");
 
                 cvfs.store(elements[1]);
                 TraceLogger.getInstance().newLog(TraceLogger.OpType.DD, elements[1], cvfs);
