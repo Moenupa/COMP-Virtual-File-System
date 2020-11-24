@@ -99,10 +99,6 @@ public class CVFS {
             out.close();
             buffer.close();
             System.out.println("Current disk stored in " + path);
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-        } catch (FileAlreadyExistsException e) {
-            System.out.println(e.getLocalizedMessage());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -136,8 +132,6 @@ public class CVFS {
             setDisk(tmp);
             in.close();
             buffer.close();
-        } catch (FileNotFoundException e) {
-            System.out.println(e.getLocalizedMessage());
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException ignored) {
