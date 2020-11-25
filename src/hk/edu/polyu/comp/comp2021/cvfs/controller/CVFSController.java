@@ -55,6 +55,8 @@ public class CVFSController {
             case newDisk:
                 if (elements.length != 2)
                     throw new IllegalArgumentException(numParamError + "[newDisk diskSize]");
+                if (!elements[1].matches("^[1-9]\\d*$"))
+                    throw new IllegalArgumentException("Invalid diskSize, must be a positive integer.");
 
                 cvfs.newDisk(Integer.parseInt(elements[1]));
                 return;
@@ -64,12 +66,10 @@ public class CVFSController {
                     throw new IllegalStateException("Please first create a disk.");
                 if (elements.length < 4)
                     throw new IllegalArgumentException(numParamError + "[newDoc docName docType docContent]");
-                if (!Unit.isValidName(elements[1])) {
+                if (!Unit.isValidName(elements[1]))
                     throw new IllegalArgumentException("Invalid document name: " + elements[1]);
-                }
-                if (!DocType.isValidDocType(elements[2])) {
+                if (!DocType.isValidDocType(elements[2]))
                     throw new IllegalArgumentException("Invalid document type: " + elements[2]);
-                }
 
                 StringBuilder str = new StringBuilder(elements[3]);
                 for (int i = 3; i < elements.length; i++)

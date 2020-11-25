@@ -118,12 +118,8 @@ public class Directory extends Unit {
      * @return The reference to the new Document.
      */
     public Document newDoc(String name, DocType type, String content) {
-        if (!isValidName(name) || type == null || content == null) {
-            throw new IllegalArgumentException("Invalid Argument.");
-        }
-        if (catalog.get(name) != null) {
+        if (catalog.get(name) != null)
             throw new IllegalArgumentException("A file with the same name already exists.");
-        }
         Document tmp = new Document(name, this, type, content);
         catalog.put(name, tmp);
         TraceLogger.getInstance().newLog(TraceLogger.OpType.DEL, tmp, this);
