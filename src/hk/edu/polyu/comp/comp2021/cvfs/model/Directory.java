@@ -40,21 +40,6 @@ public class Directory extends Unit {
     }
 
     /**
-     * A rList with a filter.
-     *
-     * @param criName The filter.
-     * @param currDir The current Directory of each recursive level.
-     */
-    public static void rSearch(Directory currDir, Criterion criName) {
-        for (Unit unit : currDir.getCatalog().values()) {
-            if (criName.check(unit))
-                System.out.println(unit);
-            if (unit instanceof Directory)
-                rSearch((Directory) unit, criName);
-        }
-    }
-
-    /**
      * @return The reference to the parent.
      */
     @Override
@@ -353,7 +338,22 @@ public class Directory extends Unit {
         System.out.println("\033[4m" + this);
         rSearch(this, criterion);
     }
-
+    
+    /**
+     * A rList with a filter.
+     *
+     * @param criName The filter.
+     * @param currDir The current Directory of each recursive level.
+     */
+    public static void rSearch(Directory currDir, Criterion criName) {
+        for (Unit unit : currDir.getCatalog().values()) {
+            if (criName.check(unit))
+                System.out.println(unit);
+            if (unit instanceof Directory)
+                rSearch((Directory) unit, criName);
+        }
+    }
+    
     /**
      * Recursively update the size of the directory by a certain number.
      * First update the size of parent, then the current directory.
