@@ -66,18 +66,20 @@ public class CVFSController {
                     throw new IllegalStateException("Please first create a disk.");
                 if (elements.length < 4)
                     throw new IllegalArgumentException(numParamError + "[newDoc docName docType docContent]");
-                if (!Unit.isValidName(elements[1]))
-                    throw new IllegalArgumentException("Invalid document name: " + elements[1]);
                 if (!DocType.isValidDocType(elements[2]))
                     throw new IllegalArgumentException("Invalid document type: " + elements[2]);
 
-                StringBuilder str = new StringBuilder(elements[3]);
+                StringBuilder docContent = new StringBuilder(elements[3]);
                 for (int i = 3; i < elements.length; i++)
-                    str.append(' ').append(elements[i]);
+                    docContent.append(' ').append(elements[i]);
+
                 tres = cvfs.parsePath(elements[1]);
                 twd = (Directory) tres[0];
                 tname = (String) tres[1];
-                twd.newDoc(tname, DocType.parse(elements[2]), str.toString());
+                if (!Unit.isValidName(tname))
+                    throw new IllegalArgumentException("Invalid document name: " + tname);
+
+                twd.newDoc(tname, DocType.parse(elements[2]), docContent.toString());
                 return;
 
             case newDir:
@@ -85,13 +87,12 @@ public class CVFSController {
                     throw new IllegalStateException("Please first create a disk.");
                 if (elements.length != 2)
                     throw new IllegalArgumentException(numParamError + "[newDir dirName]");
-                if (!Unit.isValidName(elements[1])) {
-                    throw new IllegalArgumentException("Invalid directory name: " + elements[1]);
-                }
-
                 tres = cvfs.parsePath(elements[1]);
                 twd = (Directory) tres[0];
                 tname = (String) tres[1];
+                if (!Unit.isValidName(tname))
+                    throw new IllegalArgumentException("Invalid directory name: " + tname);
+
                 twd.newDir(tname);
                 return;
 
@@ -140,16 +141,14 @@ public class CVFSController {
                     throw new IllegalStateException("Please first create a disk.");
                 if (elements.length != 3)
                     throw new IllegalArgumentException(numParamError + "[rename oldFileName newFileName]");
-                if (!Unit.isValidName(elements[1])) {
-                    throw new IllegalArgumentException("Invalid old name: " + elements[1]);
-                }
-                if (!Unit.isValidName(elements[2])) {
+                if (!Unit.isValidName(elements[2]))
                     throw new IllegalArgumentException("Invalid new name: " + elements[2]);
-                }
 
                 tres = cvfs.parsePath(elements[1]);
                 twd = (Directory) tres[0];
                 tname = (String) tres[1];
+                if (!Unit.isValidName(tname))
+                    throw new IllegalArgumentException("Invalid old name: " + tname);
 
                 twd.rename(tname, elements[2]);
                 return;
@@ -159,13 +158,12 @@ public class CVFSController {
                     throw new IllegalStateException("Please first create a disk.");
                 if (elements.length != 2)
                     throw new IllegalArgumentException(numParamError + "[delete fileName]");
-                if (!Unit.isValidName(elements[1])) {
-                    throw new IllegalArgumentException("Invalid file name: " + elements[1]);
-                }
 
                 tres = cvfs.parsePath(elements[1]);
                 twd = (Directory) tres[0];
                 tname = (String) tres[1];
+                if (!Unit.isValidName(tname))
+                    throw new IllegalArgumentException("Invalid file name: " + tname);
 
                 twd.delete(tname);
                 return;
