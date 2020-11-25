@@ -241,13 +241,13 @@ public class Directory extends Unit {
      * Use indentation to indicate the level of each line.
      * Report the total number and size of files listed.
      */
-    public void down_rList() {
-        if (this.getCatalog().isEmpty()) {
+    public void rList() {
+        if (catalog.isEmpty()) {
             System.out.println(noFileWarningMessage);
             return;
         }
         System.out.println("\033[4m" + this);
-        down_rList(this, 0);
+        rList(this, 0);
     }
 
     /**
@@ -258,13 +258,13 @@ public class Directory extends Unit {
      * @param currDir The currDir of each recursive level.
      * @param level   The level of each recursive.
      */
-    public void down_rList(Directory currDir, int level) {
+    public void rList(Directory currDir, int level) {
         for (Unit unit : currDir.getCatalog().values()) {
             for (int i = 0; i < level; i++)
                 System.out.print("\t");
             System.out.println(" ╞═ " + unit);
             if (unit instanceof Directory)
-                down_rList((Directory) unit, level + 1);
+                rList((Directory) unit, level + 1);
         }
     }
 

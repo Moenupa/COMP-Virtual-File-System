@@ -110,7 +110,7 @@ public class CVFSController {
                 if (elements.length != 1)
                     throw new IllegalArgumentException(numParamError + "[rList]");
 
-                cvfs.getCwd().down_rList();
+                cvfs.getCwd().rList();
                 return;
 
             case search:

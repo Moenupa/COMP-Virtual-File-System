@@ -7,6 +7,10 @@ package hk.edu.polyu.comp.comp2021.cvfs.model;
 public class Disk extends Directory {
     private final int capacity;
 
+    /**
+     * create a new disk
+     * @param capacity size max limit
+     */
     public Disk(int capacity) {
         super("Disk", null);
         this.capacity = capacity;

@@ -211,8 +211,8 @@ public class DirectoryTest {
                 ╞═ download2      40
 	            ╞═ download1      40
          */
-        disk.down_rList();
-        download1.down_rList(); // no file warning message
+        disk.rList();
+        download1.rList(); // no file warning message
     }
 
     /**
