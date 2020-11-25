@@ -118,7 +118,7 @@ public class CVFSController {
                     throw new IllegalStateException("Please first create a disk.");
                 if (elements.length != 2)
                     throw new IllegalArgumentException(numParamError + "[search criName]");
-                if (cvfs.getCri(elements[1]) != null)
+                if (cvfs.getCri(elements[1]) == null)
                     throw new IllegalArgumentException("Invalid criterion name: " + elements[1]);
 
                 cvfs.getCwd().search(cvfs.getCri(elements[1]));

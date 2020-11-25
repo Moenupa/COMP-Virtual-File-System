@@ -13,7 +13,7 @@ public class Directory extends Unit {
      * The contents in the directory.
      */
     private final Map<String, Unit> catalog = new HashMap<>();
-    private final String noFileWarningMessage = "\033[31mWarning: No files/folders in the current direcotry\033[0m";
+    private static final String noFileWarningMessage = "\033[31mWarning: No files/folders in the current direcotry\033[0m";
 
 // --Commented out by Inspection START (2020/11/23 22:55):
 //    /**
@@ -82,8 +82,6 @@ public class Directory extends Unit {
      * @return The reference to the new directory.
      */
     public Directory newDir(String name) {
-        if (!isValidName(name))
-            throw new IllegalArgumentException("Invalid Argument.");
         if (catalog.get(name) != null)
             throw new IllegalArgumentException("A file with the same name already exists");
         Directory tmp = new Directory(name, this);
@@ -139,11 +137,10 @@ public class Directory extends Unit {
      * @param name The name of the file to be deleted.
      */
     public void delete(String name) {
-        if (this.getCatalog().get(name) == null) {
+        if (catalog.get(name) == null)
             throw new IllegalArgumentException("Can't find " + name + " in this directory.");
-        }
-        updateSizeBy(-this.getCatalog().get(name).getSize());
-        TraceLogger.getInstance().newLog(TraceLogger.OpType.ADD, getCatalog().get(name), this);
+        updateSizeBy(-catalog.get(name).getSize());
+        TraceLogger.getInstance().newLog(TraceLogger.OpType.ADD, catalog.get(name), this);
         catalog.remove(name);
     }
 
@@ -187,21 +184,15 @@ public class Directory extends Unit {
      * @param newName The new name of the file.
      */
     public void rename(String oldName, String newName) {
-        if (this.getCatalog().get(oldName) == null) {
+        if (catalog.get(oldName) == null)
             throw new IllegalArgumentException("Can't find " + oldName + " in this directory.");
-        }
-        if (!isValidName(newName)) {
-            throw new IllegalArgumentException("Invalid new name " + newName);
-        }
-        if (this.getCatalog().get(newName) != null) {
+        if (catalog.get(newName) != null)
             throw new IllegalArgumentException("A file with the same new name already exists in this directory");
-        }
-        Unit renamedItem;
-        renamedItem = this.getCatalog().get(oldName);
+        Unit renamedItem = catalog.get(oldName);
         renamedItem.setName(newName);
         TraceLogger.getInstance().newLog(TraceLogger.OpType.REN, oldName, newName);
-        this.getCatalog().remove(oldName);
-        this.getCatalog().put(newName, renamedItem);
+        catalog.remove(oldName);
+        catalog.put(newName, renamedItem);
 
     }
 
@@ -211,7 +202,7 @@ public class Directory extends Unit {
      * For each directory, list the name and size.
      */
     public void list() {
-        if (this.getCatalog().isEmpty()) {
+        if (catalog.isEmpty()) {
             System.out.println(noFileWarningMessage);
             return;
         }
