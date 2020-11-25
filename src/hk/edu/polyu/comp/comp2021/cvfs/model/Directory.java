@@ -122,7 +122,6 @@ public class Directory extends Unit {
     /**
      * Rename a file in the current directory.
      * Print a warning and return is there is no such file OR
-     * the new name is invalid OR
      * There exists some file with the same name.
      *
      * @param oldName The old name of the file.
