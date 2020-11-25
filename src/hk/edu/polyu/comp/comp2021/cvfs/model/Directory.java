@@ -13,7 +13,10 @@ public class Directory extends Unit {
      * The contents in the directory.
      */
     private final Map<String, Unit> catalog = new HashMap<>();
-    private static final String noFileWarningMessage = "\033[31mWarning: No files/folders in the current direcotry\033[0m";
+    private static final String noFileWarningMessage
+            = "\033[31mWarning: No files/folders in the current direcotry\033[0m";
+    private static final String unchangedRenameWarningMessage
+            = "\033[31mWarning: File name unchanged during rename.\033[0m";
 
     /**
      * A reference to the parent directory. Not null except for the disk.
@@ -132,6 +135,11 @@ public class Directory extends Unit {
             throw new IllegalArgumentException("Can't find " + oldName + " in this directory.");
         if (catalog.get(newName) != null)
             throw new IllegalArgumentException("A file with the same new name already exists in this directory");
+
+        if (newName.equals(oldName)) {
+            System.out.println(unchangedRenameWarningMessage);
+        }
+
         Unit renamedItem = catalog.get(oldName);
         renamedItem.setName(newName);
         TraceLogger.getInstance().newLog(TraceLogger.OpType.REN, oldName, newName);
