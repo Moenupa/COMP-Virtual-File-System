@@ -258,7 +258,7 @@ public class CVFS {
             String s = paths[i];
             if (s.equals("$")) continue;
             cur = (Directory) cur.getCatalog().get(s);
-            if (cur == null) throw new IllegalArgumentException("Invalid Path.");
+            if (cur == null) throw new IllegalArgumentException("Invalid Path, please use $:<dir>:...:<file> format.");
         }
         Object[] result = new Object[2];
         result[0] = cur;
