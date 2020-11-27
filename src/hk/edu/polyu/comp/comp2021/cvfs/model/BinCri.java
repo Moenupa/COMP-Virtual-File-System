@@ -11,25 +11,25 @@ public class BinCri extends Criterion {
     /**
      * Two distinct criteria to be linked; the first
      */
-    private Criterion cri1;
+    private final Criterion cri1;
 
     /**
      * Two distinct criteria to be linked; the second
      */
-    private Criterion cri2;
+    private final Criterion cri2;
 
     /**
      * Stores the logical operation between the criteria
      */
-    private String operator;
+    private final String operator;
 
     /**
      * Build a binary criteria
      *
-     * @param name name for the new Binary Criteria
-     * @param cri1 The first criterion
+     * @param name     name for the new Binary Criteria
+     * @param cri1     The first criterion
      * @param operator the logical operator of the two criteria
-     * @param cri2 The second criterion
+     * @param cri2     The second criterion
      */
     BinCri(String name, Criterion cri1, String operator, Criterion cri2) {
         super(name);
@@ -39,7 +39,20 @@ public class BinCri extends Criterion {
     }
 
     /**
+     * Clone Constructor
+     *
+     * @param cloned object to be cloned
+     */
+    private BinCri(BinCri cloned) {
+        super(cloned.getName());
+        this.cri1 = cloned.getCri1();
+        this.cri2 = cloned.getCri2();
+        this.operator = cloned.getOperator();
+    }
+
+    /**
      * check if operator is valid
+     *
      * @param operator operator for a BinCri
      * @return true if operator is '&&' or '||'
      */
@@ -49,6 +62,7 @@ public class BinCri extends Criterion {
 
     /**
      * get the cri1 of a BinCr object
+     *
      * @return cri1
      */
     public Criterion getCri1() {
@@ -57,6 +71,7 @@ public class BinCri extends Criterion {
 
     /**
      * get the cr2 of a BinCr object
+     *
      * @return cr2
      */
     public Criterion getCri2() {
@@ -65,21 +80,11 @@ public class BinCri extends Criterion {
 
     /**
      * get the Operator of a BinCr object
+     *
      * @return operator
      */
     public String getOperator() {
         return operator;
-    }
-
-    /**
-     * Clone Constructor
-     * @param cloned object to be cloned
-     */
-    private BinCri(BinCri cloned) {
-        super(cloned.getName());
-        this.cri1 = cloned.getCri1();
-        this.cri2 = cloned.getCri2();
-        this.operator = cloned.getOperator();
     }
 
     /**
@@ -115,6 +120,7 @@ public class BinCri extends Criterion {
 
     /**
      * To recursively print the content of BinCri, brackets used to protect the precedence.
+     *
      * @return The string containing all criteria in the current BinCri.
      */
     @Override
@@ -129,6 +135,7 @@ public class BinCri extends Criterion {
 
     /**
      * Print the name of the criterion and calls criToString() to print the content.
+     *
      * @return The name and content of the criterion.
      */
     @Override

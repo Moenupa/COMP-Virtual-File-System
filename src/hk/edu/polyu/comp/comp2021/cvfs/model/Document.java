@@ -2,25 +2,25 @@ package hk.edu.polyu.comp.comp2021.cvfs.model;
 
 /**
  * This class implements document stored in the system,
- * and a <code>Docuemnt</code> is a Leaf on the system's storage tree.
+ * and a <code>Document</code> is a Leaf on the system's storage tree.
  * Uses s constructor, several getter/setter methods, and
  * a <code>toString</code> method to fully implement a document.
  */
+@SuppressWarnings("FieldCanBeLocal")
 public class Document extends Unit {
     /**
      * The type of the document.
      */
-    private DocType type;
-
+    private final DocType type;
+    /**
+     * The content of the document.
+     */
+    @SuppressWarnings("unused")
+    private final String content;
     /**
      * A reference to the parent directory. Not null except for the disk.
      */
     private Directory parent;
-
-    /**
-     * The content of the document.
-     */
-    private String content;
 
     /**
      * Construct a new document file.
@@ -70,7 +70,7 @@ public class Document extends Unit {
      */
     @Override
     public String toString() {
-        return String.format("%-14s \033[33m%s\033[0m", this.getName() + "." + this.getType(), this.getSize());
+        return String.format("%-14s \033[33m%d\033[0m", this.getName() + "." + this.getType(), this.getSize());
     }
 
 }

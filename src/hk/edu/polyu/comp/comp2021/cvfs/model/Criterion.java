@@ -13,15 +13,21 @@ import java.util.Objects;
  */
 public class Criterion implements Cloneable {
     /**
+     * A ScriptEngine to evaluate the result
+     */
+    private final static ScriptEngine engine = new ScriptEngineManager().getEngineByName("js");
+    /**
+     * The special criterion isDocument
+     */
+    private final static Criterion isDocument = new Criterion();
+    /**
      * The name of the criterion, containing exactly 2 English letters.
      */
     private String name;
-
     /**
      * The name of the attribute. One of ["name","type","size"].
      */
     private String attr;
-
     /**
      * The name of the option.
      * name -> contains
@@ -29,39 +35,19 @@ public class Criterion implements Cloneable {
      * size -> a comparison mark
      */
     private String op;
-
     /**
      * name,type -> A string in double quote
      * size -> An integer
      */
     private String val;
-
     /**
      * To decide whether the result of check should be negated, false by default.
      */
     private boolean negation = false;
-
     /**
      * Used to mark the special criterion IsDocument
      */
     private boolean isDocumentMark = false;
-
-    /** A ScriptEngine to evaluate the result*/
-    private final static ScriptEngine engine = new ScriptEngineManager().getEngineByName("js");
-
-    /**
-     * The special criterion isDocument
-     */
-    private final static Criterion isDocument = new Criterion();
-
-    /**
-     * Get the special criterion isDocument
-     *
-     * @return the reference to isDocument
-     */
-    public static Criterion getIsDocument() {
-        return isDocument;
-    }
 
     /**
      * Create a criterion.
@@ -80,6 +66,7 @@ public class Criterion implements Cloneable {
 
     /**
      * Constructor with only name initialized.
+     *
      * @param name new Criterion name
      */
     public Criterion(String name) {
@@ -89,6 +76,7 @@ public class Criterion implements Cloneable {
     /**
      * A clone constructor
      */
+    @SuppressWarnings("CopyConstructorMissesField")
     private Criterion(Criterion x) {
         name = x.getName();
         attr = x.getAttr();
@@ -106,9 +94,88 @@ public class Criterion implements Cloneable {
     }
 
     /**
+     * Get the special criterion isDocument
+     *
+     * @return the reference to isDocument
+     */
+    public static Criterion getIsDocument() {
+        return isDocument;
+    }
+
+    /**
+     * Check whether all parameters are valid. Rubrics over the declarations of fields.
+     *
+     * @param name name
+     * @param attr attribute
+     * @param op   operation
+     * @param val  value
+     * @return True if all parameters are valid.
+     * @throws IllegalArgumentException if null param detected
+     */
+    public static boolean isValidCri(String name, String attr, String op, String val) throws IllegalArgumentException {
+        if (name == null || attr == null || op == null || val == null)
+            throw new IllegalArgumentException("Null criterion checked by isValidCri() checker.");
+
+        return (isValidCriName(name) && isValidCriContent(attr, op, val));
+    }
+
+    /**
+     * Check whether CriName is valid.
+     *
+     * @param name the name of the criterion
+     * @return boolean, whether it contains exactly 2 English letters.
+     */
+    public static boolean isValidCriName(String name) {
+        if (name == null) return false;
+        return (name.matches("^[a-zA-Z]{2}$") || name.equals("IsDocument"));
+    }
+
+    /**
+     * Check whether CriContent (attr, op, val) is valid.
+     *
+     * @param attr 'name'      | 'type'    | 'size'
+     * @param op   'contains'  | 'equals'  | 6 logOps
+     * @param val  '"text"'    | '"text"'  | integer
+     * @return boolean
+     */
+    private static boolean isValidCriContent(String attr, String op, String val) {
+        switch (attr) {
+            case "name":
+                return op.equals("contains")
+                        && val.matches("^\"\\S+\"$");
+
+            case "type":
+                if (op.equals("equals") && val.matches("^\"\\S+\"$")) {
+                    if (!val.matches("^\"(txt|html|css|java)\"$"))
+                        System.out.println("\033[31;mWarning: Unsupported file type " + val + ".\033[0m");
+                    // Intended warning, not error
+                    // if type not valid show *warning*, then return.
+                    return true;
+                }
+                return false;
+
+            case "size":
+                boolean flagOp, flagVal;
+                flagOp = op.matches("^(([><]=?)|([!=]=))$");
+
+                try {
+                    Integer.parseInt(val);
+                    flagVal = true;
+                } catch (NumberFormatException e) {
+                    flagVal = false;
+                }
+
+                return flagOp && flagVal;
+        }
+        return false;
+    }
+
+    /**
      * clone method
+     *
      * @return a new cloned Criterion object
      */
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
     @Override
     public Object clone() {
         return new Criterion(this);
@@ -119,6 +186,16 @@ public class Criterion implements Cloneable {
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * set the this.name to param
+     * without valid-name-checking
+     *
+     * @param name new name
+     */
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**
@@ -150,37 +227,10 @@ public class Criterion implements Cloneable {
     }
 
     /**
-     * set the this.name to param
-     * without valid-name-checking
-     *
-     * @param name new name
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
      * @return True if the check result is negated.
      */
     public boolean isNeg() {
         return negation;
-    }
-
-    /**
-     * Check whether all parameters are valid. Rubrics over the declarations of fields.
-     *
-     * @param name name
-     * @param attr attribute
-     * @param op   operation
-     * @param val  value
-     * @return True if all parameters are valid.
-     * @throws IllegalArgumentException if null param detected
-     */
-    public static boolean isValidCri(String name, String attr, String op, String val) throws IllegalArgumentException {
-        if (name == null || attr == null || op == null || val == null)
-            throw new IllegalArgumentException("Null criterion checked by isValidCri() checker.");
-
-        return (isValidCriName(name) && isValidCriContent(attr, op, val));
     }
 
     /**
@@ -241,6 +291,8 @@ public class Criterion implements Cloneable {
         return "Criterion '" + getName() + "', { " + criToString() + " }";
     }
 
+    // ===================================== private and protected methods for implementation
+
     /**
      * Get a negative copy of this
      *
@@ -253,20 +305,6 @@ public class Criterion implements Cloneable {
         that.setName(negName);
         return that;
     }
-
-    /**
-     * Check whether CriName is valid.
-     *
-     * @param name the name of the criterion
-     * @return boolean, whether it contains exactly 2 English letters.
-     */
-    public static boolean isValidCriName(String name) {
-        if (name == null) return false;
-
-        return (name.matches("^[a-zA-Z]{2}$"));
-    }
-
-    // ===================================== private and protected methods for implementation
 
     /**
      * Convert this to a js string
@@ -312,46 +350,6 @@ public class Criterion implements Cloneable {
             base = "!(" + base + ")";
 
         return base;
-    }
-
-    /**
-     * Check whether CriContent (attr, op, val) is valid.
-     *
-     * @param attr 'name'      | 'type'    | 'size'
-     * @param op   'contains'  | 'equals'  | 6 logOps
-     * @param val  '"text"'    | '"text"'  | integer
-     * @return boolean
-     */
-    private static boolean isValidCriContent(String attr, String op, String val) {
-        switch (attr) {
-            case "name":
-                return op.equals("contains")
-                        && val.matches("^\"\\S+\"$");
-
-            case "type":
-                if (op.equals("equals") && val.matches("^\"\\S+\"$")) {
-                    if (!val.matches("^\"(txt|html|css|java)\"$"))
-                        System.out.println("Warning: Unsupported file type " + val + ".");
-                    // Intended warning, not error
-                    // if type not valid show *warning*, then return.
-                    return true;
-                }
-                return false;
-
-            case "size":
-                boolean flagOp, flagVal;
-                flagOp = op.matches("^(([><]=?)|([!=]=))$");
-
-                try {
-                    Integer.parseInt(val);
-                    flagVal = true;
-                } catch (NumberFormatException e) {
-                    flagVal = false;
-                }
-
-                return flagOp && flagVal;
-        }
-        return false;
     }
 
 }

@@ -1,11 +1,20 @@
 package hk.edu.polyu.comp.comp2021.cvfs.model;
 
+/**
+ * This class implements disk similar to <code>Directory</code>
+ * but without parent and have a given fixed capacity.
+ */
 public class Disk extends Directory {
     private final int capacity;
 
+    /**
+     * create a new disk
+     * @param capacity size max limit
+     */
     public Disk(int capacity) {
-        super("Disk",null);
+        super("Disk", null);
         this.capacity = capacity;
+        setSize(0);
     }
 
     /**
@@ -17,8 +26,7 @@ public class Disk extends Directory {
     @Override
     public void updateSizeBy(int offset) {
         if (getSize() + offset > getCapacity()) {
-            System.out.println("Error: No Enough Space Left.");
-            return;
+            throw new IllegalStateException("No Enough Space Left.");
         }
         setSize(getSize() + offset);
     }
@@ -30,5 +38,13 @@ public class Disk extends Directory {
      */
     public int getCapacity() {
         return capacity;
+    }
+
+    @SuppressWarnings("unused")
+    @Override
+    public StringBuilder getPath() {
+        StringBuilder str = new StringBuilder();
+        str.append("Disk");
+        return str;
     }
 }
