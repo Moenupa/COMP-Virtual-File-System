@@ -70,7 +70,7 @@ public class CVFSController {
                     throw new IllegalArgumentException("Invalid document type: " + elements[2]);
 
                 StringBuilder docContent = new StringBuilder(elements[3]);
-                for (int i = 3; i < elements.length; i++)
+                for (int i = 4; i < elements.length; i++)
                     docContent.append(' ').append(elements[i]);
 
                 tres = cvfs.parsePath(elements[1]);
