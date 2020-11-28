@@ -278,7 +278,7 @@ public class CVFSController {
         try {
             processCommand(type, command);
         } catch (Exception e) {
-            System.out.println("\033[31m" + "Error: " + e.getLocalizedMessage() + "\033[0m");
+            System.out.println("\033[91m" + "Error: " + e.getLocalizedMessage() + "\033[0m");
         }
     }
 
