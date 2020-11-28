@@ -70,8 +70,9 @@ public class CVFSController {
                     throw new IllegalArgumentException("Invalid document type: " + elements[2]);
 
                 StringBuilder docContent = new StringBuilder(elements[3]);
-                for (int i = 4; i < elements.length; i++)
+                for (int i = 3; i < elements.length; i++)
                     docContent.append(' ').append(elements[i]);
+
                 tres = cvfs.parsePath(elements[1]);
                 twd = (Directory) tres[0];
                 tname = (String) tres[1];
@@ -247,6 +248,9 @@ public class CVFSController {
 
                 cvfs.store(elements[1]);
                 TraceLogger.getInstance().newLog(TraceLogger.OpType.DD, elements[1], cvfs);
+                return;
+            case exit:
+                System.exit(0);
         }
 
     }
