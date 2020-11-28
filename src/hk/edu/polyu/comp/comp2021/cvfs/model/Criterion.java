@@ -76,13 +76,13 @@ public class Criterion implements Cloneable {
     /**
      * A clone constructor
      */
-    @SuppressWarnings("CopyConstructorMissesField")
     private Criterion(Criterion x) {
         name = x.getName();
         attr = x.getAttr();
         op = x.getOp();
         val = x.getVal();
         negation = x.isNeg();
+        isDocumentMark = x.isDocumentCri();
     }
 
     /**
@@ -234,6 +234,13 @@ public class Criterion implements Cloneable {
     }
 
     /**
+     * @return whether the criterion is document
+     */
+    public boolean isDocumentCri() {
+        return isDocumentMark;
+    }
+
+    /**
      * Check if the unit x fits the criterion.
      * Print a warning and return false if x is null.
      *
@@ -286,7 +293,10 @@ public class Criterion implements Cloneable {
 
     @Override
     public String toString() {
-        if (isDocumentMark) return "Criterion { IsDocument }";
+        if (isDocumentMark) {
+            if (!negation) return "Criterion { IsDocument }";
+            return "Criterion { !(IsDocument) }";
+        }
 
         return "Criterion '" + getName() + "', { " + criToString() + " }";
     }
