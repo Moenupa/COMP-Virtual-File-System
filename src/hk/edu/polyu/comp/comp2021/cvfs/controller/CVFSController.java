@@ -195,7 +195,7 @@ public class CVFSController {
                 for (int i = 1; i <= 4; i *= 2)
                     if (!Criterion.isValidCriName(elements[i]))
                         throw new IllegalArgumentException("Invalid Criterion name: " + elements[i]);
-                if (BinCri.isValidOperator(elements[3]))
+                if (!BinCri.isValidOperator(elements[3]))
                     throw new IllegalArgumentException("Invalid logic operator, must be && or ||");
 
                 cvfs.newBinaryCri(elements[1], elements[2], elements[3], elements[4]);
