@@ -13,7 +13,10 @@ public class Directory extends Unit {
      * The contents in the directory.
      */
     private final Map<String, Unit> catalog = new HashMap<>();
-    private final String noFileWarningMessage = "\033[31mWarning: No files/folders in the current direcotry\033[0m";
+    private static final String noFileWarningMessage
+            = "\033[31mWarning: No files/folders in the current direcotry\033[0m";
+    private static final String unchangedRenameWarningMessage
+            = "\033[31mWarning: File name unchanged during rename.\033[0m";
 
     /**
      * A reference to the parent directory. Not null except for the disk.
@@ -29,7 +32,7 @@ public class Directory extends Unit {
     public Directory(String name, Unit parent) {
         super(name);
         setParent(parent);
-        this.setSize(SIZE_CONSTANT);
+        setSize(SIZE_CONSTANT);
     }
 
     /**
@@ -64,7 +67,7 @@ public class Directory extends Unit {
      * @return The catalog of the current directory.
      */
     public Map<String, Unit> getCatalog() {
-        return this.catalog;
+        return catalog;
     }
 
     /**
@@ -111,11 +114,11 @@ public class Directory extends Unit {
      * @param name The name of the file to be deleted.
      */
     public void delete(String name) {
-        if (this.getCatalog().get(name) == null) {
+        if (catalog.get(name) == null) {
             throw new IllegalArgumentException("Can't find " + name + " in this directory.");
         }
-        updateSizeBy(-this.getCatalog().get(name).getSize());
-        TraceLogger.getInstance().newLog(TraceLogger.OpType.ADD, getCatalog().get(name), this);
+        updateSizeBy( - catalog.get(name).getSize());
+        TraceLogger.getInstance().newLog(TraceLogger.OpType.ADD, catalog.get(name), this);
         catalog.remove(name);
     }
 
@@ -128,18 +131,20 @@ public class Directory extends Unit {
      * @param newName The new name of the file.
      */
     public void rename(String oldName, String newName) {
-        if (this.getCatalog().get(oldName) == null) {
+        if (catalog.get(oldName) == null)
             throw new IllegalArgumentException("Can't find " + oldName + " in this directory.");
-        }
-        if (this.getCatalog().get(newName) != null) {
+        if (catalog.get(newName) != null)
             throw new IllegalArgumentException("A file with the same new name already exists in this directory");
+
+        if (newName.equals(oldName)) {
+            System.out.println(unchangedRenameWarningMessage);
         }
-        Unit renamedItem;
-        renamedItem = this.getCatalog().get(oldName);
+
+        Unit renamedItem = catalog.get(oldName);
         renamedItem.setName(newName);
         TraceLogger.getInstance().newLog(TraceLogger.OpType.REN, oldName, newName);
-        this.getCatalog().remove(oldName);
-        this.getCatalog().put(newName, renamedItem);
+        catalog.remove(oldName);
+        catalog.put(newName, renamedItem);
 
     }
 
@@ -149,12 +154,12 @@ public class Directory extends Unit {
      * For each directory, list the name and size.
      */
     public void list() {
-        if (this.getCatalog().isEmpty()) {
+        if (catalog.isEmpty()) {
             System.out.println(noFileWarningMessage);
             return;
         }
         System.out.println("\033[4m" + this);
-        for (Unit unit : getCatalog().values()) {
+        for (Unit unit : catalog.values()) {
             System.out.println(" ╞═ " + unit);
         }
     }
@@ -202,7 +207,7 @@ public class Directory extends Unit {
             return;
         }
         System.out.println("\033[4m" + this);
-        for (Unit unit : getCatalog().values())
+        for (Unit unit : catalog.values())
             if (criterion.check(unit))
                 System.out.println(unit);
     }

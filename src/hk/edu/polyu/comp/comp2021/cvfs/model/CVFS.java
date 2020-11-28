@@ -44,6 +44,7 @@ public class CVFS {
         disk = new Disk(diskSize);
         TraceLogger.getInstance().newLog(TraceLogger.OpType.SD, tmp, disk, this);
         cwd = disk;
+        System.out.println("\033[32mNew disk created, size: \033[33m" + diskSize + "\033[0m");
     }
 
     /**
@@ -258,7 +259,7 @@ public class CVFS {
             String s = paths[i];
             if (s.equals("$")) continue;
             cur = (Directory) cur.getCatalog().get(s);
-            if (cur == null) throw new IllegalArgumentException("Invalid Path.");
+            if (cur == null) throw new IllegalArgumentException("Invalid Path, please use $:<dir>:...:<file> format.");
         }
         Object[] result = new Object[2];
         result[0] = cur;
