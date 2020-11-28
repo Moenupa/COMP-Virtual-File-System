@@ -311,7 +311,8 @@ public class CVFSController {
             if (obj instanceof Unit) {
                 Unit unit = (Unit) obj;
                 Directory parent = (Directory) args[1];
-                parent.delete(unit.getName());
+                parent.getCatalog().remove(unit.getName());
+                parent.updateSizeBy(-unit.getSize());
             } else {
                 Criterion cri = (Criterion) obj;
                 CVFS cvfs = (CVFS) args[1];
