@@ -47,4 +47,9 @@ public class Disk extends Directory {
         str.append("Disk");
         return str;
     }
+
+    @Override
+    public String toString() {
+        return String.format("\033[32m%-14s \033[33m(%d/%d)\033[0m", getName(), getSize(), getCapacity());
+    }
 }
