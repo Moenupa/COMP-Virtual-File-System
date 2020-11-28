@@ -66,6 +66,9 @@ public class CommandSwitch {
 
             case "load":
                 return CommandType.load;
+
+            case "exit":
+                return CommandType.exit;
         }
 
         if (command.equals("")) System.out.println("\033[31m" + "Please Input Command" + "\033[0m");
