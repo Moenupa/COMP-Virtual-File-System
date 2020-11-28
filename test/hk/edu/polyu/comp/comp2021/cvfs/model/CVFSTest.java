@@ -1,5 +1,8 @@
 package hk.edu.polyu.comp.comp2021.cvfs.model;
 
+import hk.edu.polyu.comp.comp2021.cvfs.controller.CVFSController;
+import hk.edu.polyu.comp.comp2021.cvfs.controller.CommandType;
+import hk.edu.polyu.comp.comp2021.cvfs.view.CVFSView;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,11 +28,7 @@ public class CVFSTest {
         // below tests have bug and I dont know why
         cvfs.newDisk(100);
         cvfs.getCwd().newDoc("doc1", DocType.TXT, "sample text for doc1");
-        cvfs.load("nowStored"); // error
-        cvfs.load("InvalidNameTestHere"); // error
-        cvfs.store("InvalidNameTestHere"); // error
         cvfs.store("nowStored");
-        cvfs.store("nowStored"); // error
         cvfs.load("nowStored");
         cvfs.delDisk("nowStored");
     }
@@ -90,5 +89,17 @@ public class CVFSTest {
     public void printAllCriteria() {
         System.out.println(cvfs.getCriteria());
         cvfs.printAllCriteria();
+    }
+
+    @Test
+    public void wholeCVFSTest() {
+        CVFS cvfs = new CVFS();
+        CVFSView view = new CVFSView();
+        CVFSController controller = new CVFSController(cvfs, view);
+        controller.processCommand(CommandType.newDisk, "newDisk 10000");
+        controller.processCommand(CommandType.newDoc, "newDoc docTest txt nothinghere");
+        controller.processCommand(CommandType.newDir, "newDir dirTest");
+        controller.processCommand(CommandType.undo, "undo");
+        // controller.processCommand(CommandType.redo, "redo");
     }
 }

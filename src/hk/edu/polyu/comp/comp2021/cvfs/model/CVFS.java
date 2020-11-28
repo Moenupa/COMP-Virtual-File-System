@@ -44,6 +44,7 @@ public class CVFS {
         disk = new Disk(diskSize);
         TraceLogger.getInstance().newLog(TraceLogger.OpType.SD, tmp, disk, this);
         cwd = disk;
+        System.out.println("\033[32mNew disk created, size: \033[33m" + diskSize + "\033[0m");
     }
 
     /**

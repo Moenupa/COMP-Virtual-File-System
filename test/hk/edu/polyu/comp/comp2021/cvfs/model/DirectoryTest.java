@@ -111,18 +111,13 @@ public class DirectoryTest {
         oop.list();
         assertTrue(oop.getCatalog().containsKey("outline"));
 
-        boolean thrown1 = false, thrown2 = false;
-        try {
-            oop.newDoc("invalidDocNameHere", DocType.TXT, "some content here...");
-        } catch (Exception e) {
-            thrown1 = true;
-        }
+        boolean thrown = false;
         try {
             data.newDoc("train", DocType.CSS, "a css doc's content");
         } catch (Exception e) {
-            thrown2 = true;
+            thrown = true;
         }
-        assertTrue(thrown1 && thrown2);
+        assertTrue(thrown);
 
         assertFalse(oop.getCatalog().containsKey("invalidDocNameHere"));
     }
@@ -136,18 +131,13 @@ public class DirectoryTest {
         cv.list();
         assertTrue(cv.getCatalog().containsKey("data"));
 
-        boolean thrown1 = false, thrown2 = false;
-        try {
-            oop.newDir("invalidDirNameHere");
-        } catch (Exception e) {
-            thrown1 = true;
-        }
+        boolean thrown = false;
         try {
             oop.newDir("gpProj");
         } catch (Exception e) {
-            thrown2 = true;
+            thrown = true;
         }
-        assertTrue(thrown1 && thrown2);
+        assertTrue(thrown);
 
         assertFalse(oop.getCatalog().containsKey("invalidDirNameHere"));
     }
