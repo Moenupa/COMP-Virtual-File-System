@@ -281,6 +281,7 @@ public class CVFSController {
     /**
      * Used to parse and operate undo and redo command
      */
+    @SuppressWarnings("unused")
     public static class loggerParser {
         /**
          * Add an object.
