@@ -81,9 +81,9 @@ public class Directory extends Unit {
         if (catalog.get(name) != null)
             throw new IllegalArgumentException("A file with the same name already exists");
         Directory tmp = new Directory(name, this);
+        updateSizeBy(tmp.getSize());
         catalog.put(name, tmp);
         TraceLogger.getInstance().newLog(TraceLogger.OpType.DEL, tmp, this);
-        updateSizeBy(tmp.getSize());
         return tmp;
     }
 
@@ -100,9 +100,9 @@ public class Directory extends Unit {
         if (catalog.get(name) != null)
             throw new IllegalArgumentException("A file with the same name already exists.");
         Document tmp = new Document(name, this, type, content);
+        updateSizeBy(tmp.getSize());
         catalog.put(name, tmp);
         TraceLogger.getInstance().newLog(TraceLogger.OpType.DEL, tmp, this);
-        updateSizeBy(tmp.getSize());
         return tmp;
     }
 
