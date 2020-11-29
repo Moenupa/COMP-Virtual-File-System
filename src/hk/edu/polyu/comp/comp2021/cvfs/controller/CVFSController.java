@@ -337,7 +337,6 @@ public class CVFSController {
          */
         private final Ops cd = args -> {
             Directory newDir = (Directory) args[0];
-            Directory oldDir = (Directory) args[1];
             CVFS cvfs = (CVFS) args[2];
             cvfs.setCwd(newDir);
         };
@@ -346,7 +345,6 @@ public class CVFSController {
          */
         private final Ops sd = args -> {
             Disk newDisk = (Disk) args[0];
-            Disk oldDisk = (Disk) args[1];
             CVFS cvfs = (CVFS) args[2];
             cvfs.setDisk(newDisk);
         };
