@@ -243,6 +243,8 @@ public class CVFSController {
                 return;
 
             case store:
+                if (cvfs.getCwd() == null)
+                    throw new IllegalStateException("Please first create a disk.");
                 if (elements.length != 2)
                     throw new IllegalArgumentException(numParamError + "[store diskStoreName]");
 
@@ -285,7 +287,6 @@ public class CVFSController {
     /**
      * Used to parse and operate undo and redo command
      */
-    @SuppressWarnings("unused")
     public static class loggerParser {
         /**
          * Add an object.
