@@ -100,6 +100,6 @@ public class CVFSTest {
         controller.processCommand(CommandType.newDoc, "newDoc docTest txt nothinghere");
         controller.processCommand(CommandType.newDir, "newDir dirTest");
         controller.processCommand(CommandType.undo, "undo");
-        // controller.processCommand(CommandType.redo, "redo");
+        controller.processCommand(CommandType.redo, "redo");
     }
 }

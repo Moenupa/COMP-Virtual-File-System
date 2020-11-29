@@ -154,11 +154,9 @@ public class Directory extends Unit {
      * For each directory, list the name and size.
      */
     public void list() {
-        if (catalog.isEmpty()) {
-            System.out.println(noFileWarningMessage);
-            return;
-        }
         System.out.println("\033[4m" + this);
+        if (catalog.isEmpty())
+            System.out.println(noFileWarningMessage);
         for (Unit unit : catalog.values()) {
             System.out.println(" ╞═ " + unit);
         }
@@ -170,11 +168,9 @@ public class Directory extends Unit {
      * Report the total number and size of files listed.
      */
     public void rList() {
-        if (catalog.isEmpty()) {
-            System.out.println(noFileWarningMessage);
-            return;
-        }
         System.out.println("\033[4m" + this);
+        if (catalog.isEmpty())
+            System.out.println(noFileWarningMessage);
         rList(this, 0);
     }
 

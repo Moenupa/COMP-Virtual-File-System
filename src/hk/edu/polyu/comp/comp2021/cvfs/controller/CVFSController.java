@@ -70,7 +70,7 @@ public class CVFSController {
                     throw new IllegalArgumentException("Invalid document type: " + elements[2]);
 
                 StringBuilder docContent = new StringBuilder(elements[3]);
-                for (int i = 3; i < elements.length; i++)
+                for (int i = 4; i < elements.length; i++)
                     docContent.append(' ').append(elements[i]);
 
                 tres = cvfs.parsePath(elements[1]);
@@ -195,7 +195,7 @@ public class CVFSController {
                 for (int i = 1; i <= 4; i *= 2)
                     if (!Criterion.isValidCriName(elements[i]))
                         throw new IllegalArgumentException("Invalid Criterion name: " + elements[i]);
-                if (BinCri.isValidOperator(elements[3]))
+                if (!BinCri.isValidOperator(elements[3]))
                     throw new IllegalArgumentException("Invalid logic operator, must be && or ||");
 
                 cvfs.newBinaryCri(elements[1], elements[2], elements[3], elements[4]);
@@ -243,11 +243,16 @@ public class CVFSController {
                 return;
 
             case store:
+                if (cvfs.getCwd() == null)
+                    throw new IllegalStateException("Please first create a disk.");
                 if (elements.length != 2)
                     throw new IllegalArgumentException(numParamError + "[store diskStoreName]");
 
                 cvfs.store(elements[1]);
                 TraceLogger.getInstance().newLog(TraceLogger.OpType.DD, elements[1], cvfs);
+                return;
+            case exit:
+                System.exit(0);
         }
 
     }
@@ -275,7 +280,7 @@ public class CVFSController {
         try {
             processCommand(type, command);
         } catch (Exception e) {
-            System.out.println("\033[31m" + "Error: " + e.getLocalizedMessage() + "\033[0m");
+            System.out.println("\033[91m" + "Error: " + e.getLocalizedMessage() + "\033[0m");
         }
     }
 
@@ -307,7 +312,8 @@ public class CVFSController {
             if (obj instanceof Unit) {
                 Unit unit = (Unit) obj;
                 Directory parent = (Directory) args[1];
-                parent.delete(unit.getName());
+                parent.getCatalog().remove(unit.getName());
+                parent.updateSizeBy(-unit.getSize());
             } else {
                 Criterion cri = (Criterion) obj;
                 CVFS cvfs = (CVFS) args[1];

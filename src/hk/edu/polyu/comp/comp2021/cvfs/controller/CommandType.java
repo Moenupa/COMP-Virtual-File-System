@@ -79,5 +79,9 @@ public enum CommandType {
     /**
      * redo if the command is to redo
      */
-    redo
+    redo,
+    /**
+     * exit the CVFS
+     */
+    exit
 }
