@@ -144,9 +144,9 @@ public final class TraceLogger {
                 case REN:
                     return new Tracelog(OpType.REN, args[0], args[2], args[1]);
                 case CD:
-                    return new Tracelog(OpType.CD, args[1], args[0]);
+                    return new Tracelog(OpType.CD, args[1], args[0], args[2]);
                 case SD:
-                    return new Tracelog(OpType.SD, args[1], args[0]);
+                    return new Tracelog(OpType.SD, args[1], args[0], args[2]);
                 case DD:
                     return new Tracelog(OpType.LD, args);
                 case LD:

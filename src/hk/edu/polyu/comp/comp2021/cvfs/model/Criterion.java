@@ -76,13 +76,13 @@ public class Criterion implements Cloneable {
     /**
      * A clone constructor
      */
-    @SuppressWarnings("CopyConstructorMissesField")
     private Criterion(Criterion x) {
         name = x.getName();
         attr = x.getAttr();
         op = x.getOp();
         val = x.getVal();
         negation = x.isNeg();
+        isDocumentMark = x.isDocumentCri();
     }
 
     /**
@@ -127,8 +127,7 @@ public class Criterion implements Cloneable {
      */
     public static boolean isValidCriName(String name) {
         if (name == null) return false;
-
-        return (name.matches("^[a-zA-Z]{2}$"));
+        return (name.matches("^[a-zA-Z]{2}$") || name.equals("IsDocument"));
     }
 
     /**
@@ -148,7 +147,7 @@ public class Criterion implements Cloneable {
             case "type":
                 if (op.equals("equals") && val.matches("^\"\\S+\"$")) {
                     if (!val.matches("^\"(txt|html|css|java)\"$"))
-                        System.out.println("Warning: Unsupported file type " + val + ".");
+                        System.out.println("\033[31;mWarning: Unsupported file type " + val + ".\033[0m");
                     // Intended warning, not error
                     // if type not valid show *warning*, then return.
                     return true;
@@ -235,6 +234,13 @@ public class Criterion implements Cloneable {
     }
 
     /**
+     * @return whether the criterion is document
+     */
+    public boolean isDocumentCri() {
+        return isDocumentMark;
+    }
+
+    /**
      * Check if the unit x fits the criterion.
      * Print a warning and return false if x is null.
      *
@@ -287,7 +293,10 @@ public class Criterion implements Cloneable {
 
     @Override
     public String toString() {
-        if (isDocumentMark) return "Criterion { IsDocument }";
+        if (isDocumentMark) {
+            if (!negation) return "Criterion { IsDocument }";
+            return "Criterion { !(IsDocument) }";
+        }
 
         return "Criterion '" + getName() + "', { " + criToString() + " }";
     }

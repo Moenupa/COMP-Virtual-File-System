@@ -21,4 +21,15 @@ public class DocumentTest {
         System.out.println(emptyDoc);
     }
 
+    @Test
+    public void setNameTest() {
+        newDoc.setName("doc1");
+        assertEquals("doc1", newDoc.getName());
+    }
+
+    @Test
+    public void getLevelTest() {
+        assertEquals(1, newDoc.getLevel());
+    }
+
 }

@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * The Vitrual File System.
+ * The Virtual File System.
  */
 public class CVFS {
     // the implementation of the CVFS system.
@@ -40,9 +40,11 @@ public class CVFS {
      * @param diskSize The capacity of the disk.
      */
     public void newDisk(int diskSize) {
+        Disk tmp = disk;
         disk = new Disk(diskSize);
-        TraceLogger.getInstance().newLog(TraceLogger.OpType.SD, this.disk, disk, this);
+        TraceLogger.getInstance().newLog(TraceLogger.OpType.SD, tmp, disk, this);
         cwd = disk;
+        System.out.println("\033[32mNew disk created, size: \033[33m" + diskSize + "\033[0m");
     }
 
     /**
@@ -78,11 +80,15 @@ public class CVFS {
      *
      * @param name The name of the file.
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public void store(String name) {
         try {
             if (!Unit.isValidName(name))
                 throw new IllegalArgumentException("Invalid name.");
-            String path = System.getProperty("user.dir") + "/disks/" + name + ".ser";
+            String path = System.getProperty("user.dir") + "\\disks\\";
+            File dir = new File(path);
+            dir.mkdirs();
+            path += name + ".ser";
             File file = new File(path);
             if (file.exists())
                 throw new FileAlreadyExistsException("File Already Exists.");
@@ -94,10 +100,6 @@ public class CVFS {
             out.close();
             buffer.close();
             System.out.println("Current disk stored in " + path);
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-        } catch (FileAlreadyExistsException e) {
-            System.out.println(e.getLocalizedMessage());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -110,7 +112,7 @@ public class CVFS {
      */
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public void delDisk(String name) {
-        File file = new File(System.getProperty("user.dir") + "/disks/" + name + ".ser");
+        File file = new File(System.getProperty("user.dir") + "\\disks\\" + name + ".ser");
         file.delete();
     }
 
@@ -121,7 +123,7 @@ public class CVFS {
      */
     public void load(String name) {
         try {
-            String path = System.getProperty("user.dir") + "/disks/" + name + ".ser";
+            String path = System.getProperty("user.dir") + "\\disks\\" + name + ".ser";
             if (!new File(path).exists())
                 throw new FileNotFoundException("File Not Found.");
             FileInputStream buffer = new FileInputStream(path);
@@ -131,8 +133,6 @@ public class CVFS {
             setDisk(tmp);
             in.close();
             buffer.close();
-        } catch (FileNotFoundException e) {
-            System.out.println(e.getLocalizedMessage());
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException ignored) {
@@ -159,15 +159,8 @@ public class CVFS {
      * @param val  The value of the operation.
      */
     public void newSimpleCri(String name, String attr, String op, String val) {
-        if (criteria.containsKey(name)) {
-            System.out.println("Invalid Arguments. Details: Already exists Criterion " + name);
-            return;
-        }
-
-        if (!Criterion.isValidCri(name, attr, op, val)) {
-            System.out.println("Invalid Arguments. Details: Illegal Criterion " + name);
-            return;
-        }
+        if (criteria.containsKey(name))
+            throw new IllegalArgumentException("Already exists Criterion " + name);
 
         Criterion newCri = new Criterion(name, attr, op, val);
         criteria.put(name, newCri);
@@ -183,14 +176,10 @@ public class CVFS {
      * @param name2 The name of the criterion to be negated.
      */
     public void newNegation(String name1, String name2) {
-        if (criteria.containsKey(name1)) {
-            System.out.println("Invalid Arguments. Details: Already exists Criterion " + name1);
-            return;
-        }
-        if (!Criterion.isValidCriName(name1)) {
-            System.out.println("Invalid Criterion Name " + name1);
-            return;
-        }
+        if (criteria.containsKey(name1))
+            throw new IllegalArgumentException("Already exists Criterion " + name1);
+        if (!criteria.containsKey(name2))
+            throw new IllegalArgumentException("No matching Criterion " + name2);
 
         Criterion newCri = criteria.get(name2).getNegCri(name1);
         TraceLogger.getInstance().newLog(TraceLogger.OpType.DEL, newCri, this);
@@ -209,21 +198,13 @@ public class CVFS {
      * @param name4 The name of the second criterion to be combined.
      */
     public void newBinaryCri(String name1, String name3, String op, String name4) {
-        try {
-            if (criteria.containsKey(name1))
-                throw new Exception("Invalid Arguments. Details: Already exists Criterion " + name1);
-            if (!Criterion.isValidCriName(name1))
-                throw new Exception("Invalid Criterion Name " + name1);
-            if (!BinCri.isValidOperator(op))
-                throw new Exception("Invalid Argument op " + op);
-            if (!criteria.containsKey(name3) || name3 == null)
-                throw new Exception("Cannot find argument " + name3);
-            if (!criteria.containsKey(name4) || name4 == null)
-                throw new Exception("Cannot find argument " + name4);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return;
-        }
+        if (criteria.containsKey(name1))
+            throw new IllegalArgumentException("Already exists Criterion " + name1);
+        if (!criteria.containsKey(name3) || name3 == null)
+            throw new IllegalArgumentException("Cannot find Criterion " + name3);
+        if (!criteria.containsKey(name4) || name4 == null)
+            throw new IllegalArgumentException("Cannot find Criterion " + name4);
+
         BinCri newCri = new BinCri(name1, criteria.get(name3), op, criteria.get(name4));
         TraceLogger.getInstance().newLog(TraceLogger.OpType.DEL, newCri, this);
         criteria.put(name1, newCri);
@@ -233,10 +214,10 @@ public class CVFS {
      * Print all criteria in the memory in a formatted form.
      */
     public void printAllCriteria() {
-        System.out.println("╓ printing all the criteria");
+        System.out.println("\033[32mCriteria: \033[33m" + criteria.size() + " in total.\033[34m");
         for (Criterion criterion : criteria.values())
-            System.out.println("╟── " + criterion);
-        System.out.println("╙ " + criteria.size() + " criteria(criterion) in total");
+            System.out.println("  ╟ " + criterion);
+        System.out.print("\033[0m");
     }
 
     /**
@@ -249,6 +230,7 @@ public class CVFS {
         if (name.equals("..")) {
             if (cwd.getParent() == null)
                 throw new IllegalArgumentException("This is the root directory.");
+            TraceLogger.getInstance().newLog(TraceLogger.OpType.CD, getCwd(), getCwd().getParent(), this);
             setCwd(cwd.getParent());
             return;
         }
@@ -260,7 +242,7 @@ public class CVFS {
             throw new IllegalArgumentException("Invalid path.");
         if (!(newDir instanceof Directory))
             throw new IllegalArgumentException("This is not a directory.");
-        TraceLogger.getInstance().newLog(TraceLogger.OpType.CD, getCwd(), newDir);
+        TraceLogger.getInstance().newLog(TraceLogger.OpType.CD, getCwd(), newDir, this);
         setCwd((Directory) newDir);
     }
 
@@ -277,7 +259,7 @@ public class CVFS {
             String s = paths[i];
             if (s.equals("$")) continue;
             cur = (Directory) cur.getCatalog().get(s);
-            if (cur == null) throw new IllegalArgumentException("Invalid Path.");
+            if (cur == null) throw new IllegalArgumentException("Invalid Path, please use $:<dir>:...:<file> format.");
         }
         Object[] result = new Object[2];
         result[0] = cur;

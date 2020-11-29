@@ -9,16 +9,24 @@ public class CVFSView {
     /**
      * The string storing the current path of the working directory.
      */
-    private String curDirPath = ":$ ";
+    private String curDirPath;
 
 
     /**
      * Print the welcome message.
      */
     public void welcome() {
-        System.out.println("Welcome to the Comp VFS developed by group 30");
-        System.out.println("===============================================================");
-
+        System.out.println("\n" +
+                "██╗    ██╗███████╗██╗      ██████╗ ██████╗ ███╗   ███╗███████╗    ████████╗ ██████╗      ██████╗██╗   ██╗███████╗███████╗\n" +
+                "██║    ██║██╔════╝██║     ██╔════╝██╔═══██╗████╗ ████║██╔════╝    ╚══██╔══╝██╔═══██╗    ██╔════╝██║   ██║██╔════╝██╔════╝\n" +
+                "██║ █╗ ██║█████╗  ██║     ██║     ██║   ██║██╔████╔██║█████╗         ██║   ██║   ██║    ██║     ██║   ██║█████╗  ███████╗\n" +
+                "██║███╗██║██╔══╝  ██║     ██║     ██║   ██║██║╚██╔╝██║██╔══╝         ██║   ██║   ██║    ██║     ╚██╗ ██╔╝██╔══╝  ╚════██║\n" +
+                "╚███╔███╔╝███████╗███████╗╚██████╗╚██████╔╝██║ ╚═╝ ██║███████╗       ██║   ╚██████╔╝    ╚██████╗ ╚████╔╝ ██║     ███████║\n" +
+                " ╚══╝╚══╝ ╚══════╝╚══════╝ ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝       ╚═╝    ╚═════╝      ╚═════╝  ╚═══╝  ╚═╝     ╚══════╝\n" +
+                "                                                                                                                         \n" +
+                "                                                     Developed by Group 30: MAN Furui, WANG Meng, XING Shiji, ZHANG Yubo.\n" +
+                "                        COMP2021 Object-Oriented Programming, Year 2020 Semester 1, The Hong Kong Polytechnic University.\n"
+        );
     }
 
     /**
@@ -27,9 +35,12 @@ public class CVFSView {
      * @param cur The current working directory.
      */
     public void updateDir(Directory cur) {
-        if (cur == null) return;
+        if (cur == null) {
+            curDirPath = "> ";
+            return;
+        }
         StringBuilder str = cur.getPath();
-        str.append(":$ ");
+        str.append("> ");
         curDirPath = str.toString();
     }
 

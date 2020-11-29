@@ -103,23 +103,6 @@ public class DirectoryTest {
     }
 
     /**
-     * Test list()
-     */
-    @Test
-    public void rListTest() {
-        /* Correct Output:
-           OOP            598
-             ╞═ gpProj         438
-                 ╞═ instruct       398
-                     ╞═ codes          206
-                         ╞═ example.java   166
-                     ╞═ projReq.txt    152
-        */
-        oop.rList();
-        download1.rList(); // no file warning message
-    }
-
-    /**
      * Test newDoc()
      */
     @Test
@@ -135,6 +118,8 @@ public class DirectoryTest {
             thrown = true;
         }
         assertTrue(thrown);
+
+        assertFalse(oop.getCatalog().containsKey("invalidDocNameHere"));
     }
 
     /**
@@ -153,6 +138,8 @@ public class DirectoryTest {
             thrown = true;
         }
         assertTrue(thrown);
+
+        assertFalse(oop.getCatalog().containsKey("invalidDirNameHere"));
     }
 
     /**

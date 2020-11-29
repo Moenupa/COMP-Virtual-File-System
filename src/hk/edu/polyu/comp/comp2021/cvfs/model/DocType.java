@@ -74,5 +74,4 @@ public enum DocType {
         return type;
     }
 
-
 }
