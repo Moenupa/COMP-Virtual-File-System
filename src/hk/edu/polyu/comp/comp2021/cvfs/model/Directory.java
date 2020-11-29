@@ -142,7 +142,7 @@ public class Directory extends Unit {
 
         Unit renamedItem = catalog.get(oldName);
         renamedItem.setName(newName);
-        TraceLogger.getInstance().newLog(TraceLogger.OpType.REN, oldName, newName);
+        TraceLogger.getInstance().newLog(TraceLogger.OpType.REN,renamedItem, oldName, newName);
         catalog.remove(oldName);
         catalog.put(newName, renamedItem);
 
