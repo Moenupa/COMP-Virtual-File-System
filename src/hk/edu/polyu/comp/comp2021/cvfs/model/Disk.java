@@ -39,8 +39,7 @@ public class Disk extends Directory {
     public int getCapacity() {
         return capacity;
     }
-
-    @SuppressWarnings("unused")
+    
     @Override
     public StringBuilder getPath() {
         StringBuilder str = new StringBuilder();
