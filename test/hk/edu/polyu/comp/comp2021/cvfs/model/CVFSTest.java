@@ -8,6 +8,8 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 public class CVFSTest {
+    CVFS cvfs;
+
     @Before
     public void setUp() {
         cvfs = new CVFS();
