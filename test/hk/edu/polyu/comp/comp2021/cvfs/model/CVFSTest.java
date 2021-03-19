@@ -7,17 +7,14 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-
 public class CVFSTest {
-
-    public CVFS cvfs;
+    CVFS cvfs;
 
     @Before
     public void setUp() {
         cvfs = new CVFS();
     }
 
-    @Test
     public void diskTest() {
         cvfs.newDisk(1000);
         cvfs.setDisk(new Disk(10000));
