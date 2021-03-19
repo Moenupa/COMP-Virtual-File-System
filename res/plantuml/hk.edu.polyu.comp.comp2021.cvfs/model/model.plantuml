@@ -1,0 +1,247 @@
+@startuml
+
+title __MODEL's Class Diagram__\n
+
+  namespace hk.edu.polyu.comp.comp2021.cvfs {
+    namespace model {
+      class hk.edu.polyu.comp.comp2021.cvfs.model.BinCri {
+          - operator : String
+          + check()
+          + clone()
+          + equals()
+          + getCri1()
+          + getCri2()
+          + getNegCri()
+          + getOperator()
+          + hashCode()
+          {static} + isValidOperator()
+          + toString()
+          # criToString()
+          ~ BinCri()
+          - BinCri()
+      }
+    }
+  }
+  
+
+  namespace hk.edu.polyu.comp.comp2021.cvfs {
+    namespace model {
+      class hk.edu.polyu.comp.comp2021.cvfs.model.CVFS {
+          - criteria : Map<String, Criterion>
+          + changeDir()
+          + delDisk()
+          + getCri()
+          + getCriteria()
+          + getCwd()
+          + load()
+          + newBinaryCri()
+          + newDisk()
+          + newNegation()
+          + newSimpleCri()
+          + parsePath()
+          + printAllCriteria()
+          + setCwd()
+          + setDisk()
+          + store()
+      }
+    }
+  }
+  
+
+  namespace hk.edu.polyu.comp.comp2021.cvfs {
+    namespace model {
+      class hk.edu.polyu.comp.comp2021.cvfs.model.Criterion {
+          - attr : String
+          {static} - engine : ScriptEngine
+          {static} - isDocument : Criterion
+          - isDocumentMark : boolean
+          - name : String
+          - negation : boolean
+          - op : String
+          - val : String
+          + Criterion()
+          + Criterion()
+          + check()
+          + clone()
+          + equals()
+          + getAttr()
+          {static} + getIsDocument()
+          + getName()
+          + getNegCri()
+          + getOp()
+          + getVal()
+          + hashCode()
+          + isNeg()
+          {static} + isValidCri()
+          {static} + isValidCriName()
+          + setName()
+          + setNeg()
+          + toString()
+          # criToString()
+          - Criterion()
+          - Criterion()
+          {static} - isValidCriContent()
+          - toJsString()
+      }
+    }
+  }
+  
+
+  namespace hk.edu.polyu.comp.comp2021.cvfs {
+    namespace model {
+      class hk.edu.polyu.comp.comp2021.cvfs.model.Directory {
+          - catalog : Map<String, Unit>
+          {static} - noFileWarningMessage : String
+          {static} - unchangedRenameWarningMessage : String
+          + Directory()
+          + delete()
+          + getCatalog()
+          + getParent()
+          + getPath()
+          + list()
+          + newDir()
+          + newDoc()
+          + rList()
+          + rList()
+          + rSearch()
+          {static} + rSearch()
+          + rename()
+          + search()
+          + setParent()
+          + toString()
+          + updateSizeBy()
+      }
+    }
+  }
+  
+
+  namespace hk.edu.polyu.comp.comp2021.cvfs {
+    namespace model {
+      class hk.edu.polyu.comp.comp2021.cvfs.model.Disk {
+          - capacity : int
+          + Disk()
+          + getCapacity()
+          + getPath()
+          + updateSizeBy()
+      }
+    }
+  }
+  
+
+  namespace hk.edu.polyu.comp.comp2021.cvfs {
+    namespace model {
+      enum DocType {
+        CSS
+        HTML
+        JAVA
+        TXT
+        type
+      }
+    }
+  }
+  
+
+  namespace hk.edu.polyu.comp.comp2021.cvfs {
+    namespace model {
+      class hk.edu.polyu.comp.comp2021.cvfs.model.Document {
+          - content : String
+          + Document()
+          + getParent()
+          + getType()
+          + setParent()
+          + toString()
+      }
+    }
+  }
+  
+
+  namespace hk.edu.polyu.comp.comp2021.cvfs {
+    namespace model {
+      class hk.edu.polyu.comp.comp2021.cvfs.model.TraceLogger {
+          - logger : Stack<Tracelog>
+          - rLogger : Stack<Tracelog>
+          {static} - traceLogger : TraceLogger
+          {static} + getInstance()
+          + getRlog()
+          + getlog()
+          + newLog()
+          - TraceLogger()
+      }
+    }
+  }
+  
+
+  namespace hk.edu.polyu.comp.comp2021.cvfs {
+    namespace model {
+      enum OpType {
+        ADD
+        CD
+        DD
+        DEL
+        LD
+        REN
+        SD
+      }
+    }
+  }
+  
+
+  namespace hk.edu.polyu.comp.comp2021.cvfs {
+    namespace model {
+      class hk.edu.polyu.comp.comp2021.cvfs.model.TraceLogger.Tracelog {
+          - args : Object[]
+          + Tracelog()
+          + getArgs()
+          + getType()
+          + switchLog()
+      }
+    }
+  }
+  
+
+  namespace hk.edu.polyu.comp.comp2021.cvfs {
+    namespace model {
+      abstract class hk.edu.polyu.comp.comp2021.cvfs.model.Unit {
+          {static} # SIZE_CONSTANT : int
+          - name : String
+          - size : int
+          + Unit()
+          + getLevel()
+          + getName()
+          {abstract} + getParent()
+          + getSize()
+          {static} + isValidName()
+          + setName()
+          {abstract} + setParent()
+          + setSize()
+      }
+    }
+  }
+  
+
+  hk.edu.polyu.comp.comp2021.cvfs.model.BinCri -up-|> hk.edu.polyu.comp.comp2021.cvfs.model.Criterion
+  hk.edu.polyu.comp.comp2021.cvfs.model.BinCri o-- hk.edu.polyu.comp.comp2021.cvfs.model.Criterion : cri1
+  hk.edu.polyu.comp.comp2021.cvfs.model.BinCri o-- hk.edu.polyu.comp.comp2021.cvfs.model.Criterion : cri2
+  hk.edu.polyu.comp.comp2021.cvfs.model.CVFS o-- hk.edu.polyu.comp.comp2021.cvfs.model.Directory : cwd
+  hk.edu.polyu.comp.comp2021.cvfs.model.CVFS o-- hk.edu.polyu.comp.comp2021.cvfs.model.Disk : disk
+  hk.edu.polyu.comp.comp2021.cvfs.model.Criterion .up.|> java.lang.Cloneable
+  hk.edu.polyu.comp.comp2021.cvfs.model.Directory -up-|> hk.edu.polyu.comp.comp2021.cvfs.model.Unit
+  hk.edu.polyu.comp.comp2021.cvfs.model.Directory o-- hk.edu.polyu.comp.comp2021.cvfs.model.Directory : parent
+  hk.edu.polyu.comp.comp2021.cvfs.model.Disk -up-|> hk.edu.polyu.comp.comp2021.cvfs.model.Directory
+  hk.edu.polyu.comp.comp2021.cvfs.model.Document -up-|> hk.edu.polyu.comp.comp2021.cvfs.model.Unit
+  hk.edu.polyu.comp.comp2021.cvfs.model.Document o-- hk.edu.polyu.comp.comp2021.cvfs.model.Directory : parent
+  hk.edu.polyu.comp.comp2021.cvfs.model.Document o-- hk.edu.polyu.comp.comp2021.cvfs.model.DocType : type
+  hk.edu.polyu.comp.comp2021.cvfs.model.TraceLogger +-down- hk.edu.polyu.comp.comp2021.cvfs.model.TraceLogger.OpType
+  hk.edu.polyu.comp.comp2021.cvfs.model.TraceLogger +-down- hk.edu.polyu.comp.comp2021.cvfs.model.TraceLogger.Tracelog
+  hk.edu.polyu.comp.comp2021.cvfs.model.TraceLogger.Tracelog o-- hk.edu.polyu.comp.comp2021.cvfs.model.TraceLogger.OpType : type
+  hk.edu.polyu.comp.comp2021.cvfs.model.Unit .up.|> java.io.Serializable
+
+
+right footer
+
+
+CVFS(Comp Virtual File System) Class Diagram proposed by Group 30: MAN Furui, WANG Meng, XING Shiji, ZHANG Yubo.
+COMP2021 Object-Oriented Programming, Year 2020 Semester 1, The Hong Kong Polytechnic University.
+endfooter
+
+@enduml

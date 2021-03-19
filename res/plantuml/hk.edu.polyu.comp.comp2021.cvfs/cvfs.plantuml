@@ -1,0 +1,21 @@
+@startuml
+
+title __CVFS's Class Diagram__\n
+
+  namespace hk.edu.polyu.comp.comp2021.cvfs {
+    class hk.edu.polyu.comp.comp2021.cvfs.Application {
+        {static} + main()
+    }
+  }
+  
+
+
+
+right footer
+
+
+CVFS(Comp Virtual File System) Class Diagram proposed by Group 30: MAN Furui, WANG Meng, XING Shiji, ZHANG Yubo.
+COMP2021 Object-Oriented Programming, Year 2020 Semester 1, The Hong Kong Polytechnic University.
+endfooter
+
+@enduml

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="323px" preserveAspectRatio="none" style="width:652px;height:323px;" version="1.1" viewBox="0 0 652 323" width="652px" zoomAndPan="magnify"><defs><filter height="300%" id="f1oq9pzub2t2kn" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><text fill="#000000" font-family="sans-serif" font-size="18" lengthAdjust="spacingAndGlyphs" text-decoration="underline" textLength="201" x="222" y="16.708">VIEW's Class Diagram</text><text fill="#000000" font-family="sans-serif" font-size="18" lengthAdjust="spacingAndGlyphs" textLength="0" x="325.5" y="37.6611"/><!--MD5=[7696743e9eab3d07d0242f740cb8a12e]
+cluster hk.edu.polyu.comp.comp2021.cvfs--><polygon fill="#FFFFFF" filter="url(#f1oq9pzub2t2kn)" points="181,47.9063,466,47.9063,473,70.2031,476,70.2031,476,264.9063,181,264.9063,181,47.9063" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="181" x2="473" y1="70.2031" y2="70.2031"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="279" x="185" y="62.9014">hk.edu.polyu.comp.comp2021.cvfs</text><!--MD5=[f4c007498b8e7188fbe01ecea3485a4b]
+cluster hk.edu.polyu.comp.comp2021.cvfs.view--><polygon fill="#FFFFFF" filter="url(#f1oq9pzub2t2kn)" points="248,90.9063,290,90.9063,297,113.2031,408,113.2031,408,240.9063,248,240.9063,248,90.9063" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="248" x2="297" y1="113.2031" y2="113.2031"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="36" x="252" y="105.9014">view</text><!--MD5=[401291756678c251497818224a612585]
+class hk.edu.polyu.comp.comp2021.cvfs.view.CVFSView--><rect codeLine="5" fill="#FEFECE" filter="url(#f1oq9pzub2t2kn)" height="99.2188" id="hk.edu.polyu.comp.comp2021.cvfs.view.CVFSView" style="stroke:#A80036;stroke-width:1.5;" width="127" x="264.5" y="125.9063"/><ellipse cx="295.25" cy="141.9063" fill="#ADD1B2" rx="11" ry="11" style="stroke:#A80036;stroke-width:1.0;"/><path d="M297.5938,137.5781 C296.6563,137.1406 296.0625,137 295.1875,137 C292.5625,137 290.5625,139.0781 290.5625,141.7969 L290.5625,142.9219 C290.5625,145.5 292.6719,147.3906 295.5625,147.3906 C296.7813,147.3906 297.9375,147.0938 298.6875,146.5469 C299.2656,146.1406 299.5938,145.6875 299.5938,145.2969 C299.5938,144.8438 299.2031,144.4531 298.7344,144.4531 C298.5156,144.4531 298.3125,144.5313 298.125,144.7188 C297.6719,145.2031 297.6719,145.2031 297.4844,145.2969 C297.0625,145.5625 296.375,145.6875 295.6094,145.6875 C293.5625,145.6875 292.2656,144.5938 292.2656,142.8906 L292.2656,141.7969 C292.2656,140.0156 293.5156,138.7031 295.25,138.7031 C295.8281,138.7031 296.4375,138.8594 296.9063,139.1094 C297.3906,139.3906 297.5625,139.6094 297.6563,140.0156 C297.7188,140.4219 297.75,140.5469 297.8906,140.6719 C298.0313,140.8125 298.2656,140.9219 298.4844,140.9219 C298.75,140.9219 299.0156,140.7813 299.1875,140.5625 C299.2969,140.4063 299.3281,140.2188 299.3281,139.7969 L299.3281,138.375 C299.3281,137.9375 299.3125,137.8125 299.2188,137.6563 C299.0625,137.3906 298.7813,137.25 298.4844,137.25 C298.1875,137.25 297.9844,137.3438 297.7656,137.6563 L297.5938,137.5781 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="60" x="312.75" y="146.0605">CVFSView</text><line style="stroke:#A80036;stroke-width:1.5;" x1="265.5" x2="390.5" y1="157.9063" y2="157.9063"/><rect fill="none" height="6" style="stroke:#C82930;stroke-width:1.0;" width="6" x="272.5" y="165.9063"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="101" x="284.5" y="172.1167">curDirPath : String</text><line style="stroke:#A80036;stroke-width:1.5;" x1="265.5" x2="390.5" y1="178.7109" y2="178.7109"/><ellipse cx="275.5" cy="189.7109" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="72" x="284.5" y="192.9214">printPrompt()</text><ellipse cx="275.5" cy="202.5156" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="64" x="284.5" y="205.7261">updateDir()</text><ellipse cx="275.5" cy="215.3203" fill="#84BE84" rx="3" ry="3" style="stroke:#038048;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="60" x="284.5" y="218.5308">welcome()</text><text fill="#888888" font-family="sans-serif" font-size="10" lengthAdjust="spacingAndGlyphs" textLength="0" x="645" y="280.1885"/><text fill="#888888" font-family="sans-serif" font-size="10" lengthAdjust="spacingAndGlyphs" textLength="0" x="645" y="291.8291"/><text fill="#888888" font-family="sans-serif" font-size="10" lengthAdjust="spacingAndGlyphs" textLength="645" x="0" y="303.4697">CVFS(Comp Virtual File System) Class Diagram proposed by Group 30: MAN Furui, WANG Meng, XING Shiji, ZHANG Yubo.</text><text fill="#888888" font-family="sans-serif" font-size="10" lengthAdjust="spacingAndGlyphs" textLength="565" x="80" y="315.1104">COMP2021 Object-Oriented Programming, Year 2020 Semester 1, The Hong Kong Polytechnic University.</text><!--MD5=[414949ff66c8e98738d4317538448dc9]
+@startuml
+title __VIEW's Class Diagram__\n
+
+  namespace hk.edu.polyu.comp.comp2021.cvfs {
+    namespace view {
+      class hk.edu.polyu.comp.comp2021.cvfs.view.CVFSView {
+          - curDirPath : String
+          + printPrompt()
+          + updateDir()
+          + welcome()
+      }
+    }
+  }
+  
+
+
+
+right footer
+
+
+CVFS(Comp Virtual File System) Class Diagram proposed by Group 30: MAN Furui, WANG Meng, XING Shiji, ZHANG Yubo.
+COMP2021 Object-Oriented Programming, Year 2020 Semester 1, The Hong Kong Polytechnic University.
+endfooter
+@enduml
+
+PlantUML version 1.2020.21beta7(Unknown compile time)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: en
+Country: US
+--></g></svg>
